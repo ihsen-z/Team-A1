@@ -5,6 +5,38 @@ avant de committer**. Les scripts sont une barrière, pas une garantie.
 
 ---
 
+## En une seule commande
+
+Si tu veux tout faire d'un coup — sites, historique, contrôle de fuite, commit
+et push :
+
+```bash
+git config --global user.name  "Ton Nom"     # une seule fois
+git config --global user.email "ton@email.fr"
+
+./tooling/import/import-all.sh "/c/Users/DELL/Local Sites/famma/app/public:famma" \
+                               "/c/Users/DELL/extraction-temporaire:evasions"
+```
+
+Sans argument, le script cherche seul dans les emplacements habituels
+(`~/Local Sites/*/app/public`, htdocs, www, Laragon, MAMP).
+
+Ce qu'il fait, dans l'ordre : vérifie ton identité Git **avant** de travailler,
+extrait chaque site, retire les thèmes commerciaux (Kadence, Divi, Astra…) qui
+ne sont pas ton travail, exporte l'historique Claude Code expurgé, passe un
+contrôle de fuite sur l'ensemble, puis committe et pousse.
+
+**Le push n'a lieu que si le contrôle est propre.** Au moindre secret détecté,
+il s'arrête sans rien committer et te montre les lignes en cause.
+
+Options : `--dry-run` (montre sans écrire), `--no-push`, `--no-transcripts`,
+`--keep-parents` (conserve les thèmes commerciaux).
+
+Les sections ci-dessous détaillent chaque étape si tu préfères les faire une
+par une.
+
+---
+
 ## 1. Tes sites existants
 
 ### Ce dont j'ai besoin
