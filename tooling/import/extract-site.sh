@@ -97,6 +97,7 @@ prune_excluded() {
 # --- Thèmes ------------------------------------------------------------------
 step "Thèmes"
 shopt -s nullglob
+kept_themes=()
 for theme_dir in "$content"/themes/*/; do
   name="$(basename "$theme_dir")"
   # Les thèmes livrés avec WordPress n'apprennent rien sur ta façon de faire.
@@ -104,18 +105,28 @@ for theme_dir in "$content"/themes/*/; do
   copy_filtered "$theme_dir" "$out/themes/$name"
   size="$(du -sh "$out/themes/$name" | cut -f1)"
   ok "thème $name ($size)"
+  kept_themes+=("$name")
 done
 
 # --- Patterns et compositions réutilisables ---------------------------------
 step "Patterns"
+# Uniquement ceux des thèmes conservés : les patterns des thèmes par défaut
+# sont du code WordPress, pas le tien, et noieraient le signal.
 found_patterns=0
-while IFS= read -r p; do
-  rel="${p#$content/}"
-  mkdir -p "$out/patterns/$(dirname "$rel")"
-  cp "$p" "$out/patterns/$rel"
-  found_patterns=$((found_patterns + 1))
-done < <(find "$content/themes" -path '*/patterns/*' \( -name '*.php' -o -name '*.html' \) 2>/dev/null)
-ok "$found_patterns fichier(s) de pattern"
+for name in "${kept_themes[@]}"; do
+  [[ -d "$content/themes/$name" ]] || continue
+  while IFS= read -r p; do
+    rel="${p#$content/themes/$name/}"
+    mkdir -p "$out/patterns/$name/$(dirname "$rel")"
+    cp "$p" "$out/patterns/$name/$rel"
+    found_patterns=$((found_patterns + 1))
+  done < <(find "$content/themes/$name" -path '*/patterns/*' \( -name '*.php' -o -name '*.html' \) 2>/dev/null)
+done
+if [[ $found_patterns -eq 0 ]]; then
+  ok "aucun pattern déclaré (thème classique : les composants sont dans template-parts/)"
+else
+  ok "$found_patterns fichier(s) de pattern"
+fi
 
 # --- Inventaire des extensions (noms de dossiers, pas le code) --------------
 step "Extensions"
