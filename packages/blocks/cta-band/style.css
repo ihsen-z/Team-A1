@@ -1,0 +1,31 @@
+/* Bloc factory/cta-band */
+.factory-cta {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: space-between;
+	gap: var(--wp--preset--spacing--20);
+	padding: var(--wp--preset--spacing--30) var(--wp--preset--spacing--20);
+	border-radius: 10px;
+	background: var(--wp--preset--color--primaire);
+	color: var(--wp--preset--color--fond);
+}
+
+.factory-cta--accent { background: var(--wp--preset--color--accent); }
+.factory-cta--sobre {
+	background: var(--wp--preset--color--neutre-clair);
+	color: var(--wp--preset--color--texte);
+}
+
+.factory-cta__message {
+	margin: 0;
+	font-size: var(--wp--preset--font-size--large);
+	max-width: 44ch;
+}
+
+.factory-cta__bouton { flex-shrink: 0; }
+
+.factory-cta--sobre .factory-cta__bouton {
+	background: var(--wp--preset--color--primaire);
+	color: var(--wp--preset--color--fond);
+}

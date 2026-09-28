@@ -1,0 +1,84 @@
+# =============================================================================
+#  BRIEF CLIENT — le seul fichier que tu remplis à la main
+# =============================================================================
+#  Tout le pipeline lit ce fichier. Copie-le dans clients/<slug>/client.yml.
+#  Les champs marqués [CLASSIF] sont ceux que la matrice de décision évalue.
+#
+#  Lancement :  ./tooling/new-site.sh clients/boulangerie-martin
+# =============================================================================
+
+slug: boulangerie-martin
+nom: "Boulangerie Martin"
+domaine: boulangerie-martin.fr
+
+# --- Classification (lu par la matrice de décision) -------------------------
+type: vitrine              # [CLASSIF] vitrine | business | ecommerce
+pages: 6                   # [CLASSIF] nombre de pages prévues
+langues: 1                 # [CLASSIF]
+ecommerce: false           # [CLASSIF]
+produits: 0                # [CLASSIF] si ecommerce
+marketplace: false         # [CLASSIF]
+besoins: []                # [CLASSIF] reservation | prise-de-rdv | marketplace | erp | sso | ...
+budget: 1800               # [CLASSIF] EUR — comparé à seuils_rentabilite
+
+# --- Métier -----------------------------------------------------------------
+secteur: "Artisanat alimentaire"
+zone: "Lyon 3e et alentours"
+cible: "Riverains, employés de bureau du quartier, familles"
+objectif_principal: "Faire venir en boutique + afficher les horaires et la carte"
+concurrents: []
+
+# --- Ton de marque (utilisé par content-writer) -----------------------------
+ton:
+  registre: chaleureux         # chaleureux | sobre | premium | technique | ludique
+  personne: "nous"
+  tutoiement: false
+  a_eviter: ["jargon marketing", "superlatifs creux", "« leader du marché »"]
+  mots_cles_marque: ["pain au levain", "artisanal", "cuit sur place"]
+
+# --- Charte graphique → theme.json (utilisé par design-tokens) --------------
+charte:
+  couleurs:
+    primaire:   "#7A4B2A"
+    secondaire: "#E8C79A"
+    accent:     "#2F6B4F"
+    fond:       "#FFFDF8"
+    texte:      "#2A1F17"
+  typos:
+    titres: { famille: "Fraunces", poids: [600, 700] }
+    corps:  { famille: "Inter",    poids: [400, 500] }
+  rayon: 8                      # px — arrondi global
+  densite: confortable          # compacte | confortable | aeree
+  logo: "assets/logo.svg"       # relatif à clients/<slug>/
+
+# --- Structure des pages ----------------------------------------------------
+pages_liste:
+  - { slug: accueil,   titre: "Accueil",          role: home }
+  - { slug: la-carte,  titre: "La carte",         role: catalogue }
+  - { slug: le-levain, titre: "Notre levain",     role: story }
+  - { slug: horaires,  titre: "Horaires & accès", role: pratique }
+  - { slug: contact,   titre: "Contact",          role: contact }
+  - { slug: mentions,  titre: "Mentions légales", role: legal }
+
+# --- Données factuelles (jamais inventées par un agent) --------------------
+faits:
+  adresse: "14 rue de la Villette, 69003 Lyon"
+  telephone: "+33 4 00 00 00 00"
+  email: "bonjour@boulangerie-martin.fr"
+  horaires: "Mar–Sam 7h–19h30, Dim 7h–13h. Fermé lundi."
+  annee_creation: 1998
+  specialites: ["Pain au levain naturel", "Tarte praline", "Brioche de Saint-Genix"]
+
+# --- Intégrations -----------------------------------------------------------
+integrations:
+  google_business: true
+  analytics: matomo             # matomo | ga4 | aucun
+  newsletter: aucun
+  reseaux: { instagram: "@boulangeriemartin" }
+
+# --- Contraintes ------------------------------------------------------------
+contraintes:
+  rgpd: true
+  accessibilite_cible: "WCAG 2.2 AA"
+  deadline: "2026-11-15"
+  hebergement_impose: null      # si le client impose → peut déclencher une escalade

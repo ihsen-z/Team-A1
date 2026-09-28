@@ -1,0 +1,48 @@
+# Preset VITRINE — petit site de présence, 5-8 pages, pas de vente en ligne.
+id: vitrine
+label: "Site vitrine"
+stack: wp-classic
+
+plugins:
+  required:
+    - wordpress-seo            # Yoast SEO
+    - wp-super-cache
+    - wordfence
+    - contact-form-7
+    - webp-express
+  forbidden:
+    - elementor                # on fait du thème bloc custom, pas du builder
+    - woocommerce
+    - jetpack
+
+blocks_allowed:
+  - factory/hero
+  - factory/services-grid
+  - factory/cta-band
+  - core/paragraph
+  - core/heading
+  - core/image
+  - core/list
+  - core/buttons
+  - core/columns
+  - core/group
+  - core/spacer
+
+page_templates:
+  home:      [factory/hero, factory/services-grid, factory/cta-band]
+  catalogue: [factory/hero, core/columns, factory/cta-band]
+  story:     [factory/hero, core/group, factory/cta-band]
+  pratique:  [factory/hero, core/columns]
+  contact:   [factory/hero, core/group]
+  legal:     [core/heading, core/paragraph]
+
+wp_options:
+  blog_public: 1
+  permalink_structure: "/%postname%/"
+  timezone_string: "Europe/Paris"
+  default_comment_status: closed
+
+quality_gates:
+  lighthouse: { performance: 90, accessibility: 95, seo: 95 }
+  axe_violations_max: 0
+  broken_links_max: 0

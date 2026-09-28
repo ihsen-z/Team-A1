@@ -1,0 +1,36 @@
+/* Bloc factory/hero — s'appuie uniquement sur les tokens de theme.json. */
+.factory-hero {
+	position: relative;
+	background-size: cover;
+	background-position: center;
+	padding-block: var(--wp--preset--spacing--40);
+	padding-inline: var(--wp--preset--spacing--20);
+}
+
+.factory-hero--compacte { padding-block: var(--wp--preset--spacing--30); }
+.factory-hero--pleine   { min-height: 70svh; display: grid; align-items: center; }
+
+.factory-hero__inner {
+	max-width: var(--wp--style--global--wide-size, 1200px);
+	margin-inline: auto;
+}
+
+.factory-hero__titre {
+	font-size: var(--wp--preset--font-size--x-large);
+	margin-block: 0 var(--wp--preset--spacing--10);
+}
+
+.factory-hero__accroche {
+	font-size: var(--wp--preset--font-size--large);
+	max-width: 46ch;
+	margin-block: 0 var(--wp--preset--spacing--20);
+}
+
+.factory-hero__cta:focus-visible {
+	outline: 2px solid var(--wp--preset--color--accent);
+	outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+	.factory-hero__cta { transition: background-color 150ms ease; }
+}

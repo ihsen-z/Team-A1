@@ -1,0 +1,127 @@
+# =============================================================================
+#  REGISTRE DES AGENTS — qui existe, avec quels droits, sur quel modèle
+# =============================================================================
+#  Le chef de projet (skill /kickoff) lit ce fichier pour composer l'équipe
+#  d'un projet. Les champs `can_write` / `cannot` sont la barrière de sécurité :
+#  un rédacteur ne doit jamais pouvoir casser un thème.
+#
+#  Modèles : opus   → jugement, code, sécurité, arbitrage
+#            sonnet → volume (rédaction, extraction, QA de masse)
+#  Ne descends pas un agent en gamme pour économiser sans avoir mesuré : une
+#  passe ratée coûte plus cher qu'une passe à Opus.
+# =============================================================================
+
+version: 1
+
+agents:
+
+  # --- Orchestration -------------------------------------------------------
+  project-manager:
+    role: "Classifie le brief, applique la matrice, compose l'équipe, escalade"
+    model: opus
+    effort: high
+    implementation: "session principale + .claude/skills/kickoff (PAS un subagent)"
+    can_write:
+      - "clients/*/project-plan.yml"
+      - "decisions/*.md"
+    cannot: ["packages/**", "tooling/**", "governance/**"]   # il applique la politique, il ne la réécrit pas
+    requires_human_approval: true          # le plan est validé avant exécution
+
+  # --- Design --------------------------------------------------------------
+  design-tokens:
+    role: "Charte client → theme.json + variations (le design devient donnée)"
+    model: opus
+    effort: medium
+    can_write:
+      - "clients/*/build/theme.json"
+      - "clients/*/build/tokens.json"
+    cannot: ["*.php", "tooling/**", "governance/**"]
+
+  block-composer:
+    role: "Assemble les pages à partir de packages/blocks (aucun bloc inventé)"
+    model: opus
+    effort: medium
+    can_write:
+      - "clients/*/build/pages/**"
+    cannot: ["packages/blocks/**", "governance/**"]
+    constraints:
+      - "N'utilise QUE les blocs listés dans le preset du projet."
+      - "Un besoin sans bloc existant → escalade, pas de HTML inline."
+
+  # --- Contenu -------------------------------------------------------------
+  content-writer:
+    role: "Rédige les pages, meta SEO, schema.org, dans le ton de marque"
+    model: sonnet
+    effort: medium
+    can_write:
+      - "clients/*/content/**/*.yml"
+      - "clients/*/content/**/*.md"
+    cannot: ["*.php", "*.js", "tooling/**", "packages/**"]
+    constraints:
+      - "Pas de chiffre, prix, certification ou témoignage inventé."
+      - "Tout fait non fourni par le client → placeholder [[À VALIDER: ...]]."
+
+  # --- Technique -----------------------------------------------------------
+  woo-specialist:
+    role: "WooCommerce : produits, taxes, livraison, tunnel, paiement"
+    model: opus
+    effort: high
+    can_write:
+      - "packages/woo/**"
+      - "clients/*/build/woo/**"
+    cannot: ["governance/**"]
+
+  wp-security-reviewer:
+    role: "Audit avant mise en ligne : escaping, nonces, capabilities, SQL, upload"
+    model: opus
+    effort: high
+    can_write:
+      - "reports/**"
+    cannot: ["**"]                          # lecture seule sur le code : il signale, il ne corrige pas
+    blocking: true                           # son verdict bloque le déploiement
+
+  # --- Qualité -------------------------------------------------------------
+  qa-visual:
+    role: "Responsive multi-breakpoints, accessibilité, Lighthouse, liens morts"
+    model: sonnet
+    effort: medium
+    tools: [playwright, lighthouse, axe]
+    can_write:
+      - "reports/**"
+      - "clients/*/screenshots/**"
+    cannot: ["packages/**", "tooling/**", "governance/**"]
+
+  # --- Déploiement ---------------------------------------------------------
+  deploy-agent:
+    role: "Staging → production, migration DB, DNS, SSL, sauvegarde préalable"
+    model: opus
+    effort: high
+    can_write:
+      - "clients/*/deploy.log"
+    requires_human_approval: true            # LE SEUL à toucher la prod, jamais sans validation
+    preconditions:
+      - "qa-visual : rapport vert"
+      - "wp-security-reviewer : aucun finding bloquant"
+      - "sauvegarde de la cible effectuée et vérifiée"
+
+  # --- Maintenance (récurrent) --------------------------------------------
+  maintenance-agent:
+    role: "Updates sur staging, regression Playwright, PR si vert, alerte si rouge"
+    model: sonnet
+    effort: medium
+    schedule: "hebdomadaire"
+    can_write:
+      - "reports/maintenance/**"
+    cannot: ["prod"]
+    constraints:
+      - "Jamais d'update appliquée directement en production."
+
+# -----------------------------------------------------------------------------
+#  Invariants du système — ne pas contourner.
+# -----------------------------------------------------------------------------
+invariants:
+  - "Le project-manager est la session principale, pas un subagent : un subagent
+     ne peut pas déléguer de façon fiable."
+  - "Un seul agent a accès à la production (deploy-agent), avec validation humaine."
+  - "wp-security-reviewer est en lecture seule : séparer l'audit de la correction."
+  - "Toute décision de stack est tracée dans decisions/ (ADR)."

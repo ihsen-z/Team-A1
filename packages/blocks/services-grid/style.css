@@ -1,0 +1,35 @@
+/* Bloc factory/services-grid */
+.factory-services { padding-block: var(--wp--preset--spacing--30); }
+
+.factory-services__titre {
+	font-size: var(--wp--preset--font-size--large);
+	margin-block-end: var(--wp--preset--spacing--20);
+}
+
+.factory-services__liste {
+	display: grid;
+	gap: var(--wp--preset--spacing--20);
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	/* Se réorganise sans media query : une colonne sur mobile, sans réglage. */
+	grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr));
+}
+
+.factory-services--cols-2 .factory-services__liste { max-width: 62rem; }
+.factory-services--cols-4 .factory-services__liste {
+	grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr));
+}
+
+.factory-services__item {
+	padding: var(--wp--preset--spacing--20);
+	background: var(--wp--preset--color--neutre-clair);
+	border-radius: 8px;
+}
+
+.factory-services__item-titre {
+	font-size: var(--wp--preset--font-size--medium);
+	margin-block: 0 0.4rem;
+}
+
+.factory-services__item-texte { margin: 0; }

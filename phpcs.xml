@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<ruleset name="Site Factory">
+	<description>Standards de l'atelier : WordPress + compatibilite PHP 8.1+.</description>
+
+	<file>packages</file>
+	<file>tooling/php</file>
+
+	<exclude-pattern>*/vendor/*</exclude-pattern>
+	<exclude-pattern>*/node_modules/*</exclude-pattern>
+	<exclude-pattern>*/clients/*/build/*</exclude-pattern>
+
+	<arg name="extensions" value="php"/>
+	<arg name="colors"/>
+	<arg value="sp"/>
+	<arg name="parallel" value="4"/>
+
+	<rule ref="WordPress">
+		<!-- Les fichiers suivent PSR-4 par dossier de bloc, pas le nommage WP. -->
+		<exclude name="WordPress.Files.FileName"/>
+	</rule>
+
+	<!-- Ces deux-la ne sont jamais des avertissements dans cet atelier. -->
+	<rule ref="WordPress.Security.EscapeOutput">
+		<type>error</type>
+	</rule>
+	<rule ref="WordPress.Security.NonceVerification">
+		<type>error</type>
+	</rule>
+
+	<rule ref="WordPress.WP.I18n">
+		<properties>
+			<property name="text_domain" type="array" value="factory-core"/>
+		</properties>
+	</rule>
+
+	<config name="minimum_wp_version" value="6.5"/>
+	<config name="testVersion" value="8.1-"/>
+	<rule ref="PHPCompatibilityWP"/>
+</ruleset>

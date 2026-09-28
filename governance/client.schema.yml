@@ -1,0 +1,38 @@
+# =============================================================================
+#  SCHÉMA du brief client — contrat entre toi, le PM et les agents
+# =============================================================================
+#  Validé par tooling/lib/validate.sh avant toute exécution.
+#  Un brief invalide arrête le pipeline : mieux vaut échouer ici qu'à l'étape 6.
+# =============================================================================
+
+required:
+  - slug                  # [a-z0-9-]+
+  - nom
+  - type                  # enum: vitrine | business | ecommerce
+  - pages                 # entier > 0
+  - langues               # entier >= 1
+  - budget                # entier EUR
+  - charte.couleurs.primaire
+  - charte.couleurs.fond
+  - charte.couleurs.texte
+  - charte.typos.titres.famille
+  - charte.typos.corps.famille
+  - pages_liste           # liste non vide
+  - ton.registre
+
+enums:
+  type: [vitrine, business, ecommerce]
+  ton.registre: [chaleureux, sobre, premium, technique, ludique]
+  charte.densite: [compacte, confortable, aeree]
+  integrations.analytics: [matomo, ga4, aucun]
+
+# Champs que les agents NE DOIVENT PAS remplir eux-mêmes : ce sont des faits.
+# Absent → placeholder [[À VALIDER: ...]] dans le contenu, jamais d'invention.
+facts_only:
+  - faits.adresse
+  - faits.telephone
+  - faits.email
+  - faits.horaires
+  - faits.annee_creation
+  - faits.specialites
+  - budget

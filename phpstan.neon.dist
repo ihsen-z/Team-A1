@@ -1,0 +1,10 @@
+parameters:
+    level: 6
+    paths:
+        - packages
+        - tooling/php
+    excludePaths:
+        - */vendor/*
+        - clients/*/build/*
+    bootstrapFiles:
+        - tooling/php/phpstan-bootstrap.php

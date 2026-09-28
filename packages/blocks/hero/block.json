@@ -1,0 +1,28 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "factory/hero",
+  "title": "Hero",
+  "category": "design",
+  "icon": "cover-image",
+  "description": "Bandeau d'ouverture : titre, accroche, boutons, image de fond optionnelle.",
+  "textdomain": "factory-core",
+  "supports": {
+    "html": false,
+    "anchor": true,
+    "align": ["wide", "full"],
+    "spacing": { "padding": true, "margin": true },
+    "color": { "background": true, "text": true }
+  },
+  "attributes": {
+    "titre":      { "type": "string", "default": "" },
+    "accroche":   { "type": "string", "default": "" },
+    "ctaTexte":   { "type": "string", "default": "" },
+    "ctaUrl":     { "type": "string", "default": "" },
+    "imageId":    { "type": "number", "default": 0 },
+    "niveau":     { "type": "number", "default": 1 },
+    "hauteur":    { "type": "string", "default": "moyenne", "enum": ["compacte", "moyenne", "pleine"] }
+  },
+  "style": "file:./style.css",
+  "render": "file:./render.php"
+}

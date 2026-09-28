@@ -1,0 +1,68 @@
+# Preset ECOMMERCE — WooCommerce, catalogue <= 300 produits.
+# Au-delà : escalade (voir governance/decision-matrix.yml → ecommerce-catalogue-lourd).
+id: ecommerce
+label: "Boutique WooCommerce"
+stack: wp-classic-woo
+
+plugins:
+  required:
+    - woocommerce
+    - wordpress-seo
+    - wordfence
+    - webp-express
+    - updraftplus
+    - redirection
+    - wp-super-cache
+  optional:
+    - woocommerce-gateway-stripe
+    - woocommerce-services
+  forbidden: [elementor, jetpack]
+
+blocks_allowed:
+  - factory/hero
+  - factory/services-grid
+  - factory/cta-band
+  - woocommerce/product-collection
+  - woocommerce/product-price
+  - woocommerce/add-to-cart-form
+  - core/paragraph
+  - core/heading
+  - core/image
+  - core/buttons
+  - core/columns
+  - core/group
+  - core/table
+  - core/details
+  - core/spacer
+
+page_templates:
+  home:      [factory/hero, woocommerce/product-collection, factory/services-grid, factory/cta-band]
+  boutique:  [core/heading, woocommerce/product-collection]
+  produit:   [woocommerce/product-price, woocommerce/add-to-cart-form, core/details]
+  panier:    []              # templates Woo natifs
+  checkout:  []
+  pratique:  [factory/hero, core/columns]
+  contact:   [factory/hero, core/group]
+  legal:     [core/heading, core/paragraph]
+
+wp_options:
+  blog_public: 1
+  permalink_structure: "/%postname%/"
+  timezone_string: "Europe/Paris"
+  default_comment_status: closed
+  woocommerce_currency: EUR
+  woocommerce_calc_taxes: "yes"
+
+# Obligations légales FR — bloquant avant mise en ligne.
+legal_required:
+  - "CGV"
+  - "Mentions légales"
+  - "Politique de confidentialité"
+  - "Droit de rétractation (14 jours)"
+  - "Bandeau cookies conforme"
+
+quality_gates:
+  lighthouse: { performance: 80, accessibility: 95, seo: 95 }
+  axe_violations_max: 0
+  broken_links_max: 0
+  checkout_e2e: required        # tunnel testé de bout en bout par Playwright

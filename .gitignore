@@ -1,0 +1,29 @@
+# Dépendances
+/vendor/
+/node_modules/
+
+# Secrets — jamais versionnés
+.env
+.env.*
+!.env.example
+clients/*/.env
+
+# Sorties générées : reproductibles depuis client.yml + le socle
+clients/*/build/
+clients/*/screenshots/
+reports/
+
+# Sauvegardes et dumps
+*.sql
+*.sql.gz
+*.tar.gz
+
+# Outils
+.phpunit.result.cache
+.phpcs-cache
+/tooling/qa/test-results/
+/tooling/qa/playwright-report/
+
+# Système
+.DS_Store
+Thumbs.db

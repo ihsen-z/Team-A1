@@ -1,0 +1,158 @@
+# =============================================================================
+#  MATRICE DE DÉCISION — la politique technique de l'atelier
+# =============================================================================
+#  Ce fichier est la SEULE source de vérité pour le choix de la stack.
+#  Aucun agent ne décide librement : il classifie le brief, puis applique ces
+#  règles. Résultat déterministe, auditable, et amélioré par toi seul.
+#
+#  Règle d'or : si aucune règle ne matche → escalade vers l'humain.
+#               Ne jamais improviser une stack.
+#
+#  Évaluation : première règle qui matche gagne (ordre = priorité).
+# =============================================================================
+
+version: 1
+
+# -----------------------------------------------------------------------------
+#  Stacks autorisées. Rien en dehors de cette liste ne part en production.
+# -----------------------------------------------------------------------------
+stacks:
+  wp-classic:
+    label: "WordPress classique + thème bloc custom"
+    adapter: classic          # tooling/adapters/classic.sh
+    theme: theme-core
+    default_hosting: mutualise
+  wp-classic-woo:
+    label: "WordPress classique + WooCommerce"
+    adapter: classic
+    theme: theme-core
+    default_hosting: vps
+  # Activé plus tard — voir decisions/0001. L'adaptateur n'existe pas encore :
+  # toute règle qui pointe ici doit escalader jusqu'à ce que bedrock.sh existe.
+  wp-bedrock:
+    label: "Bedrock + Composer + déploiement Git"
+    adapter: bedrock
+    theme: theme-core
+    default_hosting: vps
+    enabled: false
+
+# -----------------------------------------------------------------------------
+#  Règles. `when` = conditions sur le client.yml classifié.
+#  Opérateurs supportés : valeur exacte, "<=N", ">=N", "<N", ">N", liste (OU).
+# -----------------------------------------------------------------------------
+rules:
+
+  - id: vitrine-simple
+    when:
+      type: vitrine
+      pages: "<=8"
+      langues: 1
+      ecommerce: false
+    then:
+      stack: wp-classic
+      preset: vitrine
+      hosting: mutualise
+      team: [design-tokens, content-writer, block-composer, qa-visual]
+
+  - id: vitrine-multilingue
+    when:
+      type: vitrine
+      pages: "<=12"
+      langues: ">=2"
+    then:
+      stack: wp-classic
+      preset: vitrine
+      hosting: mutualise
+      extra_plugins: [polylang]
+      team: [design-tokens, content-writer, block-composer, qa-visual]
+
+  - id: business-standard
+    when:
+      type: business
+      pages: "<=20"
+      ecommerce: false
+    then:
+      stack: wp-classic
+      preset: business
+      hosting: mutualise
+      team: [design-tokens, content-writer, block-composer, qa-visual, wp-security-reviewer]
+
+  - id: business-reservation
+    when:
+      type: business
+      besoins: [reservation, prise-de-rdv]
+    then:
+      stack: wp-classic
+      preset: business
+      hosting: vps
+      extra_plugins: [amelia-lite]
+      team: [design-tokens, content-writer, block-composer, qa-visual, wp-security-reviewer]
+      notes: "Vérifier RGPD sur les données de réservation."
+
+  - id: ecommerce-standard
+    when:
+      type: ecommerce
+      produits: "<=300"
+      marketplace: false
+    then:
+      stack: wp-classic-woo
+      preset: ecommerce
+      hosting: vps
+      team: [design-tokens, content-writer, block-composer, woo-specialist, qa-visual, wp-security-reviewer]
+
+  # ---------------------------------------------------------------------------
+  #  Règles d'escalade explicites : le PM s'arrête et te demande un arbitrage.
+  #  Elles existent pour NOMMER le cas, pas pour le résoudre automatiquement.
+  # ---------------------------------------------------------------------------
+
+  - id: ecommerce-catalogue-lourd
+    when:
+      type: ecommerce
+      produits: ">300"
+    then:
+      escalate: true
+      reason: >
+        Catalogue important : arbitrage perf/indexation/hébergement nécessaire
+        (cache objet, recherche, import produits, CDN). Décision humaine.
+
+  - id: besoins-hors-perimetre
+    when:
+      besoins: [marketplace, multivendeur, erp, crm-sur-mesure, app-mobile, temps-reel, sso]
+    then:
+      escalate: true
+      reason: >
+        Besoin hors du périmètre de l'usine à sites. Évaluer si le projet est
+        rentable, sous-traité, ou refusé.
+
+# -----------------------------------------------------------------------------
+#  Conditions d'escalade globales — vérifiées AVANT les règles.
+# -----------------------------------------------------------------------------
+escalate_when:
+  - id: no-rule-match
+    check: "aucune règle ne matche le brief"
+  - id: low-confidence
+    check: "confiance de classification < 0.75"
+  - id: stack-disabled
+    check: "la règle pointe vers une stack dont enabled = false"
+  - id: below-margin
+    check: "budget < seuil_rentabilite du type de site"
+  - id: client-imposed-tech
+    check: "le client impose une techno absente de `stacks`"
+  - id: legal-sensitive
+    check: "données de santé, paiement custom, ou contrainte réglementaire spécifique"
+
+# -----------------------------------------------------------------------------
+#  Seuils économiques (EUR). À ajuster — ce sont TES chiffres.
+# -----------------------------------------------------------------------------
+seuils_rentabilite:
+  vitrine: 1200
+  business: 2500
+  ecommerce: 4500
+
+# -----------------------------------------------------------------------------
+#  Plafonds par projet. Un orchestrateur autonome sans plafond peut dériver.
+# -----------------------------------------------------------------------------
+budgets:
+  vitrine:   { tokens_max: 800000,  alert_at: 0.8 }
+  business:  { tokens_max: 1500000, alert_at: 0.8 }
+  ecommerce: { tokens_max: 3000000, alert_at: 0.8 }

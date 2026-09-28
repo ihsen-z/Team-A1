@@ -1,0 +1,52 @@
+# Preset BUSINESS — PME, 10-20 pages, génération de leads.
+id: business
+label: "Site business / PME"
+stack: wp-classic
+
+plugins:
+  required:
+    - wordpress-seo
+    - wp-super-cache
+    - wordfence
+    - contact-form-7
+    - webp-express
+    - updraftplus
+    - redirection
+  optional:
+    - polylang                 # si langues >= 2
+  forbidden: [elementor, woocommerce, jetpack]
+
+blocks_allowed:
+  - factory/hero
+  - factory/services-grid
+  - factory/cta-band
+  - core/paragraph
+  - core/heading
+  - core/image
+  - core/list
+  - core/buttons
+  - core/columns
+  - core/group
+  - core/table
+  - core/details
+  - core/spacer
+
+page_templates:
+  home:      [factory/hero, factory/services-grid, core/group, factory/cta-band]
+  service:   [factory/hero, core/columns, core/details, factory/cta-band]
+  equipe:    [factory/hero, core/columns]
+  references: [factory/hero, core/columns, factory/cta-band]
+  pratique:  [factory/hero, core/columns]
+  contact:   [factory/hero, core/group]
+  legal:     [core/heading, core/paragraph]
+
+wp_options:
+  blog_public: 1
+  permalink_structure: "/%postname%/"
+  timezone_string: "Europe/Paris"
+  default_comment_status: closed
+
+quality_gates:
+  lighthouse: { performance: 88, accessibility: 95, seo: 95 }
+  axe_violations_max: 0
+  broken_links_max: 0
