@@ -1,0 +1,31 @@
+# Normalisation des fins de ligne.
+#
+# Sans ce fichier, Git for Windows (core.autocrlf=true par défaut) convertit
+# les scripts en CRLF au clone, et bash échoue avec « $'\r': command not found ».
+# Les fichiers ci-dessous doivent rester en LF sur toutes les plateformes.
+
+* text=auto eol=lf
+
+*.sh      text eol=lf
+*.py      text eol=lf
+*.php     text eol=lf
+*.json    text eol=lf
+*.yml     text eol=lf
+*.yaml    text eol=lf
+*.md      text eol=lf
+*.css     text eol=lf
+*.xml     text eol=lf
+*.neon    text eol=lf
+.env.example text eol=lf
+
+# Binaires : jamais touchés.
+*.png     binary
+*.jpg     binary
+*.jpeg    binary
+*.gif     binary
+*.webp    binary
+*.svg     text eol=lf
+*.woff    binary
+*.woff2   binary
+*.zip     binary
+*.gz      binary
