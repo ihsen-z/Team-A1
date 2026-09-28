@@ -3,7 +3,43 @@
 Issu de l'analyse des sites existants (`imports/`). Ce fichier est la source
 de vérité de ce qui reste à écrire dans `packages/blocks/`.
 
-> État : evasions analysé · famma en cours.
+> État : evasions et famma analysés.
+
+---
+
+## Ce que les deux sites ont en commun
+
+C'est le critère de priorité : un composant présent dans **les deux** thèmes
+est déjà prouvé réutilisable. Il passe avant tout le reste.
+
+| Besoin | evasions | famma | Bloc |
+|---|---|---|---|
+| Barre de promesses | `topbar.php` | `header-parts.php` + `shop.php` | `factory/promise-bar` |
+| Réassurance | `benefits.php`, `why.php` | `famma_child_reassurance_items()` | `factory/arguments-band` |
+| Newsletter | `community.php` | `home-social.php` | `factory/newsletter-panel` |
+| Découpe d'un document légal | `evasions_split_by_heading()` | `famma_child_document_sections()` | `factory/doc-sections` |
+| Tuiles de catégories | `universes.php` | carrousel de rayons | `factory/taxonomy-tiles` |
+| Carte produit | `product-card.php` ×3 | `inc/shop.php` | `factory/product-card` |
+| Registre d'icônes | `inc/icons.php` | `inc/icons.php` + allowlist SVG | service de socle |
+| WhatsApp | `Evasions\Core\WhatsApp` | `Famma\Core\WhatsApp` | service optionnel |
+
+Les deux sites ont **résolu les mêmes problèmes séparément**. Aucun n'a copié
+l'autre : c'est la définition d'un besoin générique.
+
+---
+
+## La convention d'atelier existe déjà
+
+Les deux thèmes appliquent, chacun dans son coin, la règle que le socle
+formalise : **rien n'est inventé, une donnée absente supprime le bloc plutôt
+que d'afficher un exemple.** famma la cite explicitement (« §58, §60 »).
+
+Les deux séparent aussi la copie commerciale du thème, dans un plugin
+compagnon (`evasions-core`, `famma-core`, tous deux en 0.2.0), avec accès
+gardé par `class_exists()` et repli silencieux.
+
+C'est le modèle le plus directement transposable — et la principale dépendance
+qui empêche de reprendre les composants tels quels.
 
 ---
 
@@ -35,6 +71,60 @@ composants qui n'étaient distincts que par accident.
 - `banner.php` est `product-cta.php` amputé : même structure, mais l'URL du
   bouton y est codée en dur au lieu d'être éditable.
 
+### Apports propres à famma (e-commerce)
+
+| Composant | Fichier | Valeur | Forme cible |
+|---|---|---|---|
+| Tunnel d'achat (fil d'Ariane, stepper, réassurance) | `inc/tunnel.php` | ⭐⭐⭐⭐⭐ | Bloc + réglage partagé |
+| Checkout en cartes numérotées + aside récap | `inc/checkout-layout.php` | ⭐⭐⭐⭐⭐ | Module PHP, pas un bloc |
+| Colonne de filtres (5 widgets) | `inc/shop-widgets.php` | ⭐⭐⭐⭐ | Module e-commerce |
+| États vides (catalogue, filtres, panier) | `no-products-found.php` | ⭐⭐⭐⭐ | `factory/empty-state` |
+| Onglets produit (specs / FAQ / livraison) | `inc/product.php` | ⭐⭐⭐⭐ | Module + bloc FAQ |
+| Sélecteur de quantité − / + | `product-quantity.js` | ⭐⭐⭐ | Module e-commerce |
+
+Le checkout et le tunnel sont à 100 % WooCommerce, sans aucune adhérence à
+Kadence : c'est le plus gros gain immédiat sur le prochain client marchand.
+
+---
+
+## La leçon sur `theme.json`
+
+famma possède un `theme.json`, mais **il n'est pas la source de vérité** :
+toutes ses valeurs sont des indirections `var(--…)` vers un `tokens.css` de
+314 lignes écrit à la main et vers les variables de Kadence. Conséquences
+observées :
+
+- l'éditeur affiche des pastilles vides ou noires (aucun `add_editor_style()`
+  sur le fichier de jetons) ;
+- 15 entrées `theme-paletteN` sont un artefact Kadence pur, sans aucun sens
+  dans un thème maison ;
+- 60+ jetons réels (`--famma-surface-*`, élévations, durées, z-index, rayons)
+  sont invisibles de `theme.json`.
+
+**Le socle fait déjà l'inverse, et c'est le bon sens** : `render-theme-json.php`
+écrit des valeurs littérales dans `theme.json`, et le CSS ne référence que des
+`var(--wp--preset--*)`. Rien à changer — mais il faut ajouter
+`add_editor_style()` pour que l'éditeur voie la même chose que le front.
+
+### Ce que `tokens.css` fait mieux que le socle
+
+Chaque couleur y porte **son ratio de contraste mesuré et son usage autorisé
+en commentaire** :
+
+```css
+--famma-orange: #FF7A00;     /* SURFACE uniquement — fond de CTA, badges */
+--famma-orange-700: #B85300; /* TEXTE sur fond clair · 4,91:1 */
+```
+
+Cinq jetons y sont documentés comme **non conformes AA sur décision client
+explicite et datée** (le plus bas à 2,58:1). Le `CLAUDE.md` du socle vise AA
+sans exception.
+
+**Décision retenue** : le générateur doit *refuser* de produire un jeton marqué
+« texte » sous 4,5:1, et exiger une dérogation explicite, datée et signée dans
+le brief client pour passer outre — plutôt que de documenter l'écart après
+coup. La pratique de famma est bonne ; il lui manque d'être bloquante.
+
 ---
 
 ## À remonter dans `packages/theme-core`
@@ -51,6 +141,10 @@ existants et qui n'ont rien à faire dupliqués par client.
 | Libellés en attributs `data-` | `evasions_readmore_attrs()` | Le JS n'a pas de canal de traduction ; faire voyager les libellés en `data-` est le bon contournement. |
 | Étoiles de notation | `evasions_stars()` + `--ev-rating` | Remplissage en pourcentage, sans image ni police d'icônes. Utilisé par trois composants. |
 | Panneau de filtres ouvert par `:target` | `#ev-filters` | Fonctionne sans JavaScript. À documenter. |
+| Garde-fous éditoriaux | `famma/inc/editorial-guards.php` | Retire les notes `famma-todo` du rendu et les rappelle à l'admin. C'est le pendant runtime du `[[À VALIDER]]`. À écrire via `render_block`, pas en regex. |
+| Allowlist SVG pour `wp_kses` | `famma_child_svg_allowed_html()` | Permet aux blocs de rendre du SVG sans `phpcs:ignore`. |
+| Enqueue avec `filemtime()` + garde `file_exists()` | `famma/inc/assets.php` | Convention de cache-busting, systématique. |
+| Réassurance à source unique | `famma_child_reassurance_items()` | « Trois listes écrites à la main finiraient par promettre trois choses différentes. » |
 
 ---
 
@@ -92,6 +186,37 @@ pas ici :
    taxonomie correspond.
 4. `product-card-compact.php` écrase `$GLOBALS['post']` puis le restaure —
    correct, sauf si une exception survient entre les deux.
+
+### famma — à corriger sur le site en production
+
+Vérifiés dans le code, par gravité décroissante. Aucun n'est une faille
+exploitable, mais les deux premiers méritent une correction.
+
+1. **Formulaire de retours sans nonce** — `page-retours.php:220-277`. Un
+   `<form method="post">` public sans `wp_nonce_field()`. Le traitement est
+   dans `famma-core`, absent du dépôt : impossible de vérifier d'ici si un
+   nonce y est contrôlé. Contraire à la règle « nonce **et** capability ».
+   **À auditer côté plugin.**
+2. **Sortie non échappée déléguée au plugin** — `inc/product-video.php:75`,
+   `echo $player`. Le commentaire affirme que la source échappe ; non
+   vérifiable depuis le thème. Le socle imposera un `wp_kses()` avec allowlist
+   `video`/`iframe` au point d'émission, plutôt qu'une confiance contractuelle.
+3. **Option lue depuis un nom de constante** — `inc/footer-parts.php:29`,
+   `get_option( strtolower( $key ) )` sans `sanitize_key()` ni liste blanche.
+   Tous les appelants actuels passent des littéraux : non exploitable en
+   l'état, mais la fonction est publique.
+4. **Paramètres de filtre en tableau** — `inc/shop-widgets.php:147` et `:538`,
+   `array_map( 'sanitize_text_field', wp_unslash( (array) $_GET ) )`.
+   **Ce n'est PAS une erreur fatale** : `sanitize_text_field()` n'a pas de
+   déclaration de type, donc une URL `?product_cat[]=a&product_cat[]=b`
+   produit au pire la chaîne `"Array"` et un avertissement. Vérifié sur
+   PHP 8.4. Le filtre devient silencieusement incohérent, sans planter.
+   `map_deep()` règle le cas proprement.
+5. **Substitutions `preg_replace` sur le HTML de WooCommerce** — trois
+   endroits. Fragile face à un changement de balisage, mais échec silencieux,
+   pas une faille.
+6. **Pas de `.pot`** dans `languages/` : aucune extraction documentée pour
+   les nouvelles chaînes.
 
 ---
 
