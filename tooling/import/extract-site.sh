@@ -27,7 +27,26 @@ content=""
 for candidate in "$src/wp-content" "$src/public_html/wp-content" "$src"; do
   [[ -d "$candidate/themes" ]] && { content="$candidate"; break; }
 done
-[[ -n "$content" ]] || die "wp-content/themes introuvable sous $src — est-ce bien un site WordPress ?"
+if [[ -z "$content" ]]; then
+  warn "wp-content/themes introuvable sous : $src"
+  cat >&2 <<'AIDE'
+
+Deux causes habituelles :
+
+  1. Tu as visé trop profond. Passe la RACINE du site (le dossier qui contient
+     wp-content), pas un thème :
+       ✗ .../wp-content/themes/mon-theme
+       ✓ .../app/public
+
+  2. Chemin Windows avec des antislashs. Dans Git Bash, utilise des slashs et
+     le préfixe /c/ :
+       ✗ "C:\Users\DELL\Local Sites\famma\app\public"
+       ✓ "/c/Users/DELL/Local Sites/famma/app/public"
+     Les guillemets sont nécessaires si le chemin contient un espace.
+
+AIDE
+  exit 1
+fi
 
 step "Extraction de « $slug » depuis $content"
 rm -rf "$out"; mkdir -p "$out"/{themes,patterns,notes}
@@ -160,5 +179,5 @@ Avant de committer, vérifie toi-même :
   grep -ril 'password\|secret\|api_key' $out/
 
 Puis :
-  git add imports/$slug && git commit -m "Import : $slug pour extraction de blocs"
+  git add -f imports/$slug && git commit -m "Import : $slug pour extraction de blocs"
 TXT
