@@ -1,0 +1,620 @@
+/*
+ * EVASIONS — panier et checkout (maquettes « Panier » et « Checkout »).
+ *
+ * Chargé sur ces deux pages uniquement (voir inc/cart-checkout.php). Mobile
+ * d'abord, rupture à 900 px comme le reste du thème.
+ *
+ * Deux astuces de mise en page à connaître :
+ *  - le tableau du panier devient une liste de cartes : chaque <tr> est une
+ *    grille, chaque <td> une zone nommée ;
+ *  - le récapitulatif du checkout est un frère de <form>, dans #order_review.
+ *    `display: contents` sur ce conteneur remonte ses enfants (tableau,
+ *    paiement) au niveau de la grille du formulaire, où ils se placent chacun
+ *    dans leur colonne. WooCommerce rafraîchit #order_review en AJAX : ses
+ *    enfants changent, le conteneur reste, la mise en page tient.
+ */
+
+/* ── Bandeau de page ────────────────────────────────────────────────────── */
+.ev-page-banner {
+	position: relative;
+	display: flex;
+	align-items: center;
+	height: 150px;
+	overflow: hidden;
+	background: var(--ev-deep);
+	color: var(--ev-white);
+}
+.ev-page-banner__img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.ev-page-banner__shade { position: absolute; inset: 0; background: linear-gradient(90deg, rgba(14, 32, 28, .72), rgba(14, 32, 28, .25)); }
+.ev-page-banner__copy { position: relative; }
+.ev-page-banner h1 { font: 800 26px/1.15 var(--ev-font-head); letter-spacing: -.02em; color: var(--ev-white); }
+.ev-page-banner p { margin: 4px 0 0; font-size: 13px; color: var(--ev-forest-edge); }
+
+@media (min-width: 900px) {
+	.ev-page-banner { height: 190px; }
+	.ev-page-banner__shade { background: linear-gradient(90deg, rgba(14, 32, 28, .72) 0%, rgba(14, 32, 28, .2) 70%); }
+	.ev-page-banner__copy { padding-inline: 8px; }
+	.ev-page-banner h1 { font-size: 38px; }
+	.ev-page-banner p { margin-top: 6px; font-size: 16px; }
+}
+
+.ev-content--flow { padding-block: 18px 32px; }
+.ev-content--flow .ev-prose { max-width: none; }
+.ev-content--flow .ev-prose > * + * { margin-top: 0; }
+@media (min-width: 900px) { .ev-content--flow { padding-block: 32px 56px; } }
+
+/* ── Grille commune : contenu à gauche, récapitulatif à droite ──────────── */
+.ev-content--flow .woocommerce { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; align-items: start; }
+.ev-content--flow .woocommerce > .woocommerce-notices-wrapper { grid-column: 1 / -1; }
+.ev-content--flow .woocommerce > .woocommerce-notices-wrapper:empty { display: none; }
+
+@media (min-width: 900px) {
+	.ev-content--flow .woocommerce { grid-template-columns: minmax(0, 1fr) 400px; column-gap: 32px; row-gap: 20px; }
+}
+
+/* Sur le panier lui-même, « Voir le panier » dans la notice d'ajout n'a pas d'objet. */
+.woocommerce-cart .woocommerce-message .wc-forward { display: none; }
+
+/* ── Panier : liste ─────────────────────────────────────────────────────── */
+.ev-cart-title { margin: 0 0 12px; font: 700 15px/1 var(--ev-font-head); }
+
+.woocommerce-cart-form { grid-column: 1; }
+.woocommerce-cart-form table.cart { display: block; width: 100%; border: 0; }
+.woocommerce-cart-form table.cart thead { display: none; }
+.woocommerce-cart-form table.cart tbody { display: flex; flex-direction: column; gap: 12px; }
+.woocommerce-cart-form table.cart td { display: block; padding: 0; border: 0; text-align: start; }
+.woocommerce-cart-form table.cart td::before { content: none; }
+
+.woocommerce-cart-form tr.cart_item {
+	display: grid;
+	grid-template-columns: 78px minmax(0, 1fr) auto;
+	grid-template-areas:
+		'thumb name name'
+		'thumb price price'
+		'thumb qty remove';
+	gap: 6px 12px;
+	padding: 12px;
+	background: var(--ev-white);
+	border: 1px solid var(--ev-line);
+	border-radius: 16px;
+}
+.woocommerce-cart-form td.product-thumbnail { grid-area: thumb; }
+.woocommerce-cart-form td.product-thumbnail img { width: 78px; height: 78px; border-radius: 12px; object-fit: cover; }
+.woocommerce-cart-form td.product-name { grid-area: name; display: flex; flex-direction: column; gap: 6px; align-items: flex-start; font-size: 14px; font-weight: 500; line-height: 1.35; }
+.woocommerce-cart-form td.product-name a { display: inline-block; padding-block: 2px; color: var(--ev-ink); }
+.woocommerce-cart-form td.product-name dl.variation { margin: 0; font-size: 11px; color: var(--ev-slate); }
+.woocommerce-cart-form td.product-name dl.variation dt,
+.woocommerce-cart-form td.product-name dl.variation dd { display: inline; margin: 0; }
+.woocommerce-cart-form table.cart td.product-price { display: none; }   /* le prix de la ligne (sous-total) suffit, comme dans la maquette */
+.woocommerce-cart-form td.product-subtotal { grid-area: price; font: 700 15px/1 var(--ev-font-head); }
+.woocommerce-cart-form td.product-quantity { grid-area: qty; }
+.woocommerce-cart-form td.product-remove { grid-area: remove; align-self: end; justify-self: end; }
+
+.woocommerce-cart-form .quantity { display: flex; align-items: center; height: 36px; border: 1px solid var(--ev-line-2); border-radius: 10px; background: var(--ev-white); overflow: hidden; }
+.woocommerce-cart-form .quantity .ev-qty__btn { width: 32px; height: 100%; border: 0; background: none; color: var(--ev-ink-80); font-size: 16px; cursor: pointer; }
+.woocommerce-cart-form .quantity .ev-qty__btn:hover { background: var(--ev-chip); }
+.woocommerce-cart-form .quantity input.qty { width: 34px; min-height: 0; height: 100%; padding: 0; border: 0; background: none; font: 600 16px/1 var(--ev-font-head); text-align: center; -moz-appearance: textfield; appearance: textfield; }
+.woocommerce-cart-form .quantity input.qty::-webkit-outer-spin-button,
+.woocommerce-cart-form .quantity input.qty::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+
+/* Suppression : pictogramme corbeille à la place du « × ». */
+.woocommerce-cart-form a.remove {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 32px;
+	height: 32px;
+	border-radius: 8px;
+	color: transparent;
+	font-size: 0;
+	background: var(--ev-slate-2);
+	-webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 7h16M9 7V4.5h6V7M6.5 7l1 13h9l1-13M10 11v6M14 11v6'/%3E%3C/svg%3E") center / 20px no-repeat;
+	mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 7h16M9 7V4.5h6V7M6.5 7l1 13h9l1-13M10 11v6M14 11v6'/%3E%3C/svg%3E") center / 20px no-repeat;
+}
+.woocommerce-cart-form a.remove:hover { background: var(--ev-brick); }
+
+/* Ligne d'actions : code promo, mise à jour. */
+.woocommerce-cart-form td.actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; padding: 4px 0 0; }
+.woocommerce-cart-form .coupon { display: flex; flex: 1; gap: 8px; min-width: 240px; }
+.woocommerce-cart-form .coupon input#coupon_code { min-height: 42px; }
+.woocommerce-cart-form .coupon .button { flex: none; background: none; color: var(--ev-forest); border: 1.5px solid var(--ev-forest); }
+.woocommerce-cart-form .coupon .button:hover { background: var(--ev-forest); color: var(--ev-cream); }
+/* Avec JavaScript, la quantité met le panier à jour toute seule : le bouton n'a plus d'objet. */
+.woocommerce-js .woocommerce-cart-form button[name='update_cart'] { display: none; }
+
+@media (min-width: 900px) {
+	.ev-cart-title { margin-bottom: 0; font-size: 19px; }
+
+	/* Le formulaire est la grande carte blanche qui contient le titre et les lignes. */
+	.woocommerce-cart-form { padding: 24px; background: var(--ev-white); border: 1px solid var(--ev-line); border-radius: 18px; }
+	.woocommerce-cart-form table.cart { margin-top: 18px; }
+	.woocommerce-cart-form table.cart tbody { gap: 0; }
+
+	.woocommerce-cart-form tr.cart_item {
+		grid-template-columns: 96px minmax(0, 1fr) auto 130px auto;
+		grid-template-areas: 'thumb name qty price remove';
+		align-items: center;
+		gap: 18px;
+		padding: 18px 0;
+		background: none;
+		border: 0;
+		border-top: 1px solid var(--ev-line-3);
+		border-radius: 0;
+	}
+	.woocommerce-cart-form td.product-thumbnail img { width: 96px; height: 96px; border-radius: 14px; }
+	.woocommerce-cart-form td.product-name { gap: 6px; font-size: 16px; }
+	.woocommerce-cart-form td.product-subtotal { font-size: 17px; text-align: end; }
+	.woocommerce-cart-form td.product-remove { align-self: center; }
+
+	.woocommerce-cart-form .quantity { height: 44px; border-radius: 12px; }
+	.woocommerce-cart-form .quantity .ev-qty__btn { width: 38px; }
+	.woocommerce-cart-form .quantity input.qty { width: 36px; font-size: 16px; }
+
+	.woocommerce-cart-form td.actions { border-top: 1px solid var(--ev-line-3); padding-top: 18px; }
+}
+
+/* ── Panier : récapitulatif ─────────────────────────────────────────────── */
+.cart-collaterals { grid-column: 1; }
+.cart_totals { display: flex; flex-direction: column; gap: 10px; padding: 16px; background: var(--ev-white); border: 1px solid var(--ev-line); border-radius: 16px; }
+.cart_totals > h2 { font: 700 17px/1 var(--ev-font-head); }
+.cart_totals table.shop_table { display: block; }
+.cart_totals table.shop_table tbody { display: flex; flex-direction: column; gap: 10px; }
+.cart_totals table.shop_table tr { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+.cart_totals table.shop_table th,
+.cart_totals table.shop_table td { display: block; padding: 0; border: 0; font-size: 14px; font-weight: 400; color: var(--ev-ink-80); text-align: start; }
+.cart_totals table.shop_table td { text-align: end; }
+.cart_totals table.shop_table td::before { content: none; }
+.cart_totals .order-total { padding-top: 10px; border-top: 1px solid var(--ev-line-3); }
+.cart_totals .order-total th { font: 700 17px/1 var(--ev-font-head); color: var(--ev-ink); }
+.cart_totals .order-total td strong { font: 800 20px/1 var(--ev-font-head); color: var(--ev-ink); }
+
+/* Livraison : le forfait suffit, la Tunisie est l'unique destination. */
+.cart_totals .woocommerce-shipping-methods { margin: 0; padding: 0; list-style: none; }
+.cart_totals .woocommerce-shipping-methods input[type='radio'] { display: none; }
+.cart_totals .woocommerce-shipping-destination,
+.cart_totals .shipping-calculator-button,
+.cart_totals .woocommerce-shipping-calculator { display: none; }
+
+.wc-proceed-to-checkout { display: none; }
+.woocommerce .wc-proceed-to-checkout a.checkout-button.button {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	min-height: 52px;
+	border-radius: 14px;
+	background: var(--ev-forest);
+	color: var(--ev-cream);
+	font: 700 16px/1 var(--ev-font-head);
+}
+.woocommerce .wc-proceed-to-checkout a.checkout-button.button:hover { background: var(--ev-deep); color: var(--ev-cream); }
+
+.ev-cart-note { margin: 0; text-align: center; font-size: 13px; color: var(--ev-ink-60); }
+
+.ev-cart-benefits { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding-top: 12px; border-top: 1px solid var(--ev-line-3); }
+.ev-cart-benefits li { display: flex; align-items: center; gap: 10px; font-size: 12px; line-height: 1.35; color: var(--ev-ink-80); }
+.ev-cart-benefits strong { display: block; font: 600 12px/1.3 var(--ev-font-head); color: var(--ev-ink); }
+.ev-cart-benefits__icon { display: flex; align-items: center; justify-content: center; flex: none; width: 26px; height: 26px; border: 1.5px solid var(--ev-forest); border-radius: 7px; color: var(--ev-forest); }
+.ev-cart-benefits__icon .ev-icon { width: 14px; height: 14px; }
+
+/* Barre d'achat fixe (mobile). */
+.ev-cart-bar {
+	position: fixed;
+	inset-inline: 0;
+	bottom: 0;
+	z-index: 30;
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	padding: 12px var(--ev-gutter);
+	background: var(--ev-white);
+	border-top: 1px solid var(--ev-line);
+}
+.ev-cart-bar > div { display: flex; flex-direction: column; }
+.ev-cart-bar > div > span:first-child { font-size: 11px; color: var(--ev-ink-60); }
+.ev-cart-bar strong { font: 800 18px/1.2 var(--ev-font-head); }
+.ev-cart-bar .ev-btn { flex: 1; min-height: 48px; }
+.woocommerce-cart .ev-main { padding-bottom: 84px; }
+/*
+ * La barre d'achat n'est pas seule en bas de l'écran : le bouton WhatsApp
+ * du plugin y flotte aussi, et couvrait le quart droit de « Passer la
+ * commande » (audit UX-13). Le thème est le seul à connaître la hauteur de
+ * son propre mobilier : il la déclare, le plugin la lit (--ev-float-gap).
+ * Même valeur que la réserve ci-dessus, pour qu'elles bougent ensemble.
+ */
+.woocommerce-cart { --ev-float-gap: 84px; }
+
+@media (min-width: 900px) {
+	.cart-collaterals { grid-column: 2; grid-row: 2; position: sticky; top: 20px; }
+	.woocommerce-cart-form { grid-row: 2; }
+	.cart_totals { gap: 14px; padding: 24px; border-radius: 18px; }
+	.cart_totals > h2 { font-size: 19px; }
+	.cart_totals table.shop_table tbody { gap: 14px; }
+	.cart_totals table.shop_table th,
+	.cart_totals table.shop_table td { font-size: 15px; }
+	.cart_totals .order-total { padding-top: 14px; }
+	.cart_totals .order-total th { font-size: 20px; }
+	.cart_totals .order-total td strong { font-size: 24px; }
+	.wc-proceed-to-checkout { display: block; margin-top: 4px; }
+	.ev-cart-benefits { grid-template-columns: 1fr; gap: 16px; padding-top: 18px; }
+	.ev-cart-benefits li { align-items: flex-start; font-size: 13px; }
+	.ev-cart-benefits strong { display: inline; font-size: 14px; }
+	.ev-cart-bar { display: none; }
+	.woocommerce-cart .ev-main { padding-bottom: 0; }
+	/* Plus de barre, plus de réserve : le bouton revient à sa place. */
+	.woocommerce-cart { --ev-float-gap: 0px; }
+}
+
+/* ── Panier : ventes croisées ───────────────────────────────────────────── */
+.ev-cross { grid-column: 1; }
+.ev-cross h2 { margin-bottom: 14px; font: 700 19px/1.2 var(--ev-font-head); }
+.ev-grid--cross { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.ev-cross .ev-card__media { aspect-ratio: 4 / 3; }
+@media (min-width: 900px) {
+	.ev-cross { grid-row: 3; }
+	.ev-cross h2 { font-size: 24px; }
+	.ev-grid--cross { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+}
+
+/* ── Checkout : grille ──────────────────────────────────────────────────── */
+form.woocommerce-checkout { grid-column: 1 / -1; display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; align-items: start; }
+.woocommerce-form-coupon-toggle { grid-column: 1 / -1; }
+form.checkout_coupon { grid-column: 1 / -1; }
+#order_review { display: contents; }
+#order_review_heading { display: none; }
+
+#customer_details { display: flex; flex-direction: column; gap: 16px; }
+#customer_details .col-1,
+#customer_details .col-2 { float: none; width: auto; }
+#customer_details .col-1 { display: flex; flex-direction: column; gap: 16px; }
+.woocommerce-billing-fields { display: contents; }
+.woocommerce-billing-fields > h3 { display: none; }
+.woocommerce-billing-fields__field-wrapper { display: flex; flex-direction: column; gap: 16px; }
+
+/* Livraison à une autre adresse : la maquette n'a qu'une adresse (celle de la commande). */
+#ship-to-different-address,
+.woocommerce-shipping-fields { display: none; }
+
+@media (min-width: 900px) {
+	form.woocommerce-checkout { grid-template-columns: minmax(0, 1fr) 400px; column-gap: 32px; row-gap: 0; }
+	#customer_details { grid-column: 1; grid-row: 1; gap: 20px; }
+	.woocommerce-checkout-review-order-table { grid-column: 2; grid-row: 1 / span 3; }
+	.ev-co-pay-head { grid-column: 1; grid-row: 2; margin-top: 20px; }
+	#payment { grid-column: 1; grid-row: 3; }
+	.ev-co-help { grid-column: 2; grid-row: 4; margin-top: 18px; }
+}
+
+/* ── Checkout : cartes de saisie ────────────────────────────────────────── */
+.ev-co-card,
+.woocommerce-additional-fields {
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+	padding: 18px;
+	background: var(--ev-white);
+	border: 1px solid var(--ev-line);
+	border-radius: 16px;
+}
+.ev-co-card__head h2 { font: 700 19px/1.2 var(--ev-font-head); }
+.ev-co-card__head p { margin: 5px 0 0; font-size: 14px; color: var(--ev-ink-60); }
+.ev-co-card__fields { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; }
+.woocommerce-additional-fields h3 { display: none; }
+.woocommerce-additional-fields__field-wrapper { display: block; }
+
+.ev-co-card__fields .form-row,
+.woocommerce-additional-fields .form-row { display: flex; flex-direction: column; gap: 7px; float: none; width: auto; margin: 0; padding: 0; }
+.ev-co-card__fields label,
+.woocommerce-additional-fields label { font: 600 13px/1.3 var(--ev-font-head); color: var(--ev-ink-80); }
+.ev-co-card__fields .optional,
+.woocommerce-additional-fields .optional { display: none; }   /* les libellés disent déjà « facultatif » : le mot anglais de WooCommerce fait doublon */
+.ev-co-card__fields .woocommerce-input-wrapper,
+.woocommerce-additional-fields .woocommerce-input-wrapper { display: block; }
+
+.ev-co-card__fields input.input-text,
+.ev-co-card__fields select,
+.woocommerce-additional-fields textarea {
+	width: 100%;
+	min-height: 50px;
+	padding: 0 16px;
+	border: 1px solid var(--ev-line-2);
+	border-radius: 12px;
+	background: var(--ev-cream);
+	color: var(--ev-ink);
+	font: 400 16px/1.4 var(--ev-font-body);   /* 16 px : en dessous, iOS zoome au focus et décale la page */
+}
+.woocommerce-additional-fields textarea { padding: 14px 16px; min-height: 96px; resize: vertical; }
+.ev-co-card__fields select {
+	appearance: none;
+	-webkit-appearance: none;
+	padding-inline-end: 40px;
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%235D6664' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+	background-repeat: no-repeat;
+	background-position: right 14px center;
+	background-size: 18px;
+}
+.ev-co-card__fields input::placeholder,
+.woocommerce-additional-fields textarea::placeholder { color: var(--ev-slate-3); }
+.ev-co-card__fields .woocommerce-invalid input,
+.ev-co-card__fields .woocommerce-invalid select { border-color: var(--ev-brick); }
+
+/* Téléphone : préfixe +216 visuel, à gauche du champ. Il n'est pas envoyé : le plugin accepte le numéro avec ou sans indicatif. */
+.ev-phone-wrap { display: flex !important; gap: 12px; }
+.ev-phone-prefix {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex: none;
+	width: 84px;
+	min-height: 50px;
+	border: 1px solid var(--ev-line-2);
+	border-radius: 12px;
+	background: var(--ev-cream);
+	font: 500 15px/1 var(--ev-font-head);
+}
+.ev-phone-wrap input { flex: 1; min-width: 0; }
+
+@media (min-width: 900px) {
+	.ev-co-card,
+	.woocommerce-additional-fields { gap: 18px; padding: 28px; border-radius: 18px; }
+	.ev-co-card__head h2 { font-size: 21px; }
+	.ev-co-card__fields { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+	.ev-co-card__fields .form-row-wide { grid-column: 1 / -1; }
+}
+
+/* ── Checkout : récapitulatif ───────────────────────────────────────────── */
+.woocommerce-checkout-review-order-table {
+	display: block;
+	position: static;
+	padding: 16px;
+	background: var(--ev-white);
+	border: 1px solid var(--ev-line);
+	border-radius: 16px;
+}
+.woocommerce-checkout-review-order-table::before { content: attr(data-title); }
+.woocommerce-checkout-review-order-table thead { display: none; }
+.woocommerce-checkout-review-order-table tbody,
+.woocommerce-checkout-review-order-table tfoot { display: flex; flex-direction: column; }
+.woocommerce-checkout-review-order-table tr { display: flex; justify-content: space-between; align-items: center; gap: 14px; }
+.woocommerce-checkout-review-order-table th,
+.woocommerce-checkout-review-order-table td { display: block; padding: 0; border: 0; text-align: start; font-size: 15px; font-weight: 400; color: var(--ev-ink-80); }
+
+.woocommerce-checkout-review-order-table tr.cart_item { padding-block: 12px; border-top: 1px solid var(--ev-line-3); }
+.woocommerce-checkout-review-order-table tr.cart_item:first-child { border-top: 0; padding-top: 0; }
+.woocommerce-checkout-review-order-table td.product-name { display: flex; flex: 1; align-items: center; gap: 10px; min-width: 0; font-size: 14px; line-height: 1.3; color: var(--ev-ink); }
+.woocommerce-checkout-review-order-table .product-quantity { flex: none; font-size: 13px; font-weight: 400; color: var(--ev-slate); order: 2; }
+.woocommerce-checkout-review-order-table td.product-total { font: 700 14px/1 var(--ev-font-head); color: var(--ev-ink); white-space: nowrap; }
+.ev-co-item { display: flex; flex: 1; align-items: center; gap: 12px; min-width: 0; }
+.ev-co-item__img img { width: 56px; height: 56px; border-radius: 10px; object-fit: cover; }
+.ev-co-item__name { min-width: 0; }
+
+.woocommerce-checkout-review-order-table tfoot { gap: 12px; padding-top: 14px; border-top: 1px solid var(--ev-line-3); }
+.woocommerce-checkout-review-order-table tfoot ul { margin: 0; padding: 0; list-style: none; text-align: end; }
+.woocommerce-checkout-review-order-table tfoot input[type='radio'] { display: none; }
+.woocommerce-checkout-review-order-table .order-total { padding-top: 12px; border-top: 1px solid var(--ev-line-3); align-items: baseline; }
+.woocommerce-checkout-review-order-table .order-total th { font: 700 20px/1 var(--ev-font-head); color: var(--ev-ink); }
+.woocommerce-checkout-review-order-table .order-total td strong { font: 800 24px/1 var(--ev-font-head); color: var(--ev-ink); }
+
+@media (min-width: 900px) {
+	.woocommerce-checkout-review-order-table { position: sticky; top: 20px; padding: 24px; border-radius: 18px; }
+}
+
+/* ── Checkout : paiement ────────────────────────────────────────────────── */
+.ev-co-pay-head { padding: 18px 18px 6px; background: var(--ev-white); border: 1px solid var(--ev-line); border-bottom: 0; border-radius: 16px 16px 0 0; }
+.ev-co-pay-head h2 { font: 700 19px/1.2 var(--ev-font-head); }
+.ev-co-pay-head p { margin: 5px 0 0; font-size: 14px; color: var(--ev-ink-60); }
+
+#payment { padding: 12px 18px 18px; background: var(--ev-white); border: 1px solid var(--ev-line); border-top: 0; border-radius: 0 0 16px 16px; }
+#payment ul.payment_methods { display: flex; flex-direction: column; gap: 10px; margin: 0 0 16px; padding: 0; list-style: none; }
+#payment ul.payment_methods li { padding: 14px; border: 1.5px solid var(--ev-forest); border-radius: 12px; background: var(--ev-forest-wash); }
+#payment ul.payment_methods li label { display: inline; font: 600 15px/1.3 var(--ev-font-head); }
+#payment ul.payment_methods li input[type='radio'] { accent-color: var(--ev-forest); margin-inline-end: 8px; }
+#payment .payment_box { margin: 8px 0 0; padding: 0; background: none; font-size: 14px; color: var(--ev-ink-60); }
+#payment .payment_box p { margin: 0; }
+#payment .payment_box::before { display: none; }
+
+#payment .place-order { display: flex; flex-direction: column; gap: 12px; }
+#payment .woocommerce-terms-and-conditions-wrapper { font-size: 13px; color: var(--ev-ink-60); }
+#payment .woocommerce-privacy-policy-text { font-size: 12px; color: var(--ev-ink-60); }
+#payment .woocommerce-privacy-policy-text p { margin: 0; }
+.woocommerce #payment #place_order.button {
+	width: 100%;
+	min-height: 54px;
+	border: 0;
+	border-radius: 14px;
+	background: var(--ev-forest);
+	color: var(--ev-cream);
+	font: 700 16px/1 var(--ev-font-head);
+	cursor: pointer;
+}
+.woocommerce #payment #place_order.button:hover { background: var(--ev-deep); }
+
+@media (min-width: 900px) {
+	.ev-co-pay-head { padding: 28px 28px 6px; border-radius: 18px 18px 0 0; }
+	.ev-co-pay-head h2 { font-size: 21px; }
+	#payment { padding: 12px 28px 28px; border-radius: 0 0 18px 18px; }
+}
+
+/* ── Checkout : « Une question ? » ──────────────────────────────────────── */
+.ev-co-help {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	align-items: flex-start;
+	padding: 24px;
+	border-radius: 16px;
+	background: linear-gradient(180deg, var(--ev-forest-deep-2), var(--ev-deep));
+	color: var(--ev-white);
+}
+.ev-co-help h2 { font: 700 20px/1.2 var(--ev-font-head); color: var(--ev-white); }
+.ev-co-help p { margin: 0; font-size: 14px; color: var(--ev-forest-edge); }
+.ev-co-help .ev-btn { min-height: 40px; font-size: 13px; }
+
+/* ── Notices et coupon du checkout ──────────────────────────────────────── */
+.woocommerce-form-coupon-toggle .woocommerce-info { margin: 0; }
+form.checkout_coupon { display: flex; gap: 10px; padding: 16px; background: var(--ev-white); border: 1px solid var(--ev-line); border-radius: 14px; }
+form.checkout_coupon .form-row { margin: 0; padding: 0; }
+form.checkout_coupon .form-row-first { flex: 1; }
+
+/* ── Page de remerciement (commande reçue) ──────────────────────────────── */
+/* Pas de maquette : le contenu est celui de WooCommerce, présenté avec les cartes du checkout. */
+.woocommerce-order { max-width: 820px; }
+.woocommerce-order .woocommerce-thankyou-order-received {
+	margin: 0 0 16px;
+	padding: 16px 20px;
+	border-radius: 14px;
+	background: var(--ev-forest-tint);
+	color: var(--ev-forest);
+	font: 600 16px/1.4 var(--ev-font-head);
+}
+.woocommerce-order ul.order_details {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 10px;
+	margin: 0 0 16px;
+	padding: 0;
+	list-style: none;
+}
+.woocommerce-order ul.order_details li {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+	margin: 0;
+	padding: 14px 16px;
+	border: 1px solid var(--ev-line);
+	border-radius: 14px;
+	background: var(--ev-white);
+	font-size: 12px;
+	line-height: 1.3;
+	color: var(--ev-ink-60);
+	text-transform: none;
+}
+.woocommerce-order ul.order_details li strong { font: 700 15px/1.3 var(--ev-font-head); color: var(--ev-ink); }
+.woocommerce-order .woocommerce-order-details,
+.woocommerce-order .woocommerce-customer-details {
+	margin-top: 16px;
+	padding: 20px;
+	border: 1px solid var(--ev-line);
+	border-radius: 16px;
+	background: var(--ev-white);
+}
+.woocommerce-order h2.woocommerce-order-details__title,
+.woocommerce-order h2.woocommerce-column__title { margin: 0 0 14px; font: 700 19px/1.2 var(--ev-font-head); }
+.woocommerce-order .woocommerce-customer-details address { font-style: normal; line-height: 1.6; }
+.woocommerce-order .woocommerce-columns--addresses { display: grid; gap: 16px; }
+
+@media (min-width: 900px) {
+	.woocommerce-order ul.order_details { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+	.woocommerce-order .woocommerce-order-details,
+	.woocommerce-order .woocommerce-customer-details { padding: 24px; border-radius: 18px; }
+}
+
+/* ── Remerciement : « Enregistrez le numéro, c'est nous » (§10) ─────────────── */
+.ev-save-number {
+	margin: 0 0 24px;
+	padding: 20px var(--ev-gutter);
+	border: 1px solid var(--ev-forest-edge);
+	border-radius: var(--ev-radius-block);
+	background: var(--ev-forest-tint);
+	text-align: center;
+}
+.ev-save-number h2 { margin: 0 0 8px; font: 700 19px/1.2 var(--ev-font-head); color: var(--ev-ink); }
+.ev-save-number p { margin: 0 auto 12px; max-width: 480px; font-size: 14px; line-height: 1.5; color: var(--ev-ink-80); }
+.ev-save-number__num { margin-block: 4px 14px; }
+.ev-save-number__num a { font: 700 24px/1 var(--ev-font-head); color: var(--ev-forest); letter-spacing: .5px; }
+
+/* ── En-tête allégé du tunnel : logo + « Commande sécurisée » (§9.1) ──────── */
+/*
+ * Le logo reste centré, comme avant : la mention se pose sous lui sur mobile,
+ * puis se range à la fin de la ligne sur desktop, où la largeur le permet. Sur
+ * mobile elle ne prend qu'une ligne de texte, pour ne pas repousser le
+ * formulaire sous la ligne de flottaison.
+ */
+.ev-header__row--minimal {
+	grid-template-columns: 1fr;
+	grid-template-areas: 'logo' 'secure';
+	row-gap: 6px;
+}
+.ev-header__secure {
+	grid-area: secure;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 6px;
+	margin: 0;
+	color: var(--ev-forest-mid);
+	font: 600 12px/1 var(--ev-font-head);
+}
+
+@media (min-width: 900px) {
+	.ev-header__row--minimal {
+		grid-template-columns: 1fr auto 1fr;
+		grid-template-areas: '. logo secure';
+		row-gap: 0;
+	}
+	.ev-header__secure { justify-content: flex-end; font-size: 13px; }
+}
+
+/* ── Frise des trois étapes du tunnel ─────────────────────────────────────── */
+/*
+ * Un trait continu derrière les pastilles, qu'un pseudo-élément par étape
+ * dessine vers l'étape précédente. Il se colore quand l'étape est franchie, ce
+ * qui donne la progression sans un seul px de JavaScript.
+ *
+ * Propriétés logiques uniquement (`inset-inline-*`), comme le reste du thème.
+ */
+.ev-steps {
+	margin-block: 4px 20px;
+}
+.ev-steps__list {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	margin: 0;
+	padding: 0;
+}
+.ev-steps__step {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 7px;
+	color: var(--ev-ink-60);
+	font: 500 12px/1.2 var(--ev-font-head);
+	text-align: center;
+}
+/* Le trait de liaison part du centre de l'étape précédente. */
+.ev-steps__step:not(:first-child)::before {
+	content: '';
+	position: absolute;
+	top: 11px;
+	inset-inline-end: 50%;
+	width: 100%;
+	height: 2px;
+	background: var(--ev-line-2);
+}
+.ev-steps__dot {
+	position: relative;
+	z-index: 1;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 24px;
+	height: 24px;
+	border: 2px solid var(--ev-line-2);
+	border-radius: 50%;
+	background: var(--ev-white);
+	color: var(--ev-white);
+}
+.ev-steps__step.is-done { color: var(--ev-ink-80); }
+.ev-steps__step.is-done .ev-steps__dot { border-color: var(--ev-forest); background: var(--ev-forest); }
+.ev-steps__step.is-done::before,
+.ev-steps__step.is-current::before { background: var(--ev-forest); }
+.ev-steps__step.is-current { color: var(--ev-ink); font-weight: 700; }
+.ev-steps__step.is-current .ev-steps__dot { border-color: var(--ev-forest); background: var(--ev-forest); }
+
+@media (min-width: 900px) {
+	.ev-steps { margin-block: 8px 32px; }
+	.ev-steps__list { max-width: 620px; margin-inline: auto; }
+	.ev-steps__step { font-size: 14px; gap: 9px; }
+	.ev-steps__step:not(:first-child)::before { top: 13px; }
+	.ev-steps__dot { width: 28px; height: 28px; }
+}

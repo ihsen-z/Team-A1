@@ -1,0 +1,357 @@
+/* ============================================================
+   FAMMA — carte produit.
+
+   Feuille partagée, chargée partout où une carte apparaît : accueil,
+   boutique, archives de catégorie, produits liés d'une fiche.
+
+   Pourquoi elle existe. Ces règles vivaient dans `shop.css`, chargée sur
+   la seule boutique. Résultat constaté au rendu : sur l'accueil, l'icône
+   du bouton s'affichait à sa taille naturelle — un chariot de 200px de
+   haut — les badges s'étiraient sur toute la largeur et les boutons ne
+   s'alignaient pas. Trois copies des mêmes règles auraient fini par
+   diverger ; il n'y en a plus qu'une.
+
+   Portée : `ul.products.famma-cards`. La classe est ajoutée par
+   `inc/shop.php` sur les listes de WooCommerce et par `inc/home.php` sur
+   celle de l'accueil — un seul crochet pour un seul dessin.
+
+   Spécificité : `style.css` pose la carte de base avec
+   `.woocommerce ul.products li.product a.button:not(.kb-button)`, soit
+   (0,5,3). Les sélecteurs ci-dessous atteignent le même poids et gagnent
+   par ordre de chargement, sans un seul `!important`.
+   ============================================================ */
+
+/* --- Structure : la carte est une colonne, le bouton se cale en bas --- */
+
+/*
+ * Constaté au rendu : les cartes faisaient toutes la même hauteur — la
+ * grille les étire — mais les boutons se trouvaient à quatre hauteurs
+ * différentes. `li.product` est en `display: list-item`, donc le panneau de
+ * texte garde sa hauteur naturelle et le `margin-block-start: auto` du
+ * bouton n'a rien à repousser.
+ */
+ul.products.famma-cards li.product {
+	/* Proportion du visuel, une seule source pour tous les gabarits. Un layout
+	   qui veut une autre proportion redefinit ce jeton, il ne repose pas de
+	   hauteur en pixels — c'est ainsi que les quatre ratios divergents sont nes. */
+	--card-media-ratio: 6 / 5;
+
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	inline-size: auto;
+	margin: 0;
+	float: none;
+	border: 1px solid var(--famma-line);
+	border-radius: var(--famma-radius);
+	overflow: hidden;
+	background: var(--famma-white);
+	transition: box-shadow var(--dur-base) var(--ease-out);
+}
+
+/* La maquette ne pose qu'une ombre au survol. Le soulèvement d'origine
+   faisait sauter la grille entière sur un survol accidentel. */
+ul.products.famma-cards li.product:hover,
+ul.products.famma-cards li.product:focus-within {
+	transform: none;
+	box-shadow: 0 10px 24px rgba(11, 31, 58, 0.1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	ul.products.famma-cards li.product {
+		transition: none;
+	}
+}
+
+/*
+ * Gabarit fixe du panneau de texte.
+ *
+ * Constate au rendu : le resume et la note sont conditionnels — rien n'est
+ * imprime quand le produit n'a pas de description courte (§60) ni d'avis. En
+ * pile flex, chaque element absent supprimait sa ligne ET son espacement : sur
+ * une meme rangee, le prix flottait a trois hauteurs differentes (mesure :
+ * 660px, 691px, 752px du haut de page).
+ *
+ * La grille resout cela sans balisage vide ni placeholder : chaque element est
+ * assigne explicitement a SA ligne, et la ligne garde sa hauteur meme quand
+ * l'element n'existe pas. Les hauteurs reservees sont calculees depuis les
+ * jetons de typographie — deux lignes pour le nom, deux pour le resume, une
+ * pour la note, deux pour le prix (ancien et nouveau passent a la ligne dans
+ * une colonne de 12,25rem) — elles suivent donc tout changement de taille.
+ *
+ * `minmax(..., auto)` plutot qu'une hauteur seche : un contenu exceptionnel
+ * pousse sa ligne au lieu d'etre coupe. Le nom et le resume sont bornes a deux
+ * lignes plus bas, donc seul le prix peut encore grandir.
+ */
+ul.products.famma-cards li.product .product-details {
+	--card-row-title: calc(2 * 1.4 * var(--fs-card-name));
+	--card-row-benefit: calc(2 * 1.55 * var(--fs-chrome-body));
+	--card-row-rating: 1.375rem;
+	--card-row-price: calc(2 * 1.6 * var(--fs-card-price));
+
+	display: grid;
+	grid-template-rows:
+		minmax(var(--card-row-title), auto)
+		minmax(var(--card-row-benefit), auto)
+		minmax(var(--card-row-rating), auto)
+		minmax(var(--card-row-price), auto)
+		1fr;
+	flex: 1;
+	gap: 9px;
+	padding: 14px 14px 16px;
+}
+
+/*
+ * Kadence imprime AUSSI son propre resume produit dans la carte. Le theme
+ * parent le masque en grille, mais notre vue liste n'utilise pas sa classe
+ * `products-list-view` : sans cette regle, le passage en liste ferait
+ * apparaitre le resume complet — image comprise pour les produits qui en
+ * contiennent une — en doublon de `.famma-card__benefit`. Masque ici, il ne
+ * reclame aucune ligne de la grille.
+ */
+ul.products.famma-cards li.product .product-excerpt {
+	display: none;
+}
+
+/* --- Visuel --- */
+
+/*
+ * Le visuel est un RATIO, pas une hauteur.
+ *
+ * Constate au rendu : une meme vignette carree de 300x300 s'affichait dans
+ * quatre proportions differentes, parce que `block-size: 178px` etait fixe
+ * pendant que la largeur de colonne, elle, bougeait — 1,202 en grille bureau,
+ * 1,236 en liste, 1,306 dans « Produits similaires », 1,882 sur mobile. Comme
+ * `object-fit: cover` recadre pour remplir la boite, le meme produit perdait
+ * 17% de sa hauteur sur bureau et 47% sur mobile : le recadrage inattendu.
+ *
+ * En posant le ratio et en laissant la hauteur se deduire de la largeur, la
+ * proportion devient la meme partout et sur toutes les tailles d'ecran, tandis
+ * que les cartes d'une meme rangee gardent une hauteur identique — leurs
+ * colonnes ont la meme largeur. 6/5 est la proportion de la maquette boutique :
+ * 213,9px de colonne pour 178px de haut, soit 1,202. Le rendu bureau est donc
+ * inchange au quart de pixel pres.
+ *
+ * `aspect-ratio` reserve aussi la place avant le decodage de l'image : plus de
+ * saut de mise en page au chargement, y compris sur les images differees.
+ *
+ * `object-fit: cover` reste pour les sources non carrees : il recadre, il ne
+ * deforme jamais. Aucune image n'est etiree.
+ */
+ul.products.famma-cards li.product a img {
+	display: block;
+	inline-size: 100%;
+	block-size: auto;
+	aspect-ratio: var(--card-media-ratio);
+	margin: 0;
+	background: var(--famma-surface-media);
+	object-fit: cover;
+	object-position: center;
+}
+
+/* --- Badges --- */
+
+/*
+ * `inset-inline-end: auto` est la correction décisive : Kadence pose
+ * `right: 6px` en plus du `left`. Les deux côtés ancrés, le badge s'étirait
+ * sur toute la largeur de la carte — 200px pour un libellé de quatre
+ * caractères.
+ */
+ul.products.famma-cards li.product .onsale {
+	position: absolute;
+	inset-block-start: 10px;
+	inset-inline-start: 10px;
+	inset-inline-end: auto;
+	inline-size: auto;
+	z-index: 1;
+	margin: 0;
+	padding: 4px 9px;
+	border-radius: var(--radius-badge);
+	background: var(--famma-orange);
+	color: var(--famma-on-orange);
+	font-size: var(--fs-card-badge);
+	font-weight: var(--fw-semibold);
+	line-height: 1.4;
+}
+
+/* Le vert exact de la maquette. Sélecteur aussi spécifique que celui du
+   badge orange ci-dessus, sinon ce dernier gagne par ordre de cascade et
+   « Nouveau » sort orange. */
+ul.products.famma-cards li.product .onsale.famma-badge--new {
+	background: var(--famma-new);
+	color: var(--famma-white);
+}
+
+/* --- Nom, résumé --- */
+
+/*
+ * Nom : exactement deux lignes, toujours.
+ *
+ * `min-block-size` seul ne suffisait pas — un nom de trois lignes poussait
+ * note, prix et bouton vers le bas (mesure : +16px sur le prix). La hauteur est
+ * donc fermee des deux cotes, et le debordement coupe.
+ *
+ * Pas de `-webkit-line-clamp` ici : un element de grille est « blockifie », son
+ * `display: -webkit-box` devient `flow-root` et la coupure legere ne s'applique
+ * plus (verifie au rendu : 55px au lieu de 39px). `line-clamp`, la propriete
+ * standard, est declaree pour l'ellipse la ou elle existe ; la hauteur fermee
+ * fait le travail partout. Comme la boite vaut exactement deux interlignes, la
+ * troisieme ligne est coupee en entier — jamais a mi-hauteur de glyphe.
+ */
+ul.products.famma-cards li.product .woocommerce-loop-product__title {
+	grid-row: 1;
+	block-size: var(--card-row-title);
+	overflow: hidden;
+	margin: 0;
+	font-size: var(--fs-card-name);
+	font-weight: var(--fw-medium);
+	line-height: 1.4;
+	line-clamp: 2;
+}
+
+/*
+ * Resume : meme traitement, sur deux lignes de 1,55. `margin: 0` retire les
+ * 4px/8px que Kadence pose sur tout `p` — l'espacement de la carte est celui de
+ * la grille, 9px partout, et ces marges ajoutaient 12px sous les seules cartes
+ * qui portent un resume.
+ */
+ul.products.famma-cards li.product .famma-card__benefit {
+	grid-row: 2;
+	block-size: var(--card-row-benefit);
+	overflow: hidden;
+	margin: 0;
+	font-size: var(--fs-chrome-body);
+	line-height: 1.55;
+	line-clamp: 2;
+}
+
+/* --- Note et nombre d'avis --- */
+
+.famma-card__rating {
+	display: flex;
+	grid-row: 3;
+	align-items: center;
+	gap: 7px;
+	margin: 0;
+}
+
+.famma-card__rating .star-rating {
+	margin: 0;
+	color: var(--famma-orange);
+	font-size: var(--fs-chrome-body);
+	letter-spacing: 1px;
+}
+
+.famma-card__reviews {
+	color: var(--famma-text-3);
+	font-size: var(--fs-chrome-caption);
+}
+
+/* --- Prix --- */
+
+/*
+ * `.woocommerce` en tete : Kadence pose `margin-bottom: 1em` sur le prix des
+ * cartes a bouton, avec une specificite de (0,5,2) que notre `margin: 0`
+ * n'atteignait pas — 19px s'ajoutaient sous chaque prix. Le prefixe egalise le
+ * poids, l'ordre de chargement tranche.
+ */
+.woocommerce ul.products.famma-cards li.product .price {
+	display: flex;
+	grid-row: 4;
+	flex-wrap: wrap;
+	align-items: baseline;
+	gap: 9px;
+	margin: 0;
+	font-size: var(--fs-card-price);
+}
+
+ul.products.famma-cards li.product .price del {
+	color: var(--famma-price-old);
+	font-size: var(--fs-chrome-body);
+}
+
+/* --- Bouton « Commander » --- */
+
+/* Derniere ligne, en `1fr` : le bouton se cale en bas quelle que soit la
+   hauteur du texte, donc au meme niveau sur toutes les cartes d'une rangee. */
+ul.products.famma-cards li.product .product-action-wrap {
+	position: static;
+	grid-row: 5;
+	align-self: end;
+	opacity: 1;
+}
+
+/* Aucun glissement du bloc de texte au survol : il recouvrait le prix. */
+ul.products.famma-cards li.product:hover .entry-content-wrap,
+ul.products.famma-cards li.product:focus-within .entry-content-wrap {
+	transform: none;
+}
+
+/*
+ * Mobile d'abord : le CTA fait 48px de haut, la cible tactile minimale du
+ * projet (§9), qui nomme « Commander » explicitement. Il etait a 40px partout —
+ * la mesure de la maquette, qui est une maquette de bureau. La valeur de
+ * maquette est restituee a partir de 1000px, en bas de fichier.
+ */
+ul.products.famma-cards li.product a.button:not(.kb-button) {
+	display: flex;
+	min-block-size: var(--sp-12);
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	padding: 11px 16px;
+	border-radius: var(--radius-card-button);
+	background: var(--famma-orange);
+	color: var(--famma-on-orange);
+	font-size: var(--fs-chrome-field);
+	/* Gras demandé par le propriétaire, et conforme au rendu de référence :
+	   la maquette écrit 500, l'image livrée montre un libellé nettement plus
+	   appuyé. 600 tient les deux à 13,5px. */
+	font-weight: var(--fw-semibold);
+	/* Kadence met le libellé en capitales : le bouton passait sur deux lignes
+	   et doublait de hauteur. */
+	text-transform: none;
+	line-height: 1.35;
+	flex-wrap: nowrap;
+	white-space: nowrap;
+}
+
+ul.products.famma-cards li.product a.button:not(.kb-button):hover,
+ul.products.famma-cards li.product a.button:not(.kb-button):focus-visible {
+	background: var(--famma-orange-600);
+	color: var(--famma-on-orange);
+}
+
+/*
+ * Les pictogrammes de Kadence sont masqués : son icône est une FLÈCHE, posée
+ * APRÈS le libellé, là où la maquette met un chariot AVANT le mot. Les deux
+ * autres ne portent que les états AJAX.
+ */
+ul.products.famma-cards li.product a.button .kadence-svg-iconset {
+	display: none;
+}
+
+/*
+ * Taille imposée au chariot. Sans elle — cas constaté sur l'accueil, où
+ * cette feuille n'était pas chargée — le SVG prend sa taille naturelle et
+ * remplit le bouton sur toute sa hauteur.
+ */
+.famma-card__cart {
+	flex: none;
+	inline-size: 15px;
+	block-size: 15px;
+}
+
+/* ------------------------------------------------------------
+   Bureau : restitution des mesures de maquette
+
+   La maquette est une maquette de bureau. Ce qu'elle pose de plus serre que
+   la cible tactile du projet est repris ici, a partir de 1000px, la ou le
+   pointeur remplace le doigt.
+   ------------------------------------------------------------ */
+
+@media (min-width: 1000px) {
+	ul.products.famma-cards li.product a.button:not(.kb-button) {
+		min-block-size: 0;
+	}
+}

@@ -1,0 +1,948 @@
+/*
+ * EVASIONS — feuille de styles du thème.
+ *
+ * Mesures reprises du design « EVASIONS Homepage » : mobile 390 px, desktop
+ * 1440 px. Mobile d'abord (§20 du document directeur) ; un seul point de
+ * rupture structurel, à 900 px, plus 700 px pour la barre de promesses.
+ *
+ * Propriétés logiques (inline-start/end) partout où c'est simple : le site
+ * existe aussi en arabe, qui se lit de droite à gauche.
+ */
+
+/* ── Polices auto-hébergées ─────────────────────────────────────────────── */
+/* Polices variables (un fichier par famille), sous-ensemble latin : le français y est entier. `font-display: swap` : le texte s'affiche tout de suite. */
+@font-face {
+	font-family: 'Manrope';
+	font-style: normal;
+	font-weight: 500 800;
+	font-display: swap;
+	src: url('../fonts/manrope-latin.woff2') format('woff2');
+	unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+	font-family: 'DM Sans';
+	font-style: normal;
+	font-weight: 400 700;
+	font-display: swap;
+	src: url('../fonts/dm-sans-latin.woff2') format('woff2');
+	unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+	font-family: 'DM Sans';
+	font-style: italic;
+	font-weight: 400 700;
+	font-display: swap;
+	src: url('../fonts/dm-sans-italic-latin.woff2') format('woff2');
+	unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* ── Jetons ─────────────────────────────────────────────────────────────── */
+:root {
+	--ev-forest: #165A32;      /* primaire */
+	--ev-deep: #123F26;        /* barre supérieure, pied de page */
+	--ev-sand: #E8DCC8;        /* secondaire */
+	--ev-cream: #FBF6F0;       /* fond */
+	--ev-sun: #E8A83E;         /* accent, appels à l'action */
+	--ev-ocean: #3C7A78;       /* liens */
+	--ev-ink: #17211F;         /* texte */
+	--ev-ink-60: #5D6664;      /* texte secondaire */
+	--ev-ink-80: #3F4744;
+	--ev-line: #EDE7DC;
+	--ev-line-2: #DED8CC;
+	--ev-chip: #F2EDE3;
+	--ev-brick: #B5442E;
+	--ev-white: #FFFFFF;
+	--ev-paper: #FAF6EC;       /* fond papier de la page (§2.1) */
+
+	/* Nuances dérivées, autrefois écrites en dur dans les composants.
+	   Regroupées ici pour qu'aucune couleur ne vive hors des jetons (§2.1). */
+	--ev-forest-mid: #2F6D4F;      /* vert intermédiaire (icônes, accents) */
+	--ev-forest-deep-2: #1A5A3A;   /* vert profond (états) */
+	--ev-forest-hover: #0F4526;    /* vert au survol des boutons pleins */
+	--ev-forest-night: #0F3F23;    /* vert nuit (fin du dégradé du panneau communauté) */
+	--ev-forest-tint: #E8F0E9;     /* fond vert très clair (succès, stock) */
+	--ev-forest-tint-2: #E3EBE7;
+	--ev-forest-tint-3: #E6EDE9;
+	--ev-forest-mist: #CFDDD3;     /* texte/filets sur fond marine */
+	--ev-forest-mist-2: #BFD0C4;
+	--ev-forest-edge: #DCE6E2;     /* filets sur fond vert clair */
+	--ev-forest-wash: #F6FAF6;     /* presque blanc, nuance verte */
+	--ev-sage: #9DB3A6;            /* vert-gris atténué */
+	--ev-sage-2: #9DB5A6;
+	--ev-slate: #676E6A;           /* texte gris */
+	--ev-slate-2: #8A8F8B;
+	--ev-slate-3: #A8AEA9;
+	--ev-mist: #C9CFC9;            /* gris clair (filets) */
+	--ev-sand-2: #E3D9C6;          /* sable secondaire */
+	--ev-line-3: #F0EAE0;          /* filet crème */
+	--ev-sun-tint: #FBF0D8;        /* fond ambre clair (badges) */
+	--ev-sun-ink: #8A5A00;         /* texte ambre foncé (contraste sur ambre) */
+	--ev-brick-tint: #F6E3DF;      /* fond brique clair */
+	/* Or des étoiles : plus foncé que --ev-sun pour atteindre 3:1 sur blanc
+	   (§16, WCAG 1.4.11 non-texte). --ev-sun (accent des boutons) reste tel quel. */
+	--ev-star: #A6740A;
+	/* Vert WhatsApp de la maquette « Fiche Produit & Tunnel ». Plus sombre que
+	   le vert de marque du service (#25D366) pour tenir 4,5:1 avec du blanc
+	   dessus (§16) : le bouton porte du texte, pas seulement un pictogramme. */
+	--ev-whatsapp: #1C8A4A;
+	/* Vert du bouton, assombri : du blanc sur #1C8A4A ne donne que 4,39:1, sous
+	   le seuil AA de 4,5:1 pour du texte de 14 px (audit A11Y-EX-05). #18803F
+	   monte à 5,00:1. Le pictogramme garde #1C8A4A, qui passe déjà les 3:1
+	   exigés d'un élément non textuel sur son fond teinté (3,92:1). */
+	--ev-whatsapp-cta: #18803F;
+	--ev-whatsapp-tint: #E6F6EC;  /* fond du pictogramme */
+	--ev-whatsapp-quote: #F1F7F2; /* fond de l'aperçu du message */
+
+	--ev-font-head: 'Manrope', system-ui, -apple-system, 'Segoe UI', sans-serif;
+	--ev-font-body: 'DM Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+	--ev-gutter: 14px;
+	--ev-radius-card: 16px;
+	--ev-radius-block: 16px;
+}
+
+@media (min-width: 900px) {
+	:root {
+		--ev-gutter: 40px;
+		--ev-radius-card: 18px;
+		--ev-radius-block: 20px;
+	}
+}
+
+/* ── Base ───────────────────────────────────────────────────────────────── */
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+	margin: 0;
+	background: var(--ev-paper);
+	color: var(--ev-ink);
+	font: 400 16px/1.55 var(--ev-font-body);
+	-webkit-font-smoothing: antialiased;
+}
+
+img { max-width: 100%; height: auto; display: block; }
+
+a { color: var(--ev-ocean); text-decoration: none; }
+a:hover { color: var(--ev-forest); }
+
+h1, h2, h3 { font-family: var(--ev-font-head); margin: 0; text-wrap: pretty; }
+
+ul { margin: 0; padding: 0; list-style: none; }
+
+:focus-visible {
+	outline: 2px solid var(--ev-ocean);
+	outline-offset: 2px;
+}
+
+.ev-container {
+	width: 100%;
+	max-width: 1440px;
+	margin-inline: auto;
+	padding-inline: var(--ev-gutter);
+}
+
+.ev-icon { display: block; flex: none; }
+
+.screen-reader-text {
+	position: absolute !important;
+	width: 1px;
+	height: 1px;
+	margin: -1px;
+	padding: 0;
+	overflow: hidden;
+	clip-path: inset(50%);
+	white-space: nowrap;
+	border: 0;
+}
+
+.ev-skip {
+	position: absolute;
+	inset-inline-start: 8px;
+	top: -60px;
+	z-index: 100;
+	padding: 10px 16px;
+	border-radius: 10px;
+	background: var(--ev-ink);
+	color: var(--ev-white);
+	font: 600 14px/1 var(--ev-font-head);
+}
+.ev-skip:focus { top: 8px; color: var(--ev-white); }
+
+/* ── Boutons ────────────────────────────────────────────────────────────── */
+.ev-btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	min-height: 48px;
+	padding: 0 22px;
+	border: 1.5px solid transparent;
+	border-radius: 14px;
+	font: 700 15px/1 var(--ev-font-head);
+	text-align: center;
+	cursor: pointer;
+	transition: filter .15s ease, background-color .15s ease;
+}
+
+.ev-btn--sun { background: var(--ev-sun); color: var(--ev-ink); }
+.ev-btn--sun:hover { color: var(--ev-ink); filter: brightness(.95); }
+
+.ev-btn--primary { background: var(--ev-forest); color: var(--ev-cream); font-weight: 600; }
+.ev-btn--primary:hover { background: var(--ev-deep); color: var(--ev-cream); }
+
+.ev-btn--ghost { border-color: rgba(255, 255, 255, .7); color: var(--ev-white); font-weight: 600; }
+.ev-btn--ghost:hover { background: rgba(255, 255, 255, .12); color: var(--ev-white); }
+
+.ev-btn--outline { border-color: var(--ev-forest); background: none; color: var(--ev-forest); font-weight: 600; }
+.ev-btn--outline:hover { background: var(--ev-forest); color: var(--ev-cream); }
+
+.ev-btn--white { background: var(--ev-white); color: var(--ev-ink); font-weight: 600; font-size: 14px; min-height: 42px; border-radius: 12px; }
+
+.ev-link { display: inline-block; padding-block: 3px; font-size: 13px; color: var(--ev-ocean); }
+
+/* ── Barre de promesses ─────────────────────────────────────────────────── */
+.ev-topbar {
+	background: var(--ev-deep);
+	color: var(--ev-sand);
+	font-size: 11px;
+}
+
+.ev-topbar__inner {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding-block: 8px;
+}
+
+.ev-topbar__promises { display: flex; justify-content: center; }
+
+/* Mobile : la première promesse seule, précédée d'un point. */
+.ev-topbar__item { display: none; align-items: center; gap: 8px; }
+.ev-topbar__item:first-child { display: flex; }
+.ev-topbar__item:first-child::before {
+	content: '';
+	width: 5px;
+	height: 5px;
+	border-radius: 50%;
+	background: var(--ev-sun);
+	order: -1;
+}
+.ev-topbar__icon { display: none; color: var(--ev-sun); }
+.ev-topbar .ev-social--top { display: none; }
+
+@media (min-width: 700px) {
+	.ev-topbar { color: var(--ev-forest-mist); font-size: 12px; }
+	.ev-topbar__inner { justify-content: space-between; padding-block: 9px; }
+	.ev-topbar__promises { gap: 34px; justify-content: flex-start; }
+	.ev-topbar__item { display: flex; }
+	.ev-topbar__item:first-child::before { display: none; }
+	.ev-topbar__icon { display: flex; }
+	.ev-topbar .ev-social--top { display: flex; }
+}
+
+/* ── Réseaux sociaux ────────────────────────────────────────────────────── */
+.ev-social { display: flex; gap: 10px; }
+.ev-social a {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 22px;
+	height: 22px;
+	border: 1px solid rgba(191, 208, 196, .6);
+	border-radius: 6px;
+	color: rgba(191, 208, 196, .85);
+	font: 600 9px/1 ui-monospace, monospace;
+}
+.ev-social a:hover { color: var(--ev-white); border-color: var(--ev-white); }
+.ev-social--top a { width: 20px; height: 20px; }
+
+/* ── En-tête ────────────────────────────────────────────────────────────── */
+.ev-header { background: var(--ev-white); border-bottom: 1px solid var(--ev-line); position: relative; z-index: 20; }
+
+.ev-header__row {
+	display: grid;
+	grid-template-columns: auto 1fr auto;
+	grid-template-areas: 'burger logo tools';
+	align-items: center;
+	column-gap: 10px;
+	padding-block: 12px;
+}
+
+/* En-tête allégé du checkout : logo seul, centré. */
+.ev-header__row--minimal { grid-template-columns: 1fr; grid-template-areas: 'logo'; justify-items: center; padding-block: 16px; }
+.ev-header__row--minimal .ev-logo { justify-self: center; }
+
+.ev-burger {
+	grid-area: burger;
+	display: flex;
+	padding: 4px;
+	border: 0;
+	background: none;
+	color: var(--ev-ink);
+	cursor: pointer;
+}
+
+.ev-logo { grid-area: logo; justify-self: start; }
+.ev-logo img { height: 26px; width: auto; }
+
+/* Recherche : une pilule, comme les boutons du thème, avec un bouton d'envoi
+   rond à l'intérieur. Le rembourrage vertical de son conteneur la détache des
+   filets de section : elle ne touche jamais une bordure. */
+.ev-search {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	height: 52px;
+	width: 100%;
+	padding-inline: 18px 4px;
+	border: 1px solid var(--ev-line-2);
+	border-radius: 999px;
+	background: var(--ev-white);
+	color: var(--ev-ink-60);
+	transition: border-color .15s ease, box-shadow .15s ease;
+}
+.ev-search:hover { border-color: var(--ev-mist); }
+.ev-search__icon { display: flex; color: var(--ev-forest-mid); }
+.ev-search input[type='search'] {
+	flex: 1;
+	min-width: 0;
+	height: 100%;
+	border: 0;
+	background: none;
+	color: var(--ev-ink);
+	font: 400 16px/1 var(--ev-font-body);   /* 16 px : en dessous, iOS zoome au focus */
+}
+/* Croix « effacer » de Safari et Chrome : elle double le bouton d'envoi et casse la pilule. */
+.ev-search input[type='search']::-webkit-search-cancel-button { appearance: none; }
+.ev-search input[type='search']::placeholder { color: var(--ev-slate); }
+.ev-search input[type='search']:focus-visible { outline: none; }
+.ev-search:focus-within { border-color: var(--ev-forest); box-shadow: 0 0 0 3px var(--ev-forest-tint); }
+
+/* Cible tactile de 44 px sur mobile (WCAG 2.2, 2.5.8) ; 36 px en desktop, à la souris. */
+.ev-search__submit {
+	flex: none;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 44px;
+	height: 44px;
+	border: 0;
+	border-radius: 50%;
+	background: var(--ev-sun);
+	color: var(--ev-ink);
+	cursor: pointer;
+	transition: filter .15s ease;
+}
+.ev-search__submit:hover { filter: brightness(.95); }
+.ev-search__submit:focus-visible { outline: 2px solid var(--ev-forest); outline-offset: 2px; }
+
+.ev-tools { grid-area: tools; display: flex; align-items: center; gap: 26px; color: var(--ev-ink); }
+/* Zone tactile de 44 px de haut (WCAG 2.2, 2.5.8) sans bouger l'icône : la marge négative compense le remplissage. */
+.ev-tool { position: relative; display: flex; margin: -11px -6px; padding: 11px 6px; color: var(--ev-ink); }
+.ev-tool--account { display: none; }
+
+.ev-cart-count {
+	position: absolute;
+	top: 5px;
+	inset-inline-end: -2px;
+	min-width: 16px;
+	height: 16px;
+	padding-inline: 4px;
+	border-radius: 8px;
+	background: var(--ev-sun);
+	color: var(--ev-ink);
+	font: 700 10px/16px var(--ev-font-head);
+	text-align: center;
+}
+.ev-cart-count[hidden] { display: none; }
+
+/* Navigation : tiroir sur mobile, barre sur desktop. */
+.ev-nav { display: none; border-top: 1px solid var(--ev-line); }
+.ev-header.is-menu-open .ev-nav { display: block; }
+/* La recherche vit dans le menu (§3.3) : en tête du tiroir sur mobile. */
+.ev-nav__search { padding-block: 14px; }
+.ev-nav__list { display: flex; flex-direction: column; }
+.ev-nav__list a {
+	display: block;
+	padding: 14px 0;
+	border-bottom: 1px solid var(--ev-line);
+	color: var(--ev-ink-80);
+	font: 500 15px/1 var(--ev-font-head);
+}
+.ev-nav__list .current-menu-item > a,
+.ev-nav__list .current_page_item > a { color: var(--ev-ink); font-weight: 700; }
+
+.ev-pills {
+	display: flex;
+	gap: 8px;
+	padding: 12px var(--ev-gutter);
+	overflow-x: auto;
+	scrollbar-width: none;
+	border-top: 1px solid var(--ev-line);
+}
+.ev-pills::-webkit-scrollbar { display: none; }
+.ev-pill {
+	flex: none;
+	padding: 8px 14px;
+	border-radius: 999px;
+	background: var(--ev-chip);
+	color: var(--ev-ink);
+	font: 600 13px/1 var(--ev-font-head);
+	white-space: nowrap;
+}
+.ev-pill:hover { background: var(--ev-sand); color: var(--ev-ink); }
+
+@media (min-width: 900px) {
+	.ev-header__row {
+		grid-template-columns: auto 1fr auto;
+		grid-template-areas: 'logo . tools';
+		column-gap: 40px;
+		padding-block: 16px;
+	}
+	.ev-burger { display: none; }
+	.ev-logo img { height: 36px; }
+	.ev-search { height: 46px; padding-inline: 18px; }
+	.ev-search input[type='search'] { font-size: 16px; }
+	.ev-tools { justify-self: end; }
+	.ev-tool--account { display: flex; }
+	.ev-cart-count { top: 4px; inset-inline-end: -3px; min-width: 18px; height: 18px; border-radius: 9px; font-size: 11px; line-height: 18px; }
+
+	.ev-nav { display: block; }
+	/* Barre de navigation : les liens à gauche, la recherche du menu à droite. */
+	.ev-nav__inner { display: flex; align-items: center; gap: 40px; }
+	.ev-nav__search { padding-block: 5px; order: 2; margin-inline-start: auto; width: 300px; flex: none; }
+	.ev-nav__search .ev-search { height: 40px; padding-inline: 16px 3px; }
+	.ev-nav__search .ev-search input[type='search'] { font-size: 14px; }
+	.ev-nav__search .ev-search__submit { width: 34px; height: 34px; }
+	.ev-nav__list { flex-direction: row; gap: 36px; order: 1; }
+	.ev-nav__list a { padding: 14px 0; border-bottom: 2px solid transparent; font-size: 14px; }
+	.ev-nav__list .current-menu-item > a,
+	.ev-nav__list .current_page_item > a { border-bottom-color: var(--ev-forest); font-weight: 600; }
+	.ev-nav__list a:hover { color: var(--ev-ink); }
+	.ev-pills { display: none; }
+}
+
+/* ── Hero ───────────────────────────────────────────────────────────────── */
+.ev-hero {
+	position: relative;
+	display: flex;
+	align-items: flex-end;
+	height: 420px;
+	overflow: hidden;
+	background: var(--ev-deep);
+	color: var(--ev-white);
+}
+.ev-hero__media,
+.ev-hero__media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.ev-hero__shade {
+	position: absolute;
+	inset: 0;
+	/* Un peu plus dense que la maquette (0 → .72) : le texte passe sur les zones claires de la photo, il doit rester lisible (contraste). */
+	background: linear-gradient(180deg, rgba(18, 40, 36, 0) 18%, rgba(14, 32, 28, .55) 52%, rgba(14, 32, 28, .84) 100%);
+}
+.ev-hero__inner { position: relative; padding-block: 24px 28px; }
+.ev-hero__copy { display: flex; flex-direction: column; gap: 14px; }
+.ev-hero h1 { font-weight: 800; font-size: 32px; line-height: 1.12; letter-spacing: -.02em; color: var(--ev-white); }
+.ev-hero h1 em { font-family: var(--ev-font-body); font-weight: 400; }
+.ev-hero p { margin: 0; max-width: 280px; font-size: 14px; line-height: 1.5; color: var(--ev-forest-tint-3); }
+.ev-hero__cta { display: flex; flex-direction: column; gap: 10px; }
+
+@media (min-width: 900px) {
+	.ev-hero { height: 520px; align-items: center; }
+	.ev-hero__shade { background: linear-gradient(90deg, rgba(14, 32, 28, .78) 0%, rgba(14, 32, 28, .35) 48%, rgba(14, 32, 28, 0) 72%); }
+	.ev-hero__inner { padding-block: 0 40px; padding-inline: calc(var(--ev-gutter) + 32px); }
+	.ev-hero__copy { max-width: 560px; gap: 22px; }
+	.ev-hero h1 { font-size: 56px; line-height: 1.08; letter-spacing: -.025em; }
+	.ev-hero p { max-width: 470px; font-size: 17px; line-height: 1.55; color: var(--ev-forest-tint-2); }
+	.ev-hero__cta { flex-direction: row; gap: 14px; }
+	.ev-hero .ev-btn { min-height: 52px; padding-inline: 28px; font-size: 16px; }
+}
+
+/* ── Univers ────────────────────────────────────────────────────────────── */
+.ev-universes__grid {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 12px;
+	padding-block: 20px;
+}
+.ev-universe {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-end;
+	height: 190px;
+	padding: 14px;
+	border-radius: 16px;
+	overflow: hidden;
+	color: var(--ev-white);
+}
+.ev-universe:hover { color: var(--ev-white); }
+.ev-universe__img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform .4s ease; }
+.ev-universe:hover .ev-universe__img { transform: scale(1.03); }
+.ev-universe__shade { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(18, 40, 36, 0) 35%, rgba(14, 32, 28, .75) 100%); }
+.ev-universe__body { position: relative; display: flex; flex-direction: column; align-items: flex-start; gap: 3px; }
+.ev-universe__title { font: 700 18px/1.2 var(--ev-font-head); }
+.ev-universe__sub { font-size: 11px; color: var(--ev-forest-edge); }
+.ev-universe__cta { display: none; }
+
+@media (min-width: 900px) {
+	.ev-universes__grid { gap: 24px; padding-block: 40px 32px; }
+	.ev-universe { height: 280px; padding: 28px; border-radius: 20px; }
+	.ev-universe__body { gap: 10px; }
+	.ev-universe__title { font-size: 30px; line-height: 1.15; }
+	.ev-universe__sub { font-size: 14px; }
+	.ev-universe__cta { display: inline-flex; padding-inline: 20px; }
+}
+
+/* ── Sections et grilles ────────────────────────────────────────────────── */
+.ev-section { padding-block: 8px 24px; }
+.ev-section__head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 14px; }
+.ev-section__head h2 { font-weight: 700; font-size: 21px; line-height: 1.2; }
+
+.ev-grid--products { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+
+@media (min-width: 900px) {
+	.ev-section { padding-block: 16px 48px; }
+	.ev-section__head { margin-bottom: 22px; }
+	.ev-section__head h2 { font-size: 36px; line-height: 1.15; letter-spacing: -.015em; }
+	.ev-link { font-size: 14px; }
+	.ev-grid--products { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px; }
+}
+
+/* ── Carte produit ──────────────────────────────────────────────────────── */
+.ev-card {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	background: var(--ev-white);
+	border: 1px solid var(--ev-line);
+	border-radius: var(--ev-radius-card);
+	overflow: hidden;
+	transition: border-color .15s ease, box-shadow .15s ease;
+}
+/* Carte entièrement cliquable (§6.2) : le lien du titre couvre toute la carte. */
+.ev-card__link::after {
+	content: '';
+	position: absolute;
+	inset: 0;
+}
+.ev-card:has(.ev-card__link:hover) { border-color: var(--ev-forest); }
+.ev-card__link:focus-visible { outline: none; }
+.ev-card:has(.ev-card__link:focus-visible) { outline: 2px solid var(--ev-ocean); outline-offset: 2px; }
+.ev-card__media { position: relative; display: block; aspect-ratio: 1 / 1; background: var(--ev-chip); }
+.ev-card__media img { width: 100%; height: 100%; object-fit: cover; }
+
+.ev-badge {
+	position: absolute;
+	top: 8px;
+	inset-inline-start: 8px;
+	padding: 4px 8px;
+	border-radius: 6px;
+	background: var(--ev-forest);
+	color: var(--ev-cream);
+	font: 700 9px/1 var(--ev-font-head);
+	letter-spacing: .04em;
+	text-transform: uppercase;
+}
+.ev-badge--new { background: var(--ev-sun); color: var(--ev-ink); }
+.ev-badge--sale { background: var(--ev-brick); color: var(--ev-white); letter-spacing: 0; text-transform: none; }
+
+.ev-card__body { display: flex; flex: 1; flex-direction: column; gap: 6px; padding: 10px 10px 12px; }
+.ev-card__title { min-height: 35px; font: 400 13px/1.35 var(--ev-font-body); }
+.ev-card__title a { display: block; padding-block: 2px; color: var(--ev-ink); }
+.ev-card__title a:hover { color: var(--ev-forest); }
+.ev-card__rating { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--ev-ink-60); }
+.ev-card__price { margin-top: auto; font: 700 15px/1 var(--ev-font-head); }
+.ev-card__price del { color: var(--ev-ink-60); font-weight: 500; font-size: .8em; margin-inline-end: 4px; }
+.ev-card__price ins { text-decoration: none; }
+
+.ev-card__cta { width: 100%; min-height: 40px; margin-top: 2px; border-radius: 12px; font-size: 13px; }
+.ev-card__cta.loading { opacity: .6; pointer-events: none; }
+.ev-card__cta.added { display: none; }
+.ev-card .added_to_cart { display: block; margin-top: 2px; text-align: center; font: 600 13px/40px var(--ev-font-head); }
+
+@media (min-width: 900px) {
+	.ev-badge { top: 12px; inset-inline-start: 12px; padding: 5px 10px; border-radius: 7px; font-size: 10px; letter-spacing: .05em; }
+	.ev-card__body { gap: 9px; padding: 16px; }
+	.ev-card__title { min-height: 42px; font-size: 15px; line-height: 1.4; }
+	.ev-card__rating { font-size: 12px; }
+	.ev-card__price { font-size: 19px; }
+	.ev-card__cta { min-height: 46px; margin-top: 4px; font-size: 15px; }
+}
+
+/* Étoiles : remplissage proportionnel porté par --ev-rating. */
+.ev-stars {
+	display: inline-block;
+	font-size: 14px;
+	line-height: 1;
+	letter-spacing: -1px;
+	background: linear-gradient(90deg, var(--ev-star) var(--ev-rating, 0%), var(--ev-line-2) var(--ev-rating, 0%));
+	-webkit-background-clip: text;
+	background-clip: text;
+	color: transparent;
+}
+.ev-stars::before { content: '★★★★★'; }
+
+/* ── Bannière ───────────────────────────────────────────────────────────── */
+.ev-banner-wrap { padding-block: 0 24px; }
+.ev-banner {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-end;
+	height: 220px;
+	padding: 18px;
+	border-radius: 16px;
+	overflow: hidden;
+	color: var(--ev-white);
+}
+.ev-banner__img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.ev-banner__shade { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(18, 40, 36, .1) 20%, rgba(14, 32, 28, .8) 100%); }
+.ev-banner__copy { position: relative; display: flex; flex-direction: column; align-items: flex-start; gap: 10px; }
+.ev-banner h2 { max-width: 260px; font-weight: 700; font-size: 20px; line-height: 1.25; color: var(--ev-white); }
+.ev-banner p { margin: 0; max-width: 280px; font-size: 13px; color: var(--ev-forest-edge); }
+.ev-banner .ev-btn { min-height: 42px; padding-inline: 18px; border-radius: 12px; font-size: 14px; }
+
+@media (min-width: 900px) {
+	.ev-banner-wrap { padding-block: 0 48px; }
+	.ev-banner { flex-direction: row; align-items: center; justify-content: flex-start; height: 300px; padding: 0 48px; border-radius: 20px; }
+	.ev-banner__shade { background: linear-gradient(90deg, rgba(14, 32, 28, .8) 0%, rgba(14, 32, 28, .25) 60%, rgba(14, 32, 28, 0) 85%); }
+	.ev-banner__copy { max-width: 520px; gap: 16px; }
+	.ev-banner h2 { max-width: none; font-size: 34px; line-height: 1.2; letter-spacing: -.015em; }
+	.ev-banner p { max-width: none; font-size: 16px; }
+	.ev-banner .ev-btn { min-height: 48px; padding-inline: 26px; font-size: 15px; }
+}
+
+/* ── Réassurance ────────────────────────────────────────────────────────── */
+.ev-benefits-wrap .ev-container { padding-inline: 0; }
+.ev-benefits {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 1px;
+	background: var(--ev-line);
+	border-block: 1px solid var(--ev-line);
+}
+.ev-benefit { display: flex; flex-direction: column; gap: 6px; padding: 16px 14px; background: var(--ev-cream); }
+.ev-benefit__icon {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 30px;
+	height: 30px;
+	border: 1.5px solid var(--ev-forest);
+	border-radius: 8px;
+	color: var(--ev-forest);
+}
+.ev-benefit__icon .ev-icon { width: 16px; height: 16px; }
+/* Nombre impair d'arguments : le dernier occupe toute la largeur, sans cellule vide. */
+.ev-benefit:last-child:nth-child(odd) { grid-column: 1 / -1; }
+.ev-benefit__text { display: flex; flex-direction: column; gap: 3px; }
+.ev-benefit__text strong { font: 700 13px/1.3 var(--ev-font-head); }
+.ev-benefit__text span { font-size: 12px; line-height: 1.4; color: var(--ev-ink-60); }
+
+@media (min-width: 900px) {
+	.ev-benefits-wrap { padding-block: 0 48px; }
+	.ev-benefits-wrap .ev-container { padding-inline: var(--ev-gutter); }
+	.ev-benefit:last-child:nth-child(odd) { grid-column: auto; }
+	.ev-benefits { grid-template-columns: repeat(var(--ev-cols, 4), 1fr); gap: 24px; background: none; border: 0; }
+	.ev-benefit { flex-direction: row; align-items: center; gap: 14px; padding: 20px; background: var(--ev-white); border: 1px solid var(--ev-line); border-radius: 16px; }
+	.ev-benefit__icon { width: 44px; height: 44px; flex: none; border-radius: 12px; }
+	.ev-benefit__icon .ev-icon { width: 20px; height: 20px; }
+	.ev-benefit__text strong { font-size: 15px; }
+	.ev-benefit__text span { font-size: 13px; }
+}
+
+/* ── Avis ───────────────────────────────────────────────────────────────── */
+.ev-reviews { padding-block: 24px; }
+.ev-reviews__list {
+	display: flex;
+	gap: 12px;
+	overflow-x: auto;
+	scroll-snap-type: x mandatory;
+	scrollbar-width: none;
+}
+.ev-reviews__list::-webkit-scrollbar { display: none; }
+.ev-review {
+	flex: 0 0 100%;
+	scroll-snap-align: start;
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	padding: 16px;
+	background: var(--ev-white);
+	border: 1px solid var(--ev-line);
+	border-radius: 16px;
+}
+.ev-review blockquote { margin: 0; font-size: 14px; line-height: 1.5; font-style: italic; }
+.ev-review footer { display: flex; align-items: center; gap: 10px; margin-top: auto; font-size: 12px; }
+.ev-review footer a { color: var(--ev-ink-60); }
+.ev-review__avatar {
+	width: 36px;
+	height: 36px;
+	border-radius: 50%;
+	background: repeating-linear-gradient(135deg, var(--ev-chip) 0 6px, var(--ev-sand) 6px 12px);
+}
+
+@media (min-width: 900px) {
+	.ev-reviews { padding-block: 0 56px; }
+	.ev-reviews__list { display: grid; grid-template-columns: repeat(var(--ev-cols, 3), minmax(0, 1fr)); gap: 24px; overflow: visible; }
+	.ev-review { padding: 24px; gap: 12px; border-radius: 18px; }
+	.ev-review blockquote { font-size: 15px; line-height: 1.55; }
+	.ev-review footer { font-size: 13px; }
+}
+
+/* ── Pourquoi choisir (boutique, catégories, univers) ───────────────────── */
+/* Les jetons --ev-why-* n'existent que si le propriétaire a choisi une couleur
+   dans le Customizer ; sinon le repli sur les jetons du thème s'applique (§2.1). */
+.ev-why-wrap { padding-block: 20px; }
+.ev-why {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 20px;
+	padding: 26px 18px;
+	border-radius: 16px;
+	overflow: hidden;
+	color: var(--ev-why-text, var(--ev-white));
+}
+.ev-why__img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.ev-why__shade { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(14, 32, 28, .5), rgba(14, 32, 28, .78)); }
+.ev-why h2 { position: relative; font-weight: 700; font-size: 19px; line-height: 1.2; letter-spacing: -.01em; text-align: center; color: var(--ev-why-title, var(--ev-white)); }
+.ev-why__list { position: relative; display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px 16px; width: 100%; }
+.ev-why__list li { display: flex; flex-direction: column; align-items: center; gap: 8px; font: 600 11px/1.35 var(--ev-font-head); text-align: center; }
+.ev-why__icon { display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: 50%; background: var(--ev-why-icon-bg, var(--ev-white)); color: var(--ev-why-icon, var(--ev-forest)); }
+.ev-why__icon .ev-icon { width: 20px; height: 20px; }
+.ev-why__list li:last-child:nth-child(odd) { grid-column: 1 / -1; }
+
+@media (min-width: 900px) {
+	.ev-why-wrap { padding-block: 0 48px; }
+	.ev-why { gap: 28px; padding: 40px 48px; border-radius: 20px; }
+	.ev-why h2 { font-size: 28px; }
+	.ev-why__list li:last-child:nth-child(odd) { grid-column: auto; }
+	.ev-why__list { grid-template-columns: repeat(var(--ev-cols, 4), 1fr); gap: 0 48px; max-width: 900px; }
+	.ev-why__list li { gap: 12px; font-size: 14px; }
+	.ev-why__icon { width: 56px; height: 56px; }
+	.ev-why__icon .ev-icon { width: 24px; height: 24px; }
+}
+
+/* ── Communauté (avant le pied de page) ─────────────────────────────────── */
+/* Maquette « EVASIONS Newsletter » : mobile d'abord (image en haut, panneau
+   dessous), puis desktop (image 40 % / panneau 60 %). Les jetons --ev-com-*
+   n'existent que si le propriétaire a choisi une couleur dans le Customizer ;
+   sinon le repli sur les jetons du thème s'applique (§2.1). */
+.ev-com-wrap { padding-block: 20px; }
+.ev-com {
+	display: flex;
+	flex-direction: column;
+	border-radius: 18px;
+	overflow: hidden;
+	background: var(--ev-com-panel, var(--ev-forest));
+}
+.ev-com__media { position: relative; height: 150px; }
+.ev-com__img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.ev-com__panel {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	padding: 24px;
+	background: var(--ev-com-panel, linear-gradient(135deg, var(--ev-forest) 0%, var(--ev-forest-night) 100%));
+}
+.ev-com__title { margin: 0; font-family: var(--ev-font-head); font-weight: 800; font-size: 23px; line-height: 1.2; color: var(--ev-com-title, var(--ev-white)); }
+.ev-com__text { margin: 0; font-size: 15px; line-height: 1.4; color: var(--ev-com-text, var(--ev-forest-edge)); }
+.ev-com__btn {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin-top: 10px;
+	min-height: 48px;
+	padding-inline: 26px;
+	border-radius: 12px;
+	background: var(--ev-com-btn, var(--ev-sun));
+	color: var(--ev-com-btn-text, var(--ev-ink));
+	font-family: var(--ev-font-head);
+	font-weight: 800;
+	font-size: 15px;
+	text-decoration: none;
+}
+.ev-com__btn:hover { color: var(--ev-com-btn-text, var(--ev-ink)); filter: brightness(.94); }
+.ev-com__btn:focus-visible { outline: 2px solid var(--ev-sun); outline-offset: 2px; }
+.ev-com__btn { border: 0; cursor: pointer; }
+
+/* Inscription : champ et bouton empilés sur mobile, accolés en pilule dès 900 px. */
+.ev-com__form { display: flex; flex-direction: column; gap: 10px; margin: 10px 0 0; }
+.ev-com__form .ev-com__btn { margin-top: 0; }
+.ev-com__field {
+	min-height: 48px;
+	width: 100%;
+	border: 0;
+	border-radius: 12px;
+	padding-inline: 16px;
+	background: var(--ev-white);
+	color: var(--ev-ink);
+	font-family: inherit;
+	font-size: 16px; /* ≥ 16 px : iOS ne zoome pas au focus (§17.3). */
+}
+.ev-com__field:focus-visible { outline: 2px solid var(--ev-sun); outline-offset: 2px; }
+.ev-com__field:invalid:not(:placeholder-shown) { box-shadow: inset 0 0 0 2px var(--ev-sun); }
+/* Avertissement réservé aux administrateurs (formulaire non encore branché). */
+.ev-com__warning { margin: 10px 0 0; font-size: 13px; line-height: 1.4; color: var(--ev-sun); }
+
+@media (min-width: 900px) {
+	.ev-com-wrap { padding-block: 0 48px; }
+	.ev-com { display: grid; grid-template-columns: 40% 60%; min-height: 200px; border-radius: 20px; }
+	.ev-com__media { height: auto; }
+	.ev-com__panel { justify-content: center; gap: 10px; padding: 0 56px; }
+	.ev-com__title { font-size: 28px; line-height: 1.15; }
+	.ev-com__text { font-size: 16px; }
+	.ev-com__btn { align-self: flex-start; display: inline-flex; margin-top: 12px; min-height: 52px; }
+	.ev-com__form {
+		flex-direction: row;
+		gap: 0;
+		margin-top: 12px;
+		max-width: 520px;
+		border-radius: 12px;
+		overflow: hidden;
+		background: var(--ev-white);
+		box-shadow: 0 6px 18px rgba(14, 32, 28, .2);
+	}
+	.ev-com__form .ev-com__field { flex: 1; min-width: 0; min-height: 52px; border-radius: 0; }
+	.ev-com__form .ev-com__btn { flex: none; align-self: auto; border-radius: 0; }
+}
+
+/* ── Pied de page ───────────────────────────────────────────────────────── */
+.ev-footer { background: var(--ev-deep); color: var(--ev-forest-mist-2); padding-block: 26px 16px; }
+.ev-footer__grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.ev-footer__brand { grid-column: 1 / -1; display: flex; flex-direction: column; gap: 8px; }
+.ev-footer__brand img { height: 46px; width: auto; }
+.ev-footer__brand p { margin: 0; font-size: 12px; color: var(--ev-sage-2); }
+.ev-footer__col h2 { margin-bottom: 8px; font: 700 12px/1 var(--ev-font-head); letter-spacing: .06em; text-transform: uppercase; color: var(--ev-sand); }
+.ev-footer__col ul { font-size: 13px; line-height: 1.9; }
+.ev-footer__col a { color: var(--ev-forest-mist-2); }
+.ev-footer__col a:hover { color: var(--ev-white); }
+/* « Suivez-nous » reste une colonne comme les autres : côte à côte avec les menus,
+   pas une bande pleine largeur en dessous. */
+.ev-footer .ev-social a { width: 22px; height: 22px; }
+.ev-footer__legal {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	margin-top: 22px;
+	padding-top: 14px;
+	border-top: 1px solid rgba(232, 220, 200, .2);
+	font-size: 11px;
+	color: var(--ev-sage);
+}
+.ev-footer__legal ul { display: flex; flex-wrap: wrap; gap: 6px 18px; }
+.ev-footer__legal a { color: var(--ev-sage); }
+.ev-footer__legal a:hover { color: var(--ev-white); }
+
+@media (min-width: 900px) {
+	.ev-footer { padding-block: 48px 20px; }
+	/* Tout sur une seule ligne : la marque et chaque colonne de liens (dont
+	   « Suivez-nous ») côte à côte. Flex plutôt que grid : robuste quel que soit
+	   le nombre de colonnes réellement présentes, sans piste vide. */
+	.ev-footer__grid { display: flex; align-items: flex-start; gap: 40px; }
+	.ev-footer__brand { flex: 1.4 1 0; gap: 12px; }
+	.ev-footer__col { flex: 1 1 0; }
+	.ev-footer__brand img { height: 66px; }
+	.ev-footer__brand p { font-size: 13px; }
+	.ev-footer__col h2 { margin-bottom: 12px; letter-spacing: .08em; }
+	.ev-footer__col ul { font-size: 14px; line-height: 2; }
+	.ev-footer .ev-social a { width: 26px; height: 26px; }
+	.ev-footer__legal { flex-direction: row; align-items: center; justify-content: space-between; margin-top: 36px; padding-top: 18px; font-size: 12px; }
+}
+
+/* ── Pages de contenu et WooCommerce (avant les maquettes dédiées) ──────── */
+/* Fil d'Ariane (toutes les pages WooCommerce). */
+.ev-woo-crumbs { padding-block: 20px 0; }
+.ev-breadcrumb { margin: 0; font: 500 12px/1.4 ui-monospace, monospace; color: var(--ev-ink-60); }
+.ev-breadcrumb a { display: inline-block; margin-block: -5px; padding-block: 5px; color: var(--ev-ink-60); }
+.ev-breadcrumb a:hover { color: var(--ev-forest); }
+.ev-breadcrumb__sep { margin-inline: 2px; }
+.ev-woo-crumbs:has(.ev-breadcrumb:empty) { display: none; }
+.ev-content { padding-block: 32px 64px; }
+.ev-content__title { margin-bottom: 20px; font-weight: 800; font-size: 32px; line-height: 1.12; letter-spacing: -.02em; }
+.ev-prose { max-width: 760px; }
+.ev-prose > * + * { margin-top: 1em; }
+.ev-entry { padding-block: 16px; border-bottom: 1px solid var(--ev-line); }
+.ev-entry__title { font-size: 22px; }
+.ev-entry__title a { color: var(--ev-ink); }
+.ev-woo .woocommerce-breadcrumb { margin-bottom: 16px; font-size: 13px; color: var(--ev-ink-60); }
+.ev-woo .button,
+.ev-woo button.button,
+.ev-woo a.button {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-height: 44px;
+	padding: 0 20px;
+	border: 0;
+	border-radius: 12px;
+	background: var(--ev-forest);
+	color: var(--ev-cream);
+	font: 600 14px/1 var(--ev-font-head);
+	cursor: pointer;
+}
+.ev-woo .button:hover { background: var(--ev-deep); color: var(--ev-cream); }
+
+@media (min-width: 900px) {
+	.ev-content__title { font-size: 44px; }
+}
+
+/* ── Mouvement : rien ne bouge sans raison (§1.7 de la spécification UX) ─── */
+@media (prefers-reduced-motion: reduce) {
+	*, *::before, *::after { transition: none !important; animation: none !important; scroll-behavior: auto !important; }
+}
+
+/* ── Puce de stock (fiche produit, panier) ──────────────────────────────── */
+.ev-stock { display: inline-block; align-self: flex-start; padding: 5px 10px; border-radius: 7px; background: var(--ev-forest-tint); color: var(--ev-forest-mid); font: 600 12px/1 var(--ev-font-head); }
+.ev-stock.is-backorder { background: var(--ev-sun-tint); color: var(--ev-sun-ink); }
+.ev-stock.is-out { background: var(--ev-brick-tint); color: var(--ev-brick); }
+.ev-stock--small { padding: 4px 9px; border-radius: 6px; font-size: 11px; }
+
+/* ── Carte produit compacte (produits complémentaires, ventes croisées) ─── */
+.ev-card--compact .ev-card__price { margin-top: 0; font-size: 15px; }
+.ev-card--compact .ev-card__body { gap: 8px; }
+.ev-card--compact .ev-card__cta { margin-top: 4px; }
+@media (min-width: 900px) {
+	.ev-card--compact .ev-card__price { font-size: 18px; }
+	.ev-card--compact .ev-card__cta { min-height: 44px; font-size: 14px; }
+}
+
+/* Date d'un article. */
+.ev-entry__meta { margin: -8px 0 20px; font-size: 13px; color: var(--ev-ink-60); }
+
+/* ── Suivi de commande (§11) ────────────────────────────────────────────── */
+.ev-track { max-width: 520px; margin-inline: auto; }
+.ev-track__form { display: flex; flex-direction: column; gap: 14px; margin-bottom: 24px; }
+.ev-track__field { display: flex; flex-direction: column; gap: 6px; margin: 0; }
+.ev-track__field label { font: 600 14px/1 var(--ev-font-head); color: var(--ev-ink-80); }
+.ev-track__field input {
+	height: 48px;
+	padding-inline: 14px;
+	border: 1px solid var(--ev-line-2);
+	border-radius: 14px;
+	background: var(--ev-white);
+	color: var(--ev-ink);
+	font: 400 16px/1 var(--ev-font-body);
+}
+.ev-track__field input:focus-visible { outline: none; border-color: var(--ev-ocean); }
+.ev-track__form .ev-btn { min-height: 48px; }
+.ev-track__empty { padding: 14px 16px; border-radius: var(--ev-radius-block); background: var(--ev-chip); color: var(--ev-ink-80); }
+.ev-track__result { padding: 20px; border: 1px solid var(--ev-line); border-radius: var(--ev-radius-block); background: var(--ev-white); }
+.ev-track__num { margin: 0 0 16px; font: 700 16px/1.3 var(--ev-font-head); }
+.ev-track__state.is-stopped { margin: 0 0 6px; font-weight: 700; color: var(--ev-brick); }
+.ev-track__hint { margin: 0; font-size: 14px; color: var(--ev-ink-60); }
+.ev-track__steps { display: flex; flex-direction: column; gap: 0; margin: 0; padding: 0; }
+.ev-track__step { position: relative; display: flex; align-items: center; gap: 12px; padding: 10px 0 10px 4px; color: var(--ev-ink-60); font-size: 14px; }
+.ev-track__step span { flex: none; width: 14px; height: 14px; border: 2px solid var(--ev-line-2); border-radius: 50%; background: var(--ev-white); }
+.ev-track__step:not(:last-child)::before { content: ''; position: absolute; inset-inline-start: 10px; top: 24px; bottom: -10px; width: 2px; background: var(--ev-line-2); }
+.ev-track__step.is-done { color: var(--ev-ink); }
+.ev-track__step.is-done span { border-color: var(--ev-forest); background: var(--ev-forest); }
+.ev-track__step.is-done:not(:last-child)::before { background: var(--ev-forest); }
+.ev-track__step.is-current { font-weight: 700; }

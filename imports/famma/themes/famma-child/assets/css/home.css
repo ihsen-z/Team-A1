@@ -1,0 +1,844 @@
+/* ============================================================
+   FAMMA — page d'accueil. Lot D5.
+
+   Mêmes règles que les autres feuilles du lot : aucune valeur
+   littérale hors jetons, aucune propriété directionnelle, rupture
+   unique à 1000px.
+
+   Le héros porte la classe `famma-hero2` et non `famma-hero` :
+   cette dernière appartient déjà au bloc éditorial des lots
+   précédents (style.css). Deux composants distincts, deux noms —
+   les confondre ferait hériter au nouveau héros des règles de
+   l'ancien.
+   ============================================================ */
+
+.famma-home {
+	padding-block: var(--sp-6) var(--sp-12);
+}
+
+.famma-home__section {
+	margin-block-start: var(--sp-12);
+}
+
+.famma-home__editorial {
+	margin-block-start: var(--sp-12);
+}
+
+/* --- Titre de section : trait · titre · trait --- */
+
+.famma-sectitle {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: var(--sp-4);
+	margin-block-end: var(--sp-6);
+}
+
+.famma-sectitle__rule {
+	inline-size: 2.75rem;
+	block-size: 3px;
+	flex-shrink: 0;
+	border-radius: 2px;
+	background: var(--famma-orange);
+}
+
+.famma-sectitle__text {
+	margin: 0;
+	color: var(--famma-blue);
+	font-size: var(--fs-h2);
+	font-weight: var(--fw-semibold);
+	text-align: center;
+	text-wrap: balance;
+}
+
+/* --- Héros --- */
+
+.famma-hero2 {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: var(--sp-8);
+	padding: var(--sp-10) clamp(var(--sp-6), 5vw, var(--sp-12));
+	border-radius: var(--famma-radius-lg);
+	background: var(--famma-blue);
+	color: var(--famma-white);
+}
+
+.famma-hero2__text {
+	display: flex;
+	flex: 1 1 21.25rem;
+	flex-direction: column;
+	gap: var(--sp-4);
+	min-inline-size: 0;
+}
+
+/*
+ * `color` explicite, et non hérité.
+ *
+ * Ce mot-symbole est devenu un `<h1>` (lot D5) : le thème et `theme.json`
+ * posent alors une couleur de titre marine, qui l'emporte sur le blanc hérité
+ * du héros. Résultat mesuré avant correction : marine sur marine, ratio 1,1 —
+ * le nom de la marque était invisible en haut de la page d'accueil. Détecté
+ * par l'audit de contraste sur le rendu, pas à la relecture.
+ */
+.famma-hero2__word {
+	margin: 0;
+	color: var(--famma-white);
+	font-size: clamp(2.875rem, 7vw, 4.875rem);
+	font-weight: var(--fw-bold);
+	line-height: 1;
+	letter-spacing: 0.01em;
+}
+
+/* Pas de règle attrape-tout `.famma-hero2 :is(h1,h2,p)` ici : à (0,1,1) elle
+   l'emporterait sur `.famma-hero2__lead` (0,1,0) et repeindrait en blanc le
+   gris volontairement plus doux de l'accroche. Chaque élément porte sa
+   couleur. */
+
+.famma-hero2__a {
+	color: var(--famma-orange);
+}
+
+.famma-hero2__slogan {
+	display: flex;
+	align-items: center;
+	gap: var(--sp-3);
+	margin: 0;
+	font-family: var(--famma-font-ar);
+	font-size: clamp(1.1875rem, 2.6vw, 1.6875rem);
+	font-weight: var(--fw-bold);
+	line-height: var(--lh-ar);
+}
+
+.famma-hero2__rule {
+	inline-size: 1.625rem;
+	block-size: 3px;
+	flex-shrink: 0;
+	border-radius: 2px;
+	background: var(--famma-orange);
+}
+
+.famma-hero2__ar {
+	color: var(--famma-orange);
+}
+
+.famma-hero2__lead {
+	max-inline-size: 27rem;
+	margin: 0;
+	/* 10,93:1 sur le marine — le gris clair de la maquette passe AA ici. */
+	color: var(--famma-on-dark-4);
+	font-size: var(--fs-lead);
+	line-height: var(--lh-base);
+	text-wrap: pretty;
+}
+
+.famma-hero2__perks {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--sp-6);
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.famma-hero2__perk {
+	display: flex;
+	align-items: flex-start;
+	gap: var(--sp-2);
+	min-inline-size: 10.9375rem;
+}
+
+.famma-hero2__perk .famma-icon {
+	inline-size: 1.3125rem;
+	block-size: 1.3125rem;
+	margin-block-start: 2px;
+	color: var(--famma-orange);
+}
+
+.famma-hero2__perk-title,
+.famma-hero2__perk-sub {
+	display: block;
+}
+
+.famma-hero2__perk-title {
+	font-size: var(--fs-small);
+	font-weight: var(--fw-semibold);
+	line-height: var(--lh-tight);
+}
+
+.famma-hero2__perk-sub {
+	/* 8,05:1 sur le marine. */
+	color: var(--famma-on-dark-3);
+	font-size: var(--fs-caption);
+	line-height: var(--lh-base);
+}
+
+.famma-hero2__cta {
+	display: inline-flex;
+	align-self: flex-start;
+	align-items: center;
+	gap: var(--sp-4);
+	min-block-size: var(--sp-12);
+	padding-inline: var(--sp-6);
+	border-radius: var(--famma-radius-sm);
+	background: var(--famma-orange);
+	/* Bleu sur orange : 6,32:1. Le blanc de la maquette valait 2,61:1. */
+	color: var(--famma-on-orange);
+	font-size: var(--fs-button);
+	font-weight: var(--fw-semibold);
+	text-decoration: none;
+}
+
+.famma-hero2__cta:hover,
+.famma-hero2__cta:focus-visible {
+	background: var(--famma-orange-600);
+	color: var(--famma-on-orange);
+}
+
+.famma-hero2__cta-sep {
+	inline-size: 1px;
+	block-size: 1.125rem;
+	background: currentColor;
+	opacity: 0.45;
+}
+
+/* --- Visuel du héros --- */
+
+/*
+ * Mobile d'abord : aucun plancher de largeur.
+ *
+ * `min-inline-size: 18.125rem` (290px) etait un plancher de maquette bureau.
+ * Dans un heros de 232px utiles a 320px de large, il debordait de la fenetre
+ * de 14px et faisait defiler toute la page horizontalement. Le plancher est
+ * restitue a partir de 1000px, la ou il y a la place. Le visuel garde sa
+ * hauteur : le disque et les vignettes sont positionnes en absolu par rapport
+ * a lui, ils suivent la largeur sans se deformer.
+ */
+.famma-hero2__media {
+	position: relative;
+	flex: 1 1 21.25rem;
+	min-inline-size: 0;
+	block-size: 20.625rem;
+}
+
+.famma-hero2__disc {
+	position: absolute;
+	inset-block-start: 50%;
+	inset-inline-start: 50%;
+	transform: translate(-50%, -50%);
+	inline-size: 15.625rem;
+	block-size: 15.625rem;
+	border-radius: var(--famma-radius-pill);
+	background: var(--famma-orange);
+}
+
+.famma-hero2__base {
+	position: absolute;
+	inset-block-end: var(--sp-6);
+	inset-inline-start: 50%;
+	transform: translateX(-50%);
+	inline-size: 20.625rem;
+	max-inline-size: 100%;
+	block-size: 1.625rem;
+	border: 3px solid var(--famma-orange);
+	border-radius: var(--famma-radius-pill);
+	opacity: 0.65;
+}
+
+/*
+ * Centrage des deux decorations en arabe.
+ *
+ * `inset-inline-start: 50%` s'inverse tout seul, mais `translate()` est une
+ * propriete PHYSIQUE : elle ignore le sens de lecture. En RTL, le bord
+ * interieur part donc de la droite tandis que la translation continue de tirer
+ * vers la gauche — la decoration se decale au lieu de se centrer, et elle
+ * debordait de la fenetre par la gauche, ce qui provoquait un defilement
+ * horizontal sur toute la page d'accueil arabe.
+ *
+ * Les deux seuls `translate` physiques du theme sont ici : les autres blocs
+ * utilisent des marges et des grilles, qui suivent le sens de lecture seules.
+ */
+[dir="rtl"] .famma-hero2__disc {
+	transform: translate(50%, -50%);
+}
+
+[dir="rtl"] .famma-hero2__base {
+	transform: translateX(50%);
+}
+
+.famma-hero2__slides {
+	position: absolute;
+	inset: 0;
+}
+
+.famma-hero2__slide {
+	position: absolute;
+	inset: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	opacity: 0;
+	transition: opacity 500ms ease;
+	pointer-events: none;
+}
+
+.famma-hero2__slide.is-active {
+	opacity: 1;
+	pointer-events: auto;
+}
+
+.famma-hero2__slide img {
+	inline-size: 86%;
+	block-size: 92%;
+	object-fit: contain;
+}
+
+.famma-hero2__dots {
+	position: absolute;
+	inset-block-end: 0;
+	inset-inline: 0;
+	display: flex;
+	justify-content: center;
+	gap: var(--sp-2);
+}
+
+.famma-hero2__dot {
+	inline-size: 9px;
+	block-size: 9px;
+	padding: 0;
+	border: 0;
+	border-radius: 5px;
+	background: var(--famma-overlay-soft);
+	cursor: pointer;
+	transition: inline-size var(--dur-base) var(--ease-out);
+}
+
+.famma-hero2__dot.is-active {
+	inline-size: 1.625rem;
+	background: var(--famma-orange);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.famma-hero2__slide,
+	.famma-hero2__dot {
+		transition: none;
+	}
+}
+
+/* --- Catégories --- */
+
+/*
+ * Carrousel des rayons.
+ *
+ * Le defilement est natif : `overflow-x: auto` sur la piste, accroche au rayon
+ * avec `scroll-snap`. Au doigt cela fonctionne sans une ligne de JavaScript, et
+ * `carousel.js` ne fait qu'ajouter les fleches quand la piste depasse.
+ *
+ * `flex: 1 0 auto` : les rayons S'ETIRENT pour remplir la largeur quand ils
+ * sont peu nombreux — cinq rayons sur un ecran large gardent la rangee pleine
+ * de la maquette, sans carrousel visible — et ne se COMPRESSENT jamais sous
+ * 9,25rem. Passe ce seuil, la piste depasse et le carrousel prend le relais.
+ * Le nombre de rayons n'est donc ecrit nulle part.
+ */
+.famma-cats {
+	position: relative;
+	display: flex;
+	align-items: center;
+	gap: var(--sp-2);
+}
+
+.famma-cats__track {
+	display: flex;
+	flex: 1;
+	gap: var(--sp-4);
+	margin: 0;
+	padding: 0;
+	overflow-x: auto;
+	/* Le glissement lateral ne doit pas declencher le retour arriere du
+	   navigateur, ni entrainer la page. */
+	overscroll-behavior-x: contain;
+	scroll-snap-type: x proximity;
+	scroll-behavior: smooth;
+	list-style: none;
+	/* La barre de defilement est masquee : les fleches et l'accroche disent
+	   deja qu'il y a une suite, et une barre sous les cartes hachait la
+	   rangee. Le clavier et le doigt gardent l'acces complet. */
+	scrollbar-width: none;
+}
+
+.famma-cats__track::-webkit-scrollbar {
+	display: none;
+}
+
+.famma-cats__item {
+	flex: 1 0 auto;
+	inline-size: 9.25rem;
+	min-inline-size: 9.25rem;
+	scroll-snap-align: start;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.famma-cats__track {
+		scroll-behavior: auto;
+	}
+}
+
+/*
+ * Fleches — bureau seulement, et seulement si la piste deborde vraiment.
+ *
+ * Mobile d'abord : PAS de fleches. Mesure a 375px, deux cibles de 48px et
+ * leurs gouttieres prenaient 112px des 335px utiles, et il ne restait que 1,4
+ * carte visible. Au doigt, le glissement natif fait deja le travail — la
+ * fleche ne serait qu'un bouton qui vole la place du contenu qu'il sert.
+ *
+ * Posees dans le flux et non au-dessus des cartes : superposees, elles
+ * masqueraient un rayon. `hidden` reste pose par le script tant qu'il n'a pas
+ * mesure de debordement : une commande qui ne commande rien est pire que pas
+ * de commande.
+ */
+.famma-cats__nav {
+	display: none;
+	align-items: center;
+	justify-content: center;
+	flex: none;
+	inline-size: var(--sp-12);
+	block-size: var(--sp-12);
+	padding: 0;
+	border: 1px solid var(--famma-line);
+	border-radius: var(--famma-radius-pill);
+	background: var(--famma-white);
+	color: var(--famma-blue);
+	cursor: pointer;
+	transition: border-color var(--dur-base) var(--ease-out),
+		color var(--dur-base) var(--ease-out);
+}
+
+@media (min-width: 1000px) {
+	.famma-cats__nav {
+		display: inline-flex;
+	}
+
+	/* Apres la regle ci-dessus, sinon l'affichage bureau ressusciterait les
+	   fleches que le script a masquees faute de debordement. */
+	.famma-cats__nav[hidden] {
+		display: none;
+	}
+}
+
+.famma-cats__nav:hover:not(:disabled),
+.famma-cats__nav:focus-visible {
+	border-color: var(--famma-orange);
+	color: var(--famma-accent-text);
+}
+
+/* Bout de piste atteint : la fleche reste en place pour ne pas decaler la
+   rangee, mais dit qu'elle ne mene plus nulle part. */
+.famma-cats__nav:disabled {
+	opacity: 0.4;
+	cursor: default;
+}
+
+/*
+ * Un seul chevron dans le jeu d'icones, oriente vers le bas : il est pivote
+ * ici, comme partout ailleurs dans le theme. Le sens depend de la direction
+ * d'ecriture, donc les deux rotations sont inversees en RTL — une fleche
+ * « suivant » qui pointe a droite en arabe montrerait le passe.
+ */
+.famma-cats__nav-icon {
+	inline-size: 1.125rem;
+	block-size: 1.125rem;
+}
+
+.famma-cats__nav--prev .famma-cats__nav-icon {
+	transform: rotate(90deg);
+}
+
+.famma-cats__nav--next .famma-cats__nav-icon {
+	transform: rotate(-90deg);
+}
+
+[dir="rtl"] .famma-cats__nav--prev .famma-cats__nav-icon {
+	transform: rotate(-90deg);
+}
+
+[dir="rtl"] .famma-cats__nav--next .famma-cats__nav-icon {
+	transform: rotate(90deg);
+}
+
+.famma-cats__card {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: var(--sp-3);
+	block-size: 100%;
+	padding: var(--sp-6) var(--sp-3);
+	border: 1px solid var(--famma-line);
+	border-radius: var(--famma-radius);
+	background: var(--famma-white);
+	color: var(--famma-blue);
+	text-decoration: none;
+	transition: border-color var(--dur-base) var(--ease-out),
+		box-shadow var(--dur-base) var(--ease-out);
+}
+
+.famma-cats__card:hover,
+.famma-cats__card:focus-visible {
+	border-color: var(--famma-orange);
+	box-shadow: var(--elev-1);
+}
+
+.famma-cats__media {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	inline-size: 3.875rem;
+	block-size: 3.875rem;
+}
+
+.famma-cats__media img {
+	inline-size: 100%;
+	block-size: 100%;
+	border-radius: var(--famma-radius-sm);
+	object-fit: contain;
+}
+
+/* Repli quand la catégorie n'a pas de vignette : le disque orange à étoile
+   de la maquette, plutôt qu'un cadre vide. */
+.famma-cats__mark {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	inline-size: 3.875rem;
+	block-size: 3.875rem;
+	border-radius: var(--famma-radius-pill);
+	background: var(--famma-orange);
+	color: var(--famma-on-orange);
+}
+
+.famma-cats__mark svg {
+	inline-size: 1.75rem;
+	block-size: 1.75rem;
+}
+
+.famma-cats__name {
+	font-size: var(--fs-small);
+	font-weight: var(--fw-medium);
+	text-align: center;
+	text-wrap: balance;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.famma-cats__card {
+		transition: none;
+	}
+}
+
+/* --- Grille « Nos nouveautés » ---
+   La carte elle-meme est dessinee par assets/css/product-card.css, feuille
+   partagee avec la boutique et les produits lies. Ici, seule la grille. */
+
+/* `auto-fill` pour la meme raison que la boutique : avec une seule mise en
+   avant, `auto-fit` etirerait la carte sur toute la largeur de la section. */
+.famma-home__grid ul.products {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(12.25rem, 1fr));
+	gap: 18px;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+/* --- « Pourquoi choisir FAMMA ? » --- */
+
+.famma-why {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+	gap: var(--sp-4);
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.famma-why__item {
+	display: flex;
+	align-items: flex-start;
+	gap: var(--sp-3);
+	padding: var(--sp-4);
+	border: 1px solid var(--famma-line);
+	border-radius: var(--famma-radius);
+}
+
+.famma-why__mark {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	flex-shrink: 0;
+	inline-size: 2.875rem;
+	block-size: 2.875rem;
+	border-radius: var(--famma-radius-sm);
+	background: var(--famma-surface-icon);
+	color: var(--famma-blue);
+}
+
+.famma-why__text {
+	display: flex;
+	flex-direction: column;
+	gap: var(--sp-1);
+}
+
+.famma-why__title {
+	color: var(--famma-blue);
+	font-size: var(--fs-small);
+	font-weight: var(--fw-semibold);
+}
+
+.famma-why__sub {
+	color: var(--famma-text-2);
+	font-size: var(--fs-small);
+	line-height: var(--lh-base);
+	text-wrap: pretty;
+}
+
+/* --- Newsletter (maquette : bandeau bleu nuit, cadeau orange) --- */
+
+.famma-newsletter {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: space-between;
+	gap: 26px;
+	padding: 30px clamp(22px, 4vw, 44px);
+	border-radius: 14px;
+	background: var(--famma-blue);
+	color: var(--famma-white);
+}
+
+.famma-newsletter__intro {
+	display: flex;
+	flex: 1 1 21.25rem;
+	align-items: center;
+	gap: 20px;
+	min-inline-size: 0;
+}
+
+.famma-newsletter__icon {
+	flex-shrink: 0;
+	inline-size: 58px;
+	block-size: 58px;
+	color: var(--famma-orange);
+	stroke-width: 1.6;
+}
+
+.famma-newsletter__text {
+	display: flex;
+	flex-direction: column;
+	gap: 7px;
+	min-inline-size: 0;
+}
+
+.famma-newsletter__title {
+	margin: 0;
+	color: var(--famma-white);
+	font-family: var(--famma-font-ar), var(--famma-font);
+	font-size: clamp(1.1875rem, 2.4vw, 1.5625rem);
+	font-weight: var(--fw-bold);
+	line-height: var(--lh-tight);
+}
+
+.famma-newsletter__sub {
+	margin: 0;
+	color: var(--famma-on-dark-2);
+	font-size: var(--fs-chrome-field);
+	line-height: var(--lh-base);
+	text-wrap: pretty;
+}
+
+.famma-newsletter__form {
+	display: flex;
+	flex: 1 1 20rem;
+	flex-direction: column;
+	gap: var(--sp-2);
+	min-inline-size: 0;
+	margin: 0;
+}
+
+.famma-newsletter__row {
+	display: flex;
+	overflow: hidden;
+	border-radius: var(--famma-radius-sm);
+	background: var(--famma-white);
+}
+
+.famma-newsletter__input {
+	flex: 1;
+	min-inline-size: 0;
+	min-block-size: var(--sp-12);
+	margin: 0;
+	padding: 0 16px;
+	border: 0;
+	border-radius: 0;
+	background: var(--famma-white);
+	color: var(--famma-ink);
+	/* 16px : en dessous, Safari iOS zoome au focus. */
+	font-size: var(--fs-input);
+}
+
+.famma-newsletter__button {
+	flex-shrink: 0;
+	min-block-size: var(--sp-12);
+	padding: 0 22px;
+	border: 0;
+	border-radius: 0;
+	background: var(--famma-orange);
+	/* §44 : bleu sur orange, 6,31:1 (le blanc de la maquette tombe à 2,61:1). */
+	color: var(--famma-blue);
+	font-size: var(--fs-small);
+	font-weight: var(--fw-semibold);
+	white-space: nowrap;
+	cursor: pointer;
+}
+
+.famma-newsletter__button:hover,
+.famma-newsletter__button:focus-visible {
+	background: var(--famma-orange-600);
+}
+
+.famma-newsletter__note {
+	margin: 0;
+	color: var(--famma-on-dark-muted);
+	font-size: var(--fs-card-meta);
+}
+
+.famma-newsletter__feedback {
+	margin: 0;
+	padding: var(--sp-2) var(--sp-3);
+	border-radius: var(--famma-radius-sm);
+	font-size: var(--fs-chrome-field);
+	font-weight: var(--fw-medium);
+}
+
+.famma-newsletter__feedback.is-success {
+	background: var(--famma-success);
+	color: var(--famma-white);
+}
+
+.famma-newsletter__feedback.is-error {
+	background: var(--famma-warning-bg);
+	color: var(--famma-warning-700);
+}
+
+/* Pot de miel : hors écran, jamais `display: none` (certains robots l'ignorent). */
+.famma-newsletter__trap {
+	position: absolute;
+	inset-inline-start: -9999px;
+	inline-size: 1px;
+	block-size: 1px;
+	overflow: hidden;
+}
+
+/* --- Ils nous font confiance --- */
+
+.famma-trust-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(min(100%, 16.875rem), 1fr));
+	align-items: stretch;
+	gap: 18px;
+}
+
+.famma-trust-stats {
+	display: flex;
+	overflow: hidden;
+	border: 1px solid var(--famma-line);
+	border-radius: var(--famma-radius);
+}
+
+.famma-trust-stats__cell {
+	display: flex;
+	flex: 1;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 6px;
+	padding: 24px 16px;
+	text-align: center;
+}
+
+.famma-trust-stats__cell + .famma-trust-stats__cell {
+	border-inline-start: 1px solid var(--famma-line);
+}
+
+.famma-trust-stats__value {
+	margin: 0;
+	color: var(--famma-ink);
+	font-size: 1.75rem;
+	font-weight: var(--fw-bold);
+	line-height: 1.1;
+}
+
+.famma-trust-stats__max {
+	color: var(--famma-text-3);
+	font-size: var(--fs-lead);
+}
+
+.famma-trust-stats .star-rating {
+	margin: 0;
+	color: var(--famma-orange);
+}
+
+.famma-trust-stats__label {
+	margin: 0;
+	color: var(--famma-text-2);
+	font-size: var(--fs-chrome-body);
+}
+
+.famma-testimonial {
+	display: flex;
+	flex-direction: column;
+	gap: 11px;
+	margin: 0;
+	padding: 20px;
+	border: 1px solid var(--famma-line);
+	border-radius: var(--famma-radius);
+}
+
+.famma-testimonial__mark {
+	inline-size: 22px;
+	block-size: 22px;
+	color: var(--famma-orange);
+}
+
+.famma-testimonial__text {
+	flex: 1;
+	margin: 0;
+	padding: 0;
+	border: 0;
+	color: var(--famma-text-prose);
+	font-size: var(--fs-chrome-field);
+	font-style: normal;
+	line-height: 1.6;
+	text-wrap: pretty;
+}
+
+.famma-testimonial__text p {
+	margin: 0;
+}
+
+.famma-testimonial__name {
+	color: var(--famma-text-2);
+	font-size: var(--fs-chrome-body);
+	font-weight: var(--fw-medium);
+}
+
+/* ------------------------------------------------------------
+   Bureau : restitution des planchers de maquette
+
+   La maquette de l'accueil est une maquette de bureau. Les largeurs
+   minimales qu'elle pose ne tiennent pas dans 320px ; elles sont
+   reposees ici, a partir de 1000px, ou la place existe.
+   ------------------------------------------------------------ */
+
+@media (min-width: 1000px) {
+	.famma-hero2__media {
+		min-inline-size: 18.125rem;
+	}
+}

@@ -1,0 +1,13 @@
+# Médiathèque de famma — aucune image n'est copiée.
+Fichiers : 194
+Poids    : 126M
+
+# Répartition par extension
+    110 jpeg
+     54 jpg
+      9 png
+      9 log
+      7 webp
+      2 html
+      2 htaccess
+      1 mp4

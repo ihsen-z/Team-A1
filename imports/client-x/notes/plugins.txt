@@ -1,0 +1,12 @@
+# Extensions présentes sur client-x
+# Relevé le 2026-09-28 — noms de dossiers, le code n'est pas copié.
+
+evasions-core                            0.2.0
+plugin-check                             2.1.0
+woocommerce                              11.1.2
+
+# mu-plugins
+evasions-durcissement.php
+evasions-env.php
+evasions-legacy-urls.php
+evasions-local-mail.php

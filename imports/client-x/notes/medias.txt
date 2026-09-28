@@ -1,0 +1,11 @@
+# Médiathèque de client-x — aucune image n'est copiée.
+Fichiers : 565
+Poids    : 99M
+
+# Répartition par extension
+    172 webp
+    162 log
+    154 jpg
+     73 png
+      2 html
+      2 htaccess

@@ -1,0 +1,175 @@
+/*
+ * EVASIONS — base des écrans WooCommerce.
+ *
+ * Remplace `woocommerce-general`, `woocommerce-layout` et `woocommerce-smallscreen`
+ * (retirées dans inc/setup.php). Court à dessein : il ne couvre que ce que les
+ * écrans WooCommerce impriment sans que le thème ne les ait encore redessinés —
+ * notices, champs, tableaux, étoiles, pagination, boutons sans classe `.ev-btn`.
+ * Chaque écran redessiné d'après une maquette (fiche produit, puis panier,
+ * checkout, listing) a sa propre feuille et n'en dépend pas.
+ */
+
+/* ── Boutons WooCommerce non habillés par le thème ──────────────────────── */
+.woocommerce .button:not(.ev-btn),
+.woocommerce button.button:not(.ev-btn),
+.woocommerce input.button:not(.ev-btn),
+.woocommerce a.button:not(.ev-btn),
+.woocommerce #respond input#submit {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-height: 44px;
+	padding: 0 20px;
+	border: 0;
+	border-radius: 12px;
+	background: var(--ev-forest);
+	color: var(--ev-cream);
+	font: 600 14px/1 var(--ev-font-head);
+	cursor: pointer;
+	transition: background-color .15s ease;
+}
+.woocommerce .button:not(.ev-btn):hover,
+.woocommerce a.button:not(.ev-btn):hover { background: var(--ev-deep); color: var(--ev-cream); }
+.woocommerce .button.disabled,
+.woocommerce .button:disabled { opacity: .5; cursor: not-allowed; }
+
+/* ── Notices ────────────────────────────────────────────────────────────── */
+.woocommerce-notices-wrapper:empty { display: none; }
+.woocommerce-message,
+.woocommerce-info,
+.woocommerce-error {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+	margin: 0 0 16px;
+	padding: 14px 16px;
+	border: 1px solid var(--ev-line-2);
+	border-inline-start: 4px solid var(--ev-forest);
+	border-radius: 12px;
+	background: var(--ev-white);
+	color: var(--ev-ink);
+	font-size: 14px;
+	list-style: none;
+}
+.woocommerce-info { border-inline-start-color: var(--ev-ocean); }
+.woocommerce-error { border-inline-start-color: var(--ev-brick); flex-direction: column; align-items: flex-start; }
+.woocommerce-error li { margin: 0; }
+
+/* ── Champs de formulaire ───────────────────────────────────────────────── */
+/* Limités au contenu principal (.ev-main) : la recherche de l'en-tête a ses propres styles. */
+.ev-main input[type='text'],
+.ev-main input[type='email'],
+.ev-main input[type='tel'],
+.ev-main input[type='password'],
+.ev-main input[type='number'],
+.ev-main input[type='search'],
+.ev-main select,
+.ev-main textarea {
+	width: 100%;
+	min-height: 46px;
+	padding: 10px 14px;
+	border: 1px solid var(--ev-line-2);
+	border-radius: 12px;
+	background: var(--ev-white);
+	color: var(--ev-ink);
+	font: 400 16px/1.4 var(--ev-font-body);   /* 16 px : en dessous, iOS zoome au focus */
+}
+.ev-main input:focus-visible,
+.ev-main select:focus-visible,
+.ev-main textarea:focus-visible { outline: 2px solid var(--ev-ocean); outline-offset: 1px; }
+.ev-main label { font: 600 14px/1.4 var(--ev-font-head); }
+.ev-main .required { color: var(--ev-brick); text-decoration: none; }
+.ev-main form .form-row { margin: 0 0 14px; padding: 0; }
+
+/* ── Tableaux (caractéristiques, panier, commandes) ─────────────────────── */
+.woocommerce table.shop_attributes,
+.woocommerce table.shop_table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.woocommerce table.shop_attributes th,
+.woocommerce table.shop_attributes td,
+.woocommerce table.shop_table th,
+.woocommerce table.shop_table td { padding: 12px 10px; border-bottom: 1px solid var(--ev-line); text-align: start; vertical-align: top; }
+.woocommerce table.shop_attributes th { width: 34%; font: 600 14px/1.4 var(--ev-font-head); color: var(--ev-ink-80); }
+.woocommerce table.shop_attributes p { margin: 0; }
+
+/* ── Étoiles (avis WooCommerce) ─────────────────────────────────────────── */
+.woocommerce .star-rating {
+	position: relative;
+	display: block;
+	overflow: hidden;
+	width: 5.4em;
+	height: 1em;
+	font-size: 14px;
+	line-height: 1;
+	letter-spacing: 0;
+}
+.woocommerce .star-rating::before { content: '★★★★★'; position: absolute; inset-block-start: 0; inset-inline-start: 0; color: var(--ev-line-2); }
+.woocommerce .star-rating span { position: absolute; inset-block-start: 0; inset-inline-start: 0; overflow: hidden; padding-top: 1.5em; }
+.woocommerce .star-rating span::before { content: '★★★★★'; position: absolute; inset-block-start: 0; inset-inline-start: 0; color: var(--ev-star); }
+
+/* Sélecteur de note du formulaire d'avis (les 5 choix natifs de WooCommerce). */
+.woocommerce p.stars a { color: var(--ev-star); }
+
+/* ── Pagination ─────────────────────────────────────────────────────────── */
+.woocommerce nav.woocommerce-pagination ul { display: flex; justify-content: center; gap: 8px; margin: 32px 0 0; padding: 0; list-style: none; }
+.woocommerce nav.woocommerce-pagination ul li a,
+.woocommerce nav.woocommerce-pagination ul li span {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	min-width: 42px;
+	height: 42px;
+	padding: 0 12px;
+	border: 1px solid var(--ev-line-2);
+	border-radius: 10px;
+	background: var(--ev-white);
+	color: var(--ev-ink);
+	font: 600 14px/1 var(--ev-font-head);
+}
+.woocommerce nav.woocommerce-pagination ul li span.current { border-color: var(--ev-forest); background: var(--ev-forest); color: var(--ev-cream); }
+
+/* ── Divers ─────────────────────────────────────────────────────────────── */
+.woocommerce .price del { color: var(--ev-ink-60); font-weight: 500; }
+.woocommerce .price ins { text-decoration: none; }
+.woocommerce .blockUI.blockOverlay { background: rgba(255, 255, 255, .6) !important; }
+.woocommerce a.added_to_cart { display: inline-block; margin-inline-start: 8px; font: 600 13px/1 var(--ev-font-head); }
+
+/* Loupe de la galerie : pastille ronde discrète en haut à droite de l'image. */
+.woocommerce-product-gallery__trigger {
+	position: absolute;
+	inset-block-start: 12px;
+	inset-inline-end: 12px;
+	z-index: 5;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 36px;
+	height: 36px;
+	border-radius: 50%;
+	background: rgba(255, 255, 255, .92);
+	font-size: 15px;
+	text-decoration: none;
+}
+
+/* ── Bouton « afficher le mot de passe » ────────────────────────────────── */
+/* WooCommerce le dessine avec sa police d'icônes, qui vient de la feuille retirée : on le redessine avec une icône SVG. */
+.woocommerce .password-input { position: relative; display: block; }
+.woocommerce .password-input input { padding-inline-end: 48px; }
+.woocommerce .show-password-input {
+	position: absolute;
+	top: 50%;
+	inset-inline-end: 4px;
+	width: 44px;
+	height: 44px;
+	margin: 0;
+	padding: 0;
+	transform: translateY(-50%);
+	border: 0;
+	background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='22' viewBox='0 0 24 24' fill='none' stroke='%233F4744' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z'/%3E%3Ccircle cx='12' cy='12' r='3'/%3E%3C/svg%3E") center / 22px no-repeat;
+	cursor: pointer;
+}
+.woocommerce .show-password-input.display-password {
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='22' viewBox='0 0 24 24' fill='none' stroke='%233F4744' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z'/%3E%3Ccircle cx='12' cy='12' r='3'/%3E%3Cpath d='M4 4l16 16'/%3E%3C/svg%3E");
+}
+.woocommerce .show-password-input::after { content: none; }

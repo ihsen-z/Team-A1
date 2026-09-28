@@ -1,0 +1,12 @@
+/*
+Theme Name:        EVASIONS
+Description:       Thème de la boutique EVASIONS (plage, camping, randonnée — Tunisie). Présentation uniquement : la logique métier (commande COD, checkout, tracking, SEO) vit dans le plugin EVASIONS Core, pour que changer de thème ne détruise rien.
+Author:            EVASIONS
+Version:           0.1.0
+Requires at least: 6.9
+Requires PHP:      8.1
+Text Domain:       evasions
+License:           Proprietary
+
+Les styles sont dans assets/css/main.css (chargé par functions.php) : ce fichier ne porte que l'en-tête exigé par WordPress.
+*/

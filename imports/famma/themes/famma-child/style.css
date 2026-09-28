@@ -1,0 +1,969 @@
+/*
+Theme Name:   FAMMA Child
+Theme URI:    https://github.com/famma-mennou
+Description:  Thème enfant FAMMA (parent : Kadence). Présentation uniquement — toute la logique métier vit dans le plugin famma-core. Mobile-first, bilingue FR / Derja, RTL par propriétés logiques.
+Author:       FAMMA
+Version:      0.1.0
+Template:     kadence
+License:      GNU General Public License v2 or later
+License URI:  http://www.gnu.org/licenses/gpl-2.0.html
+Text Domain:  famma-child
+Tags:         e-commerce, rtl-language-support, translation-ready
+*/
+
+/* ============================================================
+   Les tokens du design system sont dans assets/css/tokens.css
+   (chargé avant cette feuille). Ici : uniquement les surcharges
+   de présentation.
+
+   RTL : n'utiliser QUE des propriétés logiques (margin-inline,
+   padding-inline, inset-inline, text-align: start/end) afin que
+   l'arabe s'affiche correctement sans feuille dupliquée.
+   ============================================================ */
+
+/* ============================================================
+   Correspondance palette Kadence -> FAMMA (§6, §49)
+
+   Kadence expose quinze emplacements `--global-paletteN` dont
+   dérivent ses liens, ses boutons et ses fonds. Ils portaient
+   encore ses valeurs par défaut (bleu #2B6CB0) : tout ce que le
+   thème parent stylait restait hors marque, seuls les sélecteurs
+   surchargés plus bas étaient aux couleurs FAMMA.
+
+   Fait ici, en CSS, et non dans le personnalisateur : un réglage
+   du personnalisateur vit en base, donc ni relisible en diff ni
+   reproductible à la réinstallation (c'est le défaut D-7 du plan
+   UX). Kadence émet ses variables en ligne dans le `<head>` avant
+   cette feuille : `:root` suffit, sans surenchère de spécificité.
+
+   L'emplacement 1 vaut le BLEU, pas l'orange. Kadence en tire la
+   couleur des liens et le fond des boutons : de l'orange y placerait
+   du texte à 2,61:1 sur blanc dans tout le site. Le bleu tient
+   16,5:1, et le §6 réserve l'orange à l'accent.
+   ============================================================ */
+
+:root {
+	--global-palette1: var(--famma-blue);          /* accent — liens, boutons */
+	--global-palette2: var(--famma-blue-600);      /* accent survolé */
+	--global-palette3: var(--famma-ink);           /* texte le plus fort */
+	--global-palette4: var(--famma-blue);          /* texte fort */
+	--global-palette5: var(--famma-muted);         /* texte moyen */
+	--global-palette6: var(--famma-muted);         /* texte discret */
+	--global-palette7: var(--famma-line);          /* fond discret, filets */
+	--global-palette8: var(--famma-bg);            /* fond de page */
+	--global-palette9: var(--famma-white);         /* blanc */
+	--global-palette10: var(--famma-orange);       /* complément — l'accent de marque */
+	--global-palette11: var(--famma-success-700);  /* succès */
+	--global-palette12: var(--famma-blue-600);     /* information */
+	--global-palette13: var(--famma-danger-700);   /* alerte */
+	--global-palette14: var(--famma-warning);      /* avertissement */
+	--global-palette15: var(--famma-warning);      /* notation, étoiles */
+}
+
+/* --- Accessibilité : cible tactile minimale (§10, §44) --- */
+.wp-block-button__link,
+.wc-block-components-button,
+button,
+input[type="submit"],
+.button {
+	min-block-size: var(--sp-12);
+	min-inline-size: var(--sp-12);
+}
+
+/* --- CTA principal « Commander / أطلب توا » (§13, §49) ------
+   Texte BLEU sur orange, et non blanc : blanc sur #FF7A00 tombe
+   à 2,61:1, sous le seuil AA même en grand texte (§44). Le bleu
+   monte à 6,31:1 sans rien retirer à la vibration de la marque.
+   ---------------------------------------------------------- */
+/* Le sélecteur composé n'est pas de la coquetterie : Kadence stylise le
+   bouton d'achat via `.woocommerce button.button.alt` (0,3,1) dans son
+   woocommerce.min.css. Depuis que les emplacements de palette pointent
+   sur les couleurs FAMMA, cette règle rendait le CTA navy — lisible,
+   mais plus l'orange de la marque sur le bouton qui fait la vente.
+   On repasse au-dessus par la spécificité plutôt que par l'ordre des
+   feuilles, qui n'est pas garanti. */
+.famma-cta,
+.woocommerce .single_add_to_cart_button,
+.woocommerce button.single_add_to_cart_button.button.alt,
+.woocommerce #place_order {
+	background-color: var(--famma-orange);
+	color: var(--famma-blue);
+	border-radius: var(--famma-radius);
+	font-size: var(--fs-button);
+	font-weight: var(--fw-bold);
+	padding-block: var(--sp-3);
+	padding-inline: var(--sp-6);
+}
+
+/* --- Focus visible : jamais supprimé (§44) ------------------
+   L'anneau était orange : invisible sur le CTA orange, et sous
+   3:1 sur blanc. Bleu + halo blanc reste lisible sur fond clair,
+   sur orange et sur le héros sombre.
+   ---------------------------------------------------------- */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+summary:focus-visible,
+/* Exclut les conteneurs focalisés par script (tabindex="-1") : ils
+   ne sont pas des cibles clavier et n'ont pas à porter d'anneau. */
+[tabindex]:not([tabindex="-1"]):focus-visible {
+	outline: var(--focus-ring-width) solid var(--focus-ring-color);
+	outline-offset: 2px;
+	box-shadow: var(--focus-halo);
+}
+
+/* ============================================================
+   Identité — lockup horizontal (planche 2a)
+   L'icône hérite de currentColor pour son tracé navy : elle passe
+   donc en blanc sur fond sombre sans fichier supplémentaire.
+   ============================================================ */
+
+.famma-lockup {
+	display: inline-flex;
+	align-items: center;
+	gap: var(--sp-3);
+	color: var(--famma-blue);
+	text-decoration: none;
+}
+
+/* 42×41 : la taille exacte de la maquette. C'est elle qui fixe la hauteur de
+   l'en-tête, le lockup étant son élément le plus haut. */
+.famma-lockup__mark {
+	inline-size: 42px;
+	block-size: 41px;
+	flex: none;
+}
+
+.famma-lockup__text {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+	line-height: 1;
+}
+
+.famma-lockup__word {
+	font-family: var(--famma-font);
+	font-weight: var(--fw-bold);
+	font-size: var(--fs-brand-word);
+	letter-spacing: 0.01em;
+}
+
+/* Le A final en orange, avec son point navy — signe distinctif du logo. */
+.famma-lockup__a {
+	position: relative;
+	color: var(--famma-orange);
+}
+
+.famma-lockup__a::after {
+	content: "";
+	position: absolute;
+	inset-inline-start: 50%;
+	inset-block-end: 0.1em;
+	inline-size: 0.17em;
+	block-size: 0.17em;
+	margin-inline-start: -0.085em;
+	border-radius: 50%;
+	background: var(--famma-blue);
+}
+
+/* La baseline de la maquette est encadrée de deux traits orange de 12×2px.
+   Rendus en pseudo-éléments : c'est du dessin, il n'a rien à faire dans le
+   balisage, et il suit ainsi le lockup partout où il est réutilisé. */
+.famma-lockup__tagline {
+	display: flex;
+	align-items: center;
+	gap: 5px;
+	direction: rtl;
+	font-size: var(--fs-brand-tagline);
+	font-weight: var(--fw-medium);
+	/* Jamais d'interlettrage sur de l'arabe : cela brise les ligatures. */
+	letter-spacing: 0;
+}
+
+.famma-lockup__tagline::before,
+.famma-lockup__tagline::after {
+	content: "";
+	flex: none;
+	inline-size: 12px;
+	block-size: 2px;
+	background: var(--famma-orange);
+}
+
+/* Dans le lockup, la baseline est d'une seule couleur — la maquette ne met
+   « فمّا » en orange que dans le héros, où le mot est trois fois plus grand.
+   Le reprendre ici hacherait une ligne de 9px. */
+.famma-lockup__ar {
+	color: inherit;
+	font-weight: inherit;
+}
+
+/* ============================================================
+   Contextes sombres — l'accent textuel bascule sur l'orange vif.
+   Un seul jeton redéfini suffit : les composants imbriqués
+   suivent sans surcharge de couleur en cascade.
+   ============================================================ */
+.famma-hero,
+.famma-legal,
+.famma-on-dark {
+	--famma-accent-text: var(--famma-orange);
+}
+
+/* Le lockup porte déjà le mot FAMMA : le titre de site du thème le
+   répéterait mot pour mot à côté. On le réserve aux lecteurs d'écran
+   plutôt que de le supprimer, pour ne rien retirer à l'accessibilité. */
+.site-branding .site-title-wrap {
+	position: absolute;
+	inline-size: 1px;
+	block-size: 1px;
+	padding: 0;
+	overflow: hidden;
+	clip-path: inset(50%);
+	white-space: nowrap;
+}
+
+/* Sous 340 px la baseline arabe passerait à la ligne et déséquilibrerait
+   l'en-tête : on ne garde alors que le mot-symbole. */
+@media (max-width: 340px) {
+	.famma-lockup__tagline {
+		display: none;
+	}
+}
+
+/* --- Barre de liens légaux (§8) --- */
+.famma-legal {
+	padding: var(--sp-4);
+	background: var(--famma-blue);
+}
+
+.famma-legal__list {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	gap: var(--sp-2) var(--sp-4);
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.famma-legal__list a {
+	display: inline-flex;
+	align-items: center;
+	min-block-size: var(--sp-12);
+	color: var(--famma-line);
+	font-size: var(--fs-small);
+	text-decoration: none;
+}
+
+.famma-legal__list a:hover,
+.famma-legal__list a:focus-visible {
+	color: var(--famma-accent-text);
+	text-decoration: underline;
+}
+
+/* --- Encart « à compléter » (§45) ---------------------------
+   Volontairement voyant : ces blocs signalent du contenu qui
+   engage la boutique et qui n'a pas encore été validé. Ils
+   doivent avoir disparu avant toute mise en production.
+   ---------------------------------------------------------- */
+.famma-todo {
+	margin-block: var(--sp-4);
+	padding: var(--sp-4);
+	border: 1px dashed var(--famma-warning);
+	border-radius: var(--famma-radius);
+	background: var(--famma-warning-bg);
+	color: var(--famma-warning-700);
+	font-size: var(--fs-body);
+	line-height: var(--lh-base);
+}
+
+/* --- Sceau circulaire (planche 2b) --- */
+.famma-seal {
+	inline-size: 148px;
+	block-size: 148px;
+	margin-inline: auto;
+	margin-block-end: var(--sp-4);
+}
+
+/* ============================================================
+   Page d'accueil « catalogue vide » (§9)
+   Mobile-first : les règles de base visent le petit écran, les
+   media queries n'ajoutent que ce qui est nécessaire au-dessus.
+   ============================================================ */
+
+/* Kadence affiche un bandeau de titre au-dessus du contenu. Sur la page
+   d'accueil il ferait doublon avec le héros et repousserait le message de
+   marque sous la ligne de flottaison sur mobile. */
+.home .entry-hero {
+	display: none;
+}
+
+.famma-hero {
+	padding-block: var(--sp-8);
+	padding-inline: var(--sp-4);
+	text-align: center;
+	background: linear-gradient(180deg, var(--famma-blue) 0%, var(--famma-blue-600) 100%);
+	color: var(--famma-white);
+}
+
+.famma-hero__kicker {
+	margin-block-end: var(--sp-2);
+	font-size: var(--fs-h3);
+	font-weight: var(--fw-bold);
+	color: var(--famma-accent-text);
+}
+
+.famma-hero__title {
+	margin-block: 0 var(--sp-3);
+	font-size: var(--fs-h1);
+	line-height: var(--lh-tight);
+	color: var(--famma-white);
+}
+
+.famma-hero__lead {
+	max-inline-size: 46ch;
+	margin-inline: auto;
+	color: var(--famma-line);
+}
+
+/* --- Bandeau de confiance (§48) --- */
+.famma-chips {
+	padding-block: var(--sp-6);
+	padding-inline: var(--sp-4);
+	background: var(--famma-surface-band);
+}
+
+.famma-contact {
+	padding-inline: var(--sp-4);
+	background: var(--famma-surface-band);
+	text-align: center;
+}
+
+.famma-chip {
+	margin: 0;
+	padding: var(--sp-4);
+	border: 1px solid var(--famma-line);
+	border-radius: var(--famma-radius);
+	background: var(--famma-white);
+	text-align: center;
+	line-height: 1.5;
+}
+
+.famma-chip strong {
+	color: var(--famma-blue);
+}
+
+/* Le bloc colonnes de WordPress passe en pile sous 782px ; on garde
+   simplement un espacement lisible entre les cartes empilées. */
+.famma-chips__row {
+	gap: var(--sp-3);
+}
+
+/* --- Sections de contenu --- */
+.famma-soon,
+.famma-how,
+.famma-faq,
+.famma-contact {
+	padding-block: var(--sp-8);
+}
+
+.famma-section__title {
+	margin-block-end: var(--sp-3);
+	color: var(--famma-blue);
+	font-size: var(--fs-h2);
+	line-height: var(--lh-tight);
+}
+
+.famma-soon__ar {
+	font-size: var(--fs-h4);
+	font-weight: var(--fw-bold);
+	color: var(--famma-accent-text);
+	line-height: var(--lh-ar);
+}
+
+.famma-steps {
+	margin-block-start: var(--sp-4);
+	padding-inline-start: var(--sp-6);
+}
+
+.famma-steps li {
+	margin-block-end: var(--sp-2);
+}
+
+.famma-faq .wp-block-details {
+	padding: var(--sp-3) var(--sp-4);
+	border: 1px solid var(--famma-line);
+	border-radius: var(--famma-radius);
+	background: var(--famma-white);
+	margin-block-end: var(--sp-2);
+}
+
+.famma-faq summary {
+	cursor: pointer;
+	font-weight: 600;
+	color: var(--famma-blue);
+	/* Cible tactile confortable (§10, §44). */
+	min-block-size: 32px;
+	padding-block: var(--sp-2);
+}
+
+/* --- Sélecteur de langue flottant (TranslatePress) ----------
+   Le réglage « bottom-left » du plugin ne s'applique pas à son
+   sélecteur v2, qui se positionne par variables CSS. On le pousse
+   donc à l'opposé du bouton WhatsApp, qui occupe le bas de fin de
+   ligne. À remplacer par un sélecteur en en-tête en Phase 5 (§9).
+   ---------------------------------------------------------- */
+.trp-floating-switcher {
+	--right: auto;
+
+	inset-inline-start: var(--sp-4);
+	inset-inline-end: auto;
+}
+
+/* --- CTA WhatsApp rendu par le raccourci famma-core --- */
+/* Fond vert -700 : le vert de marque avec du texte blanc plafonne à
+   3,16:1, sous le seuil AA pour du texte de cette taille (§44). */
+.famma-wa-cta {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-block-size: var(--sp-12);
+	padding-inline: var(--sp-6);
+	border-radius: var(--famma-radius);
+	background: var(--famma-success-700);
+	color: var(--famma-white);
+	font-size: var(--fs-button);
+	font-weight: var(--fw-bold);
+	text-decoration: none;
+}
+
+/* ============================================================
+   Carte produit (§13 du brief UX)
+
+   La carte doit répondre seule : à quoi sert l'objet, combien il
+   coûte, et comment le commander. Un visiteur venu d'une publicité
+   ne doit pas avoir à ouvrir la fiche pour le savoir.
+
+   Le CTA de carte est BLEU, pas orange. L'orange reste au bouton
+   d'achat de la fiche produit : s'il couvre aussi la grille, il
+   ne signale plus rien (§6 — accent, jamais dominante).
+   ============================================================ */
+
+.woocommerce ul.products li.product {
+	border: 1px solid var(--famma-line);
+	border-radius: var(--famma-radius);
+	overflow: hidden;
+	background: var(--famma-white);
+	transition: box-shadow var(--dur-base) var(--ease-out),
+		transform var(--dur-base) var(--ease-out);
+}
+
+.woocommerce ul.products li.product:hover,
+.woocommerce ul.products li.product:focus-within {
+	box-shadow: var(--elev-2);
+	transform: translateY(-2px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.woocommerce ul.products li.product {
+		transition: none;
+	}
+
+	.woocommerce ul.products li.product:hover,
+	.woocommerce ul.products li.product:focus-within {
+		transform: none;
+	}
+}
+
+.woocommerce ul.products li.product .product-details {
+	padding: var(--sp-3) var(--sp-4) var(--sp-4);
+}
+
+/* Deux lignes maximum : au-delà, les cartes d'une même rangée
+   cessent de s'aligner et la grille se met à onduler. */
+.woocommerce ul.products li.product .woocommerce-loop-product__title {
+	display: -webkit-box;
+	-webkit-line-clamp: 2;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+	color: var(--famma-blue);
+	font-size: var(--fs-body);
+	font-weight: var(--fw-semibold);
+	line-height: var(--lh-base);
+}
+
+/* Bénéfice principal — n'existe que si le propriétaire l'a saisi. */
+.famma-card__benefit {
+	display: -webkit-box;
+	-webkit-line-clamp: 2;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+	margin-block: var(--sp-1) var(--sp-2);
+	color: var(--famma-muted);
+	font-size: var(--fs-small);
+	line-height: var(--lh-base);
+}
+
+/* Le bloc prix de la fiche ne visait que `div.product` : sur la
+   grille, l'élément est un `li.product` et restait sans style. */
+.woocommerce ul.products li.product .price {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	gap: var(--sp-2);
+	color: var(--famma-blue);
+	font-size: var(--fs-h4);
+	font-weight: var(--fw-bold);
+}
+
+.woocommerce ul.products li.product .price del {
+	color: var(--famma-muted);
+	font-size: var(--fs-small);
+	font-weight: var(--fw-regular);
+	opacity: 1;
+}
+
+.woocommerce ul.products li.product .price ins {
+	background: none;
+	text-decoration: none;
+	font-weight: var(--fw-bold);
+}
+
+/* Kadence neutralise le fond du bouton de grille avec un sélecteur à
+   (0,5,2) — cinq classes, deux types, dont deux `:not()` qui comptent
+   chacun pour une classe. On monte à (0,5,3), et le `:not(.kb-button)`
+   n'est pas qu'un poids : il reprend l'exclusion de Kadence pour ne pas
+   restyler les boutons de ses propres blocs. Aucun !important. */
+.woocommerce ul.products li.product a.button:not(.kb-button) {
+	display: block;
+	inline-size: 100%;
+	margin-block-start: var(--sp-3);
+	padding-block: var(--sp-3);
+	border-radius: var(--famma-radius-sm);
+	background: var(--famma-blue);
+	color: var(--famma-white);
+	font-size: var(--fs-small);
+	font-weight: var(--fw-bold);
+	text-align: center;
+}
+
+.woocommerce ul.products li.product a.button:not(.kb-button):hover,
+.woocommerce ul.products li.product a.button:not(.kb-button):focus-visible {
+	background: var(--famma-blue-600);
+	color: var(--famma-white);
+}
+
+/* ============================================================
+   Bloc prix, remise et quantité (§13, §25 du brief UX)
+
+   Le prix ne prend PAS l'orange : #FF7A00 en texte sur blanc vaut
+   2,61:1. La hiérarchie se fait par la graisse et la taille, pas
+   par la couleur — l'orange reste au CTA.
+   ============================================================ */
+
+.woocommerce div.product p.price,
+.woocommerce div.product span.price {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	gap: var(--sp-2);
+	margin-block-end: var(--sp-2);
+	color: var(--famma-blue);
+	font-size: var(--fs-price);
+	font-weight: var(--fw-bold);
+	line-height: var(--lh-tight);
+}
+
+.woocommerce div.product p.price del,
+.woocommerce div.product span.price del {
+	color: var(--famma-muted);
+	font-size: var(--fs-price-old);
+	font-weight: var(--fw-regular);
+	opacity: 1;
+}
+
+/* WooCommerce souligne `ins` par défaut : le prix courant se lit
+   comme un lien, ce qu'il n'est pas. */
+.woocommerce div.product p.price ins,
+.woocommerce div.product span.price ins {
+	background: none;
+	text-decoration: none;
+	font-weight: var(--fw-bold);
+}
+
+/* Économie réelle, calculée depuis les deux prix — jamais saisie. */
+/* Pastille « Vous économisez » (P-1).
+   La maquette en fait un objet posé — fond ambré, texte cuivré, coins
+   arrondis — et non un paragraphe vert. Le vert disait « validé » ;
+   l'ambre dit « avantage », ce qui est le message réel. Les jetons
+   --famma-saving-bg / --famma-saving-text portent le couple exact. */
+.famma-saving {
+	display: inline-flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	gap: var(--sp-2);
+	margin-block: 0 var(--sp-3);
+	padding: 7px 14px;
+	border-radius: var(--famma-radius-sm);
+	background: var(--famma-saving-bg);
+	color: var(--famma-saving-text);
+	font-size: var(--fs-chrome-field);
+	font-weight: var(--fw-medium);
+}
+
+.famma-saving__ar {
+	font-weight: var(--fw-regular);
+	line-height: var(--lh-ar);
+}
+
+/* Badge de remise — orange de surface, texte bleu (6,31:1). */
+.woocommerce span.onsale,
+.famma-badge {
+	inset-block-start: var(--sp-3);
+	inset-inline-start: var(--sp-3);
+	min-block-size: auto;
+	min-inline-size: auto;
+	padding: var(--sp-1) var(--sp-3);
+	border-radius: var(--famma-radius-pill);
+	background: var(--famma-orange);
+	color: var(--famma-blue);
+	font-size: var(--fs-badge);
+	font-weight: var(--fw-bold);
+	line-height: 1.6;
+}
+
+/* Cible tactile : le champ quantité tombait à 40px (§10, §44). */
+.woocommerce div.product form.cart .quantity {
+	display: inline-flex;
+	align-items: stretch;
+}
+
+.woocommerce div.product form.cart .quantity input.qty {
+	min-block-size: var(--sp-12);
+	min-inline-size: var(--sp-12);
+	padding-inline: var(--sp-2);
+	border: 1px solid var(--famma-line);
+	border-radius: var(--famma-radius-sm);
+	font-size: var(--fs-input);
+	text-align: center;
+}
+
+/* --- Réassurance sous le bouton d'achat (§30, §48) --- */
+.famma-reassure {
+	list-style: none;
+	margin: var(--sp-4) 0;
+	padding: var(--sp-3) var(--sp-4);
+	border: 1px solid var(--famma-line);
+	border-radius: var(--famma-radius);
+	background: var(--famma-surface-field);
+	display: flex;
+	flex-direction: column;
+	gap: var(--sp-2);
+}
+
+/*
+ * Grille à deux colonnes : la puce, puis le texte (et sa traduction dessous).
+ * En `flex-wrap`, un libellé français trop long passait à la ligne SANS sa
+ * puce, qui restait seule sur sa ligne (audit du 23/09, FP-09).
+ */
+.famma-reassure__item {
+	display: grid;
+	grid-template-columns: 8px minmax(0, 1fr);
+	column-gap: var(--sp-2);
+	align-items: baseline;
+	font-size: var(--fs-body);
+	line-height: var(--lh-base);
+}
+
+.famma-reassure__item::before {
+	content: "";
+	inline-size: 8px;
+	block-size: 8px;
+	border-radius: 50%;
+	background: var(--famma-success);
+	align-self: center;
+}
+
+.famma-reassure__ar {
+	grid-column: 2;
+	color: var(--famma-muted);
+	font-size: var(--fs-small);
+	line-height: var(--lh-ar);
+}
+
+/* ============================================================
+   Checkout — ergonomie de saisie (§13, §19 du brief, §44)
+
+   Les champs tombaient à 42,8px, le sélecteur de gouvernorat à
+   38px et les cases à cocher à 13px : sous la cible de 48px du
+   §10, sur la page qui décide de la vente.
+   ============================================================ */
+
+.woocommerce form .form-row input.input-text,
+.woocommerce form .form-row textarea,
+.woocommerce form .form-row select,
+.woocommerce-page form .form-row input.input-text {
+	min-block-size: var(--sp-12);
+	padding-inline: var(--sp-3);
+	border: 1px solid var(--famma-line);
+	border-radius: var(--famma-radius-sm);
+	/* Jamais sous 16px : Safari iOS zoome au focus et casse la page. */
+	font-size: var(--fs-input);
+}
+
+/* Le gouvernorat passe par select2, qui masque le `select` natif et
+   dessine son propre contrôle : la hauteur doit être posée sur lui. */
+.woocommerce .select2-container .select2-selection--single {
+	min-block-size: var(--sp-12);
+	border: 1px solid var(--famma-line);
+	border-radius: var(--famma-radius-sm);
+}
+
+.woocommerce .select2-container .select2-selection--single .select2-selection__rendered {
+	line-height: var(--sp-12);
+	font-size: var(--fs-input);
+}
+
+.woocommerce .select2-container .select2-selection--single .select2-selection__arrow {
+	block-size: var(--sp-12);
+}
+
+/* Une case de 13px ne se vise pas au doigt. On agrandit la case ET on
+   étend la zone cliquable à toute la ligne via son libellé. */
+.woocommerce form .form-row input[type="checkbox"],
+.woocommerce-page form input[type="checkbox"] {
+	inline-size: 24px;
+	block-size: 24px;
+	min-block-size: 24px;
+	accent-color: var(--famma-blue);
+}
+
+.woocommerce form .woocommerce-form__label-for-checkbox,
+.woocommerce-page form .woocommerce-form__label-for-checkbox {
+	display: flex;
+	align-items: center;
+	gap: var(--sp-2);
+	min-block-size: var(--sp-12);
+	cursor: pointer;
+}
+
+/* Message d'erreur : la nuance -700, la nue échouant à 4,38:1. */
+.woocommerce form .form-row.woocommerce-invalid label,
+.woocommerce-error,
+.woocommerce-error li {
+	color: var(--famma-danger-700);
+}
+
+.woocommerce form .form-row.woocommerce-invalid input.input-text,
+.woocommerce form .form-row.woocommerce-invalid select {
+	border-color: var(--famma-danger-700);
+}
+
+/* Réassurance rappelée juste au-dessus du bouton de validation. */
+.famma-reassure--checkout {
+	margin-block: var(--sp-4) var(--sp-3);
+}
+
+/* ============================================================
+   Écran de confirmation COD (§14, D-8 du plan UX)
+
+   L'écran qui suit la commande est le moment de vérité du
+   paiement à la livraison : c'est là que le client décide, sans
+   le dire, s'il ouvrira la porte au livreur.
+   ============================================================ */
+
+.famma-confirm {
+	margin-block: var(--sp-6);
+	padding: var(--sp-6) var(--sp-4);
+	border: 1px solid var(--famma-line);
+	border-radius: var(--famma-radius);
+	background: var(--famma-surface-field);
+}
+
+.famma-confirm__title {
+	margin-block: 0 var(--sp-4);
+	color: var(--famma-blue);
+	font-size: var(--fs-h3);
+	line-height: var(--lh-tight);
+}
+
+.famma-confirm__steps {
+	margin: 0 0 var(--sp-6);
+	padding-inline-start: var(--sp-6);
+	display: flex;
+	flex-direction: column;
+	gap: var(--sp-3);
+}
+
+.famma-confirm__step {
+	display: flex;
+	flex-direction: column;
+	gap: var(--sp-1);
+	line-height: var(--lh-base);
+}
+
+.famma-confirm__ar {
+	color: var(--famma-muted);
+	font-size: var(--fs-small);
+	line-height: var(--lh-ar);
+}
+
+/* Les deux faits que le client doit retenir : le numéro qu'on va
+   appeler, et la somme à préparer. Rien d'autre dans ce bloc. */
+.famma-confirm__facts {
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: var(--sp-1);
+	margin-block: 0 var(--sp-4);
+	padding: var(--sp-4);
+	border-radius: var(--famma-radius-sm);
+	background: var(--famma-white);
+	border: 1px solid var(--famma-line);
+}
+
+.famma-confirm__facts dt {
+	color: var(--famma-muted);
+	font-size: var(--fs-small);
+}
+
+.famma-confirm__facts dd {
+	margin: 0 0 var(--sp-3);
+	color: var(--famma-blue);
+	font-size: var(--fs-h4);
+	font-weight: var(--fw-bold);
+}
+
+.famma-confirm__facts dd:last-child {
+	margin-block-end: 0;
+}
+
+.famma-confirm__fix {
+	margin-block: 0 var(--sp-3);
+	color: var(--famma-muted);
+	font-size: var(--fs-small);
+	line-height: var(--lh-base);
+}
+
+/* --- CTA collant mobile (§13, §30) -------------------------
+   Implémenté ici, et non via une fonction du thème parent :
+   la présentation ne doit dépendre d'aucun palier gratuit/Pro.
+   VISIBLE par défaut, en CSS seul. Le script ne fait que la ranger
+   pendant que le vrai bouton d'achat est déjà à l'écran. Si le
+   script échoue, la barre reste affichée : un CTA redondant vaut
+   infiniment mieux qu'un CTA absent sur la page qui fait vendre.
+   ---------------------------------------------------------- */
+.famma-sticky-cta {
+	display: none;
+}
+
+@media (max-width: 767px) {
+	.famma-sticky-cta {
+		position: fixed;
+		inset-inline: 0;
+		inset-block-end: 0;
+		z-index: var(--z-sticky-cta);
+		display: flex;
+		gap: var(--sp-3);
+		align-items: center;
+		justify-content: space-between;
+		min-block-size: var(--sticky-cta-h);
+		padding: var(--sp-2) var(--sp-4);
+		padding-block-end: calc(var(--sp-2) + env(safe-area-inset-bottom));
+		background: var(--famma-white);
+		border-block-start: 1px solid var(--famma-line);
+		box-shadow: var(--elev-up);
+		transform: translateY(0);
+		transition: transform var(--dur-base) var(--ease-out);
+	}
+
+	/* La barre est en position fixe : sans cette réserve, elle
+	   recouvrait définitivement la fin de la page — donc le dernier
+	   paragraphe de la fiche et le premier lien du pied de page.
+	   La réserve reste posée même quand la barre est rangée : la
+	   reprendre et la rendre ferait sauter la mise en page (CLS). */
+	body:has(.famma-sticky-cta) {
+		padding-block-end: calc(var(--sticky-cta-h) + env(safe-area-inset-bottom));
+	}
+
+	.famma-sticky-cta.is-hidden {
+		transform: translateY(110%);
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.famma-sticky-cta {
+			transition: none;
+		}
+	}
+
+	.famma-sticky-cta__price {
+		font-weight: var(--fw-bold);
+		color: var(--famma-blue);
+		white-space: nowrap;
+	}
+
+	/* Texte bleu sur orange — même raison que le CTA principal. */
+	.famma-sticky-cta__button {
+		display: inline-flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		min-block-size: var(--sp-12);
+		flex: 1;
+		max-inline-size: 62%;
+		padding-inline: var(--sp-4);
+		border: 0;
+		border-radius: var(--famma-radius);
+		background: var(--famma-orange);
+		color: var(--famma-blue);
+		font-family: inherit;
+		font-size: var(--fs-button);
+		font-weight: var(--fw-bold);
+		line-height: var(--lh-tight);
+		cursor: pointer;
+	}
+
+	.famma-sticky-cta__ar {
+		font-size: var(--fs-caption);
+		font-weight: var(--fw-medium);
+		/* Pas d'opacité : elle dégraderait un contraste déjà calculé. */
+	}
+
+	/* Site arabe : le libellé principal est déjà en derja, la ligne de traduction ferait « أطلب / أطلب توا ». */
+	html[lang^="ar"] .famma-sticky-cta__ar {
+		display: none;
+	}
+
+	/* WhatsApp dans la barre : 48 px, vert de la marque WhatsApp. */
+	.famma-sticky-cta__wa {
+		display: inline-flex;
+		flex: none;
+		align-items: center;
+		justify-content: center;
+		inline-size: var(--sp-12);
+		block-size: var(--sp-12);
+		border-radius: var(--famma-radius);
+		background: #25D366;
+	}
+
+	.famma-sticky-cta__wa svg {
+		inline-size: 26px;
+		block-size: 26px;
+		fill: var(--famma-white);
+	}
+
+	.famma-sticky-cta__wa:focus-visible {
+		outline: var(--focus-ring-width, 2px) solid var(--famma-blue);
+		outline-offset: 2px;
+	}
+
+	/*
+	 * Sur une fiche avec barre d'achat, le WhatsApp flottant de famma-core est
+	 * rangé : la barre porte déjà le lien, et la pastille de 56 px masquait la
+	 * fin des lignes, puis les champs du formulaire quand la barre s'efface. Le
+	 * bouton « Une question sur ce produit ? » reste juste sous le formulaire.
+	 */
+	body:has(.famma-sticky-cta) .famma-wa {
+		display: none;
+	}
+}

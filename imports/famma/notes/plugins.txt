@@ -1,0 +1,12 @@
+# Extensions présentes sur famma
+# Relevé le 2026-09-28 — noms de dossiers, le code n'est pas copié.
+
+famma-core                               0.2.0
+translatepress-multilingual              3.3.3
+woocommerce                              11.0.1
+
+# mu-plugins
+famma-cron.php
+famma-env.php
+famma-legacy-urls.php
+famma-local-mail.php

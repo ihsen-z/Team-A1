@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" role="img" aria-label="Photo à venir" preserveAspectRatio="xMidYMid slice">
+  <title>Photo à venir</title>
+  <rect width="600" height="600" fill="#F2EDE3"/>
+  <g transform="translate(300 292)" opacity=".9">
+    <circle cx="46" cy="-52" r="34" fill="#EC9E2C" opacity=".85"/>
+    <path fill="#15362E" opacity=".16" d="M-150 92-58-58l40 48 46-84L150 92z"/>
+    <path fill="#22686C" opacity=".28" d="M-150 108c60-26 108-26 150-4s94 22 150-4v40c-56 26-100 26-150 4s-90-22-150 4z"/>
+  </g>
+</svg>
