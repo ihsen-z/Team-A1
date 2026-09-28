@@ -27,3 +27,8 @@ reports/
 # Système
 .DS_Store
 Thumbs.db
+
+# Imports de sites existants — ajoutés explicitement après vérification,
+# jamais par un « git add . » distrait.
+/imports/*
+!/imports/.gitkeep
