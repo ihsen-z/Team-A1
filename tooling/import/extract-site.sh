@@ -61,6 +61,10 @@ readonly EXCLUDE_PATTERNS=(
   'node_modules' 'vendor'
   '*.zip' '*.tar.gz'
   '*.pem' '*.key' '*.p12' '.htpasswd'
+  # Un fichier « env » est par vocation le dépôt des secrets du site. Sa
+  # structure serait intéressante, ses valeurs sont dangereuses : on ne le
+  # copie pas. À partager à la main après relecture, si besoin.
+  '*env.php' '*-env.php'
 )
 
 # Copie filtrée. Un outil de copie qui perdrait les exclusions ferait fuiter
@@ -128,8 +132,48 @@ else
   ok "$found_patterns fichier(s) de pattern"
 fi
 
-# --- Inventaire des extensions (noms de dossiers, pas le code) --------------
-step "Extensions"
+# --- Extensions maison : le code, pas seulement le nom -----------------------
+# Les mu-plugins sont par définition du code écrit pour ce site, et une
+# extension préfixée par le slug du site (« famma-core ») l'est aussi. C'est
+# du travail d'atelier : il a sa place dans la bibliothèque, contrairement aux
+# extensions tierces téléchargées depuis wordpress.org.
+step "Extensions maison"
+
+mkdir -p "$out/plugins-maison"
+maison=0
+
+if [[ -d "$content/mu-plugins" ]]; then
+  while IFS= read -r mu; do
+    copy_filtered "$(dirname "$mu")" "$out/plugins-maison/mu-plugins" 2>/dev/null || true
+    break
+  done < <(find "$content/mu-plugins" -maxdepth 1 -name '*.php' 2>/dev/null)
+  if [[ -d "$out/plugins-maison/mu-plugins" ]]; then
+    ok "mu-plugins ($(find "$out/plugins-maison/mu-plugins" -type f | wc -l) fichier(s))"
+    maison=$((maison + 1))
+  fi
+fi
+
+shopt -s nullglob
+for plugin_dir in "$content"/plugins/*/; do
+  name="$(basename "$plugin_dir")"
+  # Heuristique : préfixé par le slug du site, ou suffixé « -core ».
+  case "$name" in
+    "$slug"-*|*-core|"$slug") ;;
+    *) continue ;;
+  esac
+  copy_filtered "$plugin_dir" "$out/plugins-maison/$name"
+  ok "extension maison : $name ($(du -sh "$out/plugins-maison/$name" | cut -f1))"
+  maison=$((maison + 1))
+done
+shopt -u nullglob
+
+if [[ $maison -eq 0 ]]; then
+  rmdir "$out/plugins-maison" 2>/dev/null || true
+  ok "aucune extension maison détectée"
+fi
+
+# --- Inventaire complet des extensions (noms seuls, code non copié) --------
+step "Inventaire des extensions"
 {
   echo "# Extensions présentes sur $slug"
   echo "# Relevé le $(date -I) — noms de dossiers, le code n'est pas copié."
