@@ -25,6 +25,7 @@ out="$FACTORY_ROOT/imports/$slug"
 # Localise wp-content, que la racine soit le site ou une sauvegarde.
 content=""
 for candidate in "$src/wp-content" "$src/public_html/wp-content" "$src"; do
+  # -d déréférence déjà les liens : un wp-content monté ailleurs reste valide.
   [[ -d "$candidate/themes" ]] && { content="$candidate"; break; }
 done
 if [[ -z "$content" ]]; then
@@ -81,7 +82,10 @@ copy_filtered() {
   done
 
   if command -v tar >/dev/null 2>&1; then
-    ( cd "$from" && tar cf - "${tar_args[@]}" . ) | ( cd "$to" && tar xf - )
+    # -h déréférence les liens : WordPress place souvent mu-plugins ou un thème
+    # sur un autre disque, et un import qui ne contiendrait que le lien serait
+    # inutilisable ailleurs.
+    ( cd "$from" && tar chf - "${tar_args[@]}" . ) | ( cd "$to" && tar xf - )
   else
     die "tar est requis pour une copie filtrée (rsync seul ne suffit pas ici)."
   fi
@@ -124,7 +128,7 @@ for name in "${kept_themes[@]}"; do
     mkdir -p "$out/patterns/$name/$(dirname "$rel")"
     cp "$p" "$out/patterns/$name/$rel"
     found_patterns=$((found_patterns + 1))
-  done < <(find "$content/themes/$name" -path '*/patterns/*' \( -name '*.php' -o -name '*.html' \) 2>/dev/null)
+  done < <(find -L "$content/themes/$name" -path '*/patterns/*' \( -name '*.php' -o -name '*.html' \) 2>/dev/null)
 done
 if [[ $found_patterns -eq 0 ]]; then
   ok "aucun pattern déclaré (thème classique : les composants sont dans template-parts/)"
@@ -143,7 +147,7 @@ mkdir -p "$out/plugins-maison"
 maison=0
 
 if [[ -d "$content/mu-plugins" ]]; then
-  sources="$(find "$content/mu-plugins" -maxdepth 1 -name '*.php' 2>/dev/null | wc -l)"
+  sources="$(find -L "$content/mu-plugins" -maxdepth 1 -name '*.php' 2>/dev/null | wc -l)"
   if [[ "$sources" -eq 0 ]]; then
     ok "mu-plugins : aucun fichier .php"
   else
@@ -213,11 +217,11 @@ step "Médiathèque (statistiques seules)"
 {
   echo "# Médiathèque de $slug — aucune image n'est copiée."
   if [[ -d "$content/uploads" ]]; then
-    echo "Fichiers : $(find "$content/uploads" -type f 2>/dev/null | wc -l)"
+    echo "Fichiers : $(find -L "$content/uploads" -type f 2>/dev/null | wc -l)"
     echo "Poids    : $(du -sh "$content/uploads" 2>/dev/null | cut -f1)"
     echo
     echo "# Répartition par extension"
-    find "$content/uploads" -type f 2>/dev/null | sed 's/.*\.//' | tr '[:upper:]' '[:lower:]' \
+    find -L "$content/uploads" -type f 2>/dev/null | sed 's/.*\.//' | tr '[:upper:]' '[:lower:]' \
       | sort | uniq -c | sort -rn | head -15
   else
     echo "Pas de dossier uploads."

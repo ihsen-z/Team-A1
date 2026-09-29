@@ -54,6 +54,18 @@ pourquoi **aucun script n'appelle `wp` directement** — tout passe par
 - Préfixe `factory_` pour les fonctions, `factory/` pour les blocs,
   `.factory-*` pour les classes CSS.
 - CSS : uniquement des tokens `var(--wp--preset--*)`. Aucune valeur en dur.
+- Toute URL dans `url()` passe entre guillemets : `url("...")`. `esc_url_raw()`
+  encode les guillemets mais pas les parenthèses : sans guillemets, une image
+  nommée `photo(1).jpg` ferme `url()` prématurément.
+
+### Outillage
+- Dans les scripts, tout `find` qui lit une source WordPress utilise `find -L`.
+  Un dossier de `wp-content` est souvent un lien symbolique (ex. `mu-plugins`
+  vers un autre disque) : quand le point de départ est un lien, `find` le traite
+  comme un fichier et renvoie zéro résultat, alors que `[[ -d ]]` et `ls`
+  déréférencent. Le garde passe, la recherche est vide, rien n'explique pourquoi.
+- Toute copie par `tar` utilise `tar -h` : sans lui l'archive ne contient que le
+  lien, inutilisable une fois importée ailleurs.
 
 ## Structure
 
