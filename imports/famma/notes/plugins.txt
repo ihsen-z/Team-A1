@@ -1,5 +1,5 @@
 # Extensions présentes sur famma
-# Relevé le 2026-09-28 — noms de dossiers, le code n'est pas copié.
+# Relevé le 2026-09-29 — noms de dossiers, le code n'est pas copié.
 
 famma-core                               0.2.0
 translatepress-multilingual              3.3.3

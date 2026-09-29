@@ -1,0 +1,144 @@
+# Traduction de FAMMA Core en derja tunisienne.
+#
+# Ne sont traduites que les chaînes que le **client** lit : les statuts de sa
+# commande, les champs du tunnel de paiement, le bouton WhatsApp. Tout le reste
+# du plugin — champs financiers, tableau de bord, réglages — ne sort jamais de
+# l'administration, où le propriétaire travaille en français. Les traduire
+# n'aiderait personne et rendrait le suivi des commandes plus difficile.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: FAMMA Core\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-08-24 00:00+0100\n"
+"PO-Revision-Date: 2026-08-24 00:00+0100\n"
+"Last-Translator: FAMMA\n"
+"Language-Team: Derja tunisienne\n"
+"Language: ar\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=6; plural=(n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5);\n"
+
+# --- Statuts de commande, tels que le client les voit ---
+msgid "Pending confirmation"
+msgstr "في انتظار التأكيد"
+
+msgid "Confirmed"
+msgstr "مؤكّدة"
+
+msgid "Shipped"
+msgstr "تبعثت"
+
+msgid "Delivered"
+msgstr "توصّلت"
+
+msgid "Failed delivery"
+msgstr "التوصيل ما نجحش"
+
+msgid "Returned"
+msgstr "رجعت"
+
+msgid "Refused"
+msgstr "مرفوضة"
+
+# --- Tunnel de commande ---
+# 
+# Les libellés d'origine portent le français et l'arabe dans la même chaîne
+# (« Governorate / الولاية ») : c'était le seul moyen d'être bilingue sans
+# fichier de traduction. En derja, la moitié française n'a plus lieu d'être.
+msgid "Governorate / الولاية"
+msgstr "الولاية"
+
+msgid "City / Delegation — المدينة"
+msgstr "المدينة / المعتمدية"
+
+msgid "Email (optional) / البريد الإلكتروني"
+msgstr "الإيميل"
+
+msgid "Phone / الهاتف"
+msgstr "التليفون"
+
+msgid "Address / العنوان"
+msgstr "العنوان"
+
+msgid ""
+"Please enter a valid Tunisian phone number (8 digits). أدخل رقم هاتف تونسي "
+"صحيح."
+msgstr "دخّل نمرة تليفون تونسية صحيحة (8 أرقام)."
+
+# --- WhatsApp ---
+msgid "Contact us on WhatsApp"
+msgstr "أتصل بينا على الواتساب"
+
+msgid "Bonjour, j'ai une question 🙂 / سلام، عندي سؤال"
+msgstr "سلام، عندي سؤال 🙂"
+
+# --- Compte optionnel au checkout ---
+msgid ""
+"To create an account, please give an email address. Otherwise choose \"Order"
+" without an account\": your order goes through without one."
+msgstr ""
+"باش تعمل كونت، لازم إيميل. وإلا أختار « أطلب بلا كونت »: الطلبية تعدّي بلا "
+"إيميل."
+
+# — Commande express sur la fiche produit (option C, décision D-8) —
+msgid "Order now / أطلب توا"
+msgstr "أطلب توا"
+
+msgid "Cash on delivery. No account needed. Free shipping across Tunisia."
+msgstr "الدفع عند التوصيل. من غير ما تعمل حساب. التوصيل فابور في تونس الكل."
+
+msgid "First name / الاسم"
+msgstr "الاسم"
+
+msgid "Last name / اللقب"
+msgstr "اللقب"
+
+msgid "Choose… / اختار"
+msgstr "اختار…"
+
+msgid "Quantity / الكمية"
+msgstr "الكمية"
+
+msgid "Total to pay on delivery"
+msgstr "الجملة اللي باش تخلّصها كي توصلك"
+
+msgid "Confirm my order"
+msgstr "أكّد طلبيتك"
+
+msgid "Sending…"
+msgstr "قاعد يتبعث…"
+
+msgid "required"
+msgstr "ضروري"
+
+msgid "The order could not go through. Please check the form and try again."
+msgstr "الطلب ما نجّمش يتبعث. شوف المعلومات وعاود جرّب."
+
+msgid "Plus %d item already in your cart."
+msgid_plural "Plus %d items already in your cart."
+msgstr[0] "ما فماش حوايج أخرى في السلة."
+msgstr[1] "زيد حاجة وحدة في السلة متاعك."
+msgstr[2] "زيد زوز حوايج في السلة متاعك."
+msgstr[3] "زيد %d حوايج في السلة متاعك."
+msgstr[4] "زيد %d حاجة في السلة متاعك."
+msgstr[5] "زيد %d حاجة في السلة متاعك."
+
+msgid "Full name / الاسم واللقب"
+msgstr "الاسم واللقب"
+
+msgid "(optional)"
+msgstr "(اختياري)"
+
+msgid "Decrease quantity"
+msgstr "نقّص الكمية"
+
+msgid "Increase quantity"
+msgstr "زيد الكمية"
+
+msgid "Check the number: 8 digits (XX XXX XXX)."
+msgstr "ثبّت في النمرة: 8 أرقام (XX XXX XXX)."
+
+msgid "Délai de livraison"
+msgstr "مدة التوصيل"
