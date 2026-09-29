@@ -3,7 +3,51 @@
 Issu de l'analyse des sites existants (`imports/`). Ce fichier est la source
 de vérité de ce qui reste à écrire dans `packages/blocks/`.
 
-> État : evasions et famma analysés.
+> État : evasions et famma analysés · `famma-core` récupéré et intégré au socle (durcissement).
+
+---
+
+## Le plugin compagnon — la moitié manquante
+
+`famma-core` (19 fichiers, 9 472 lignes) tient ce que le thème ne porte pas.
+Sa répartition confirme l'architecture : **deux tiers de services réutilisables
+pour un tiers de contenu client.**
+
+| Services — ont leur place dans le socle | Lignes |
+|---|---|
+| `seo.php` + `seo-admin.php` + `seo-listing.php` | 1 752 |
+| `express-order.php` (commande en un pas) | 518 |
+| `newsletter.php` (honeypot, nonce différé) | 457 |
+| `tracking-events.php` + `tracking-settings.php` | 736 |
+| `anti-abuse.php` | 401 |
+| `product-video.php` | 261 |
+| `performance.php` | 177 |
+| `hardening.php` | 142 |
+| `checkout-lite.php` | 133 |
+| **Total** | **~4 577** |
+
+| Contenu client — reste par site | Lignes |
+|---|---|
+| `pages-content.php`, `topbar-content.php`, `returns-content.php`, `product-content.php`, `delivery-content.php`, `home-content.php` | ~2 358 |
+
+### Ce que son durcissement m'a appris
+
+`hardening.php` couvre quatre points que `theme-core/inc/security.php`
+ignorait, désormais corrigés :
+
+| Mesure | Pourquoi |
+|---|---|
+| `xmlrpc_methods` | `xmlrpc_enabled` seul laisse les méthodes pingback exposées, testées **avant** toute vérification de mot de passe |
+| En-tête `X-Pingback` + `bloginfo_url` | Annoncent un point d'entrée par ailleurs désactivé |
+| `oembed_response_data` | L'énumération d'auteurs est bloquée côté front, mais oEmbed la rouvrait (nom et URL de l'auteur) |
+| `the_generator` | La version fuite aussi par les flux et oEmbed, pas seulement par la balise `<meta generator>` |
+
+Son commentaire `SEC-21` note que le routeur REST ignore la casse
+(`/wp/v2/Users` atteint le même contrôleur). Cela concerne son approche par
+`rest_pre_dispatch`, qui filtre sur le chemin demandé. Le socle passe par
+`rest_endpoints`, qui modifie l'endpoint **enregistré** — la casse du chemin
+ne devrait donc pas le contourner, mais **c'est à vérifier sur une
+installation réelle avant de s'y fier.**
 
 ---
 
