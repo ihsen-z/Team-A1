@@ -32,3 +32,6 @@ Thumbs.db
 # jamais par un « git add . » distrait.
 /imports/*
 !/imports/.gitkeep
+
+# Sortie de graphify : régénérable depuis le code
+/graphify-out/

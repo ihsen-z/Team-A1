@@ -1,0 +1,182 @@
+/* Module e-commerce — parcours d'achat.
+   Uniquement des tokens du thème : le module se pose sur n'importe quelle charte. */
+
+.factory-tunnel__entete {
+	max-width: var(--wp--style--global--wide-size, 1200px);
+	margin-inline: auto;
+	margin-block-end: var(--wp--preset--spacing--30);
+	padding-inline: var(--wp--preset--spacing--20);
+}
+
+.factory-tunnel__titre {
+	margin-block: 0 var(--wp--preset--spacing--20);
+	font-size: var(--wp--preset--font-size--x-large);
+	text-wrap: balance;
+}
+
+/* --- Fil des étapes ----------------------------------------------------- */
+.factory-steps {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 0.5rem 1.5rem;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	counter-reset: none;
+}
+
+.factory-steps__item {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.5rem;
+	font-size: var(--wp--preset--font-size--small);
+	color: var(--wp--preset--color--neutre);
+}
+
+.factory-steps__puce {
+	display: grid;
+	place-items: center;
+	width: 1.75rem;
+	height: 1.75rem;
+	border: 2px solid currentColor;
+	border-radius: 50%;
+	font-weight: 600;
+	font-variant-numeric: tabular-nums;
+}
+
+.factory-steps__item.is-current {
+	color: var(--wp--preset--color--primaire);
+	font-weight: 600;
+}
+
+.factory-steps__item.is-done {
+	color: var(--wp--preset--color--accent);
+}
+
+.factory-steps__item.is-done .factory-steps__puce {
+	color: var(--wp--preset--color--fond);
+	background: var(--wp--preset--color--accent);
+	border-color: var(--wp--preset--color--accent);
+}
+
+/* L'étape courante ne doit pas se distinguer par la seule couleur :
+   le trait sous le libellé la marque aussi. */
+.factory-steps__item.is-current .factory-steps__label {
+	text-decoration: underline;
+	text-decoration-thickness: 2px;
+	text-underline-offset: 0.25em;
+}
+
+/* En mobile, seules l'étape courante et la précédente restent visibles :
+   trois étapes sur deux lignes cessent d'être un fil. */
+@media (max-width: 30em) {
+	.factory-steps__item:not(.is-current):not(.is-done) .factory-steps__label {
+		position: absolute;
+		width: 1px;
+		height: 1px;
+		overflow: hidden;
+		clip-path: inset(50%);
+	}
+}
+
+/* --- Réassurance -------------------------------------------------------- */
+.factory-reassure {
+	display: grid;
+	gap: 0.5rem;
+	margin-block: var(--wp--preset--spacing--20) 0;
+	padding: 0;
+	list-style: none;
+}
+
+.factory-reassure__item {
+	display: flex;
+	flex-direction: column;
+	gap: 0.1rem;
+	padding-inline-start: 1.5rem;
+	position: relative;
+	font-size: var(--wp--preset--font-size--small);
+}
+
+/* Coche décorative : l'information est dans le texte, pas dans le signe. */
+.factory-reassure__item::before {
+	content: "";
+	position: absolute;
+	inset-inline-start: 0;
+	inset-block-start: 0.35em;
+	width: 0.45em;
+	height: 0.8em;
+	border-right: 2px solid var(--wp--preset--color--accent);
+	border-bottom: 2px solid var(--wp--preset--color--accent);
+	transform: rotate(45deg);
+}
+
+.factory-reassure__titre { font-weight: 600; }
+
+.factory-reassure__sous { opacity: 0.8; }
+
+.factory-reassure--fiche {
+	padding-block: var(--wp--preset--spacing--20);
+	border-block-start: 1px solid var(--wp--preset--color--neutre-clair);
+}
+
+/* --- Commande en cartes -------------------------------------------------- */
+.factory-cocard {
+	margin-block-end: var(--wp--preset--spacing--20);
+	padding: var(--wp--preset--spacing--20);
+	border: 1px solid var(--wp--preset--color--neutre-clair);
+	border-radius: 12px;
+}
+
+.factory-cocard__titre {
+	display: flex;
+	align-items: center;
+	gap: 0.6rem;
+	margin-block: 0 var(--wp--preset--spacing--20);
+	font-size: var(--wp--preset--font-size--large);
+}
+
+.factory-cocard__num {
+	display: grid;
+	place-items: center;
+	flex: 0 0 auto;
+	width: 1.9rem;
+	height: 1.9rem;
+	border-radius: 50%;
+	font-size: var(--wp--preset--font-size--medium);
+	font-variant-numeric: tabular-nums;
+	color: var(--wp--preset--color--fond);
+	background: var(--wp--preset--color--primaire);
+}
+
+.factory-cocard__corps .form-row {
+	margin-block-end: 0.9rem;
+}
+
+/* 16px minimum : Safari iOS zoome au focus sur un champ plus petit, et le
+   client se retrouve avec une page décalée en plein tunnel. */
+.factory-cocard input[type="text"],
+.factory-cocard input[type="email"],
+.factory-cocard input[type="tel"],
+.factory-cocard textarea,
+.factory-cocard select {
+	font-size: 1rem;
+}
+
+/* --- Récapitulatif ------------------------------------------------------- */
+.factory-corecap {
+	padding: var(--wp--preset--spacing--20);
+	border-radius: 12px;
+	background: var(--wp--preset--color--neutre-clair);
+}
+
+@media (min-width: 62em) {
+	/* Le récapitulatif suit le défilement : le client garde le total sous les
+	   yeux pendant qu'il remplit ses coordonnées. */
+	.factory-corecap {
+		position: sticky;
+		top: var(--wp--preset--spacing--20);
+	}
+}
+
+.factory-corecap table { width: 100%; }

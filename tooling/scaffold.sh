@@ -58,6 +58,13 @@ while IFS= read -r block; do
   ok "bloc $block"
 done < <(yml_list "$preset" "blocks_allowed")
 
+# Le module e-commerce n'est déployé que sur les presets marchands : un site
+# vitrine ne doit pas embarquer du code WooCommerce dormant.
+if [[ "$stack" == wp-classic-woo ]]; then
+  cp -R "$FACTORY_ROOT/packages/woo" "$build_theme/woo"
+  ok "module e-commerce déployé"
+fi
+
 adapter_install_theme "$site_dir" "$build_theme"
 
 step "Réglages WordPress"

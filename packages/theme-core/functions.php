@@ -19,3 +19,8 @@ require_once FACTORY_CORE_DIR . '/inc/setup.php';
 require_once FACTORY_CORE_DIR . '/inc/blocks.php';
 require_once FACTORY_CORE_DIR . '/inc/content.php';
 require_once FACTORY_CORE_DIR . '/inc/security.php';
+
+// Module e-commerce, déployé par le pipeline sur les seuls projets marchands.
+if (file_exists(FACTORY_CORE_DIR . '/woo/woo.php')) {
+	require_once FACTORY_CORE_DIR . '/woo/woo.php';
+}
