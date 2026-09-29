@@ -24,6 +24,9 @@ blocks_allowed:
   - factory/cta-band
   - factory/promise-bar
   - factory/newsletter-panel
+  - factory/doc-sections
+  - factory/reviews-wall
+  - factory/taxonomy-tiles
   - woocommerce/product-collection
   - woocommerce/product-price
   - woocommerce/add-to-cart-form

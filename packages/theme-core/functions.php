@@ -17,4 +17,5 @@ define('FACTORY_CORE_DIR', get_template_directory());
 
 require_once FACTORY_CORE_DIR . '/inc/setup.php';
 require_once FACTORY_CORE_DIR . '/inc/blocks.php';
+require_once FACTORY_CORE_DIR . '/inc/content.php';
 require_once FACTORY_CORE_DIR . '/inc/security.php';

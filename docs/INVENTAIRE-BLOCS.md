@@ -4,7 +4,7 @@ Issu de l'analyse des sites existants (`imports/`). Ce fichier est la source
 de vérité de ce qui reste à écrire dans `packages/blocks/`.
 
 > État : evasions et famma analysés · `famma-core` intégré au socle (durcissement)
-> · **vague 1 livrée** (5 blocs).
+> · **vagues 1 et 2 livrées** (8 blocs).
 
 ---
 
@@ -100,9 +100,9 @@ composants qui n'étaient distincts que par accident.
 | ✅ `factory/arguments-band` *(absorbe services-grid)* | `benefits.php`, `why.php`, réassurance produit | 1 |
 | ✅ `factory/newsletter-panel` | `community.php` | 1 |
 | ✅ `factory/promise-bar` | `topbar.php` + `header-parts.php` | 1 |
-| `factory/doc-sections` | `page-faq.php`, `page-cgv.php` | 2 |
-| `factory/taxonomy-tiles` | `universes.php` + tuiles | 2 |
-| `factory/reviews-wall` | `reviews.php` | 2 |
+| ✅ `factory/doc-sections` | `page-faq.php`, `page-cgv.php` | 2 |
+| ✅ `factory/taxonomy-tiles` | `universes.php` + tuiles | 2 |
+| ✅ `factory/reviews-wall` | `reviews.php` | 2 |
 | `factory/product-card` | `product-card.php`, `-compact.php`, `listing-item.php` | 3 |
 | `factory/product-grid` | `featured-products.php`, grille packs, sélection d'univers | 3 |
 

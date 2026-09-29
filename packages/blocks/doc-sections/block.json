@@ -1,0 +1,28 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "factory/doc-sections",
+  "title": "Sections de document",
+  "category": "text",
+  "icon": "editor-ol",
+  "description": "Rejoue le contenu de la page en accordéon, en cartes ou en onglets, découpé par niveau de titre. Sert pour une FAQ comme pour des CGV — l'administrateur écrit une page normale.",
+  "textdomain": "factory-core",
+  "supports": {
+    "html": false,
+    "anchor": true,
+    "align": ["wide"],
+    "spacing": { "padding": true, "margin": true }
+  },
+  "attributes": {
+    "source":          { "type": "string",  "default": "contenu", "enum": ["contenu", "manuelle"] },
+    "niveauGroupe":    { "type": "string",  "default": "h2" },
+    "niveauItem":      { "type": "string",  "default": "" },
+    "variante":        { "type": "string",  "default": "accordeon", "enum": ["accordeon", "cartes"] },
+    "sommaire":        { "type": "boolean", "default": false },
+    "numerote":        { "type": "boolean", "default": false },
+    "ouvertParDefaut": { "type": "boolean", "default": false },
+    "sections":        { "type": "array",   "default": [], "items": { "type": "object" } }
+  },
+  "style": "file:./style.css",
+  "render": "file:./render.php"
+}

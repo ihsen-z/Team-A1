@@ -1,0 +1,83 @@
+/* Bloc factory/reviews-wall */
+.factory-reviews {
+	padding-block: var(--wp--preset--spacing--30);
+	padding-inline: var(--wp--preset--spacing--20);
+}
+
+.factory-reviews__titre {
+	max-width: var(--wp--style--global--wide-size, 1200px);
+	margin: 0 auto var(--wp--preset--spacing--20);
+	font-size: var(--wp--preset--font-size--large);
+	text-align: center;
+}
+
+.factory-reviews__liste {
+	display: grid;
+	gap: var(--wp--preset--spacing--20);
+	max-width: var(--wp--style--global--wide-size, 1200px);
+	margin-inline: auto;
+	padding: 0;
+	list-style: none;
+	grid-template-columns: repeat(
+		auto-fit,
+		minmax(min(calc(100% / var(--factory-reviews-cols, 3) - var(--wp--preset--spacing--20)), 100%), 1fr)
+	);
+}
+
+.factory-reviews__item {
+	display: flex;
+	flex-direction: column;
+	gap: 0.6rem;
+	padding: var(--wp--preset--spacing--20);
+	border-radius: 10px;
+	background: var(--wp--preset--color--neutre-clair);
+}
+
+/* Étoiles en dégradé tronqué : le remplissage vient de --factory-rating, donc
+   aucune image ni police d'icônes à charger. */
+.factory-reviews__note {
+	display: block;
+	width: 6em;
+	height: 1.1em;
+	background:
+		linear-gradient(90deg,
+			var(--wp--preset--color--accent) var(--factory-rating, 0%),
+			var(--wp--preset--color--neutre) var(--factory-rating, 0%));
+	-webkit-mask: repeat-x left center / 1.2em 1.1em
+		url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.3 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8z"/></svg>');
+	mask: repeat-x left center / 1.2em 1.1em
+		url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.3 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8z"/></svg>');
+}
+
+.factory-reviews__texte {
+	margin: 0;
+	flex: 1 1 auto;
+}
+
+.factory-reviews__texte p {
+	margin: 0;
+	text-wrap: pretty;
+}
+
+.factory-reviews__auteur {
+	margin: 0;
+	font-size: var(--wp--preset--font-size--small);
+	font-weight: 600;
+	opacity: 0.85;
+}
+
+/* En mobile, les avis défilent horizontalement plutôt que d'empiler trois
+   cartes qui poussent le reste de la page hors de vue. */
+@media (max-width: 47.99em) {
+	.factory-reviews__liste {
+		grid-auto-flow: column;
+		grid-auto-columns: min(80%, 20rem);
+		grid-template-columns: none;
+		overflow-x: auto;
+		scroll-snap-type: x mandatory;
+		scrollbar-width: none;
+		padding-block-end: 0.5rem;
+	}
+
+	.factory-reviews__item { scroll-snap-align: center; }
+}

@@ -22,6 +22,9 @@ blocks_allowed:
   - factory/cta-band
   - factory/promise-bar
   - factory/newsletter-panel
+  - factory/doc-sections
+  - factory/reviews-wall
+  - factory/taxonomy-tiles
   - core/paragraph
   - core/heading
   - core/image

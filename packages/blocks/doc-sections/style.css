@@ -1,0 +1,100 @@
+/* Bloc factory/doc-sections */
+.factory-doc {
+	max-width: var(--wp--style--global--content-size, 720px);
+	margin-inline: auto;
+}
+
+/* --- Sommaire ---------------------------------------------------------- */
+.factory-doc__sommaire {
+	margin-block-end: var(--wp--preset--spacing--20);
+	padding: var(--wp--preset--spacing--20);
+	border-radius: 10px;
+	background: var(--wp--preset--color--neutre-clair);
+}
+
+.factory-doc__sommaire-liste {
+	margin: 0;
+	padding-inline-start: 1.4rem;
+	display: grid;
+	gap: 0.35rem;
+}
+
+/* --- Sections ---------------------------------------------------------- */
+.factory-doc__sections {
+	display: grid;
+	gap: 0.5rem;
+}
+
+.factory-doc--cartes .factory-doc__sections {
+	gap: var(--wp--preset--spacing--20);
+}
+
+.factory-doc__item {
+	border: 1px solid var(--wp--preset--color--neutre-clair);
+	border-radius: 10px;
+	overflow: hidden;
+	/* Une ancre cible ne doit pas se coller au bord haut de la fenêtre. */
+	scroll-margin-top: var(--wp--preset--spacing--30);
+}
+
+.factory-doc--cartes .factory-doc__item {
+	padding: var(--wp--preset--spacing--20);
+}
+
+.factory-doc__titre {
+	display: flex;
+	align-items: baseline;
+	gap: 0.5rem;
+	margin: 0;
+	padding: 0.9rem 1rem;
+	font-weight: 600;
+	cursor: pointer;
+	list-style: none;
+}
+
+.factory-doc--cartes .factory-doc__titre {
+	padding: 0 0 0.4rem;
+	cursor: auto;
+}
+
+/* Le marqueur par défaut de <summary> est remplacé par un chevron maison. */
+.factory-doc__titre::-webkit-details-marker { display: none; }
+
+.factory-doc--accordeon .factory-doc__titre::after {
+	content: "";
+	margin-inline-start: auto;
+	width: 0.55em;
+	height: 0.55em;
+	border-right: 2px solid currentColor;
+	border-bottom: 2px solid currentColor;
+	transform: rotate(45deg);
+	transform-origin: center;
+}
+
+.factory-doc__item[open] > .factory-doc__titre::after {
+	transform: rotate(-135deg);
+}
+
+.factory-doc__titre:focus-visible {
+	outline: 2px solid var(--wp--preset--color--accent);
+	outline-offset: -2px;
+}
+
+.factory-doc__numero {
+	flex: 0 0 auto;
+	color: var(--wp--preset--color--primaire);
+	font-variant-numeric: tabular-nums;
+}
+
+.factory-doc__contenu {
+	padding: 0 1rem 1rem;
+}
+
+.factory-doc--cartes .factory-doc__contenu { padding: 0; }
+
+.factory-doc__contenu > :first-child { margin-block-start: 0; }
+.factory-doc__contenu > :last-child  { margin-block-end: 0; }
+
+@media (prefers-reduced-motion: no-preference) {
+	.factory-doc--accordeon .factory-doc__titre::after { transition: transform 150ms ease; }
+}

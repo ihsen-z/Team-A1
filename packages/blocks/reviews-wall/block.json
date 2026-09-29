@@ -1,0 +1,30 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "factory/reviews-wall",
+  "title": "Mur d'avis",
+  "category": "design",
+  "icon": "star-filled",
+  "description": "Avis clients : étoiles, citation et auteur. Source WooCommerce quand la boutique existe, saisie manuelle sinon.",
+  "textdomain": "factory-core",
+  "supports": {
+    "html": false,
+    "anchor": true,
+    "align": ["wide"],
+    "spacing": { "padding": true, "margin": true },
+    "color": { "background": true, "text": true }
+  },
+  "attributes": {
+    "titre":        { "type": "string",  "default": "" },
+    "source":       { "type": "string",  "default": "manuelle", "enum": ["manuelle", "woocommerce"] },
+    "avis":         { "type": "array",   "default": [], "items": { "type": "object" } },
+    "nombre":       { "type": "number",  "default": 3 },
+    "noteMinimale": { "type": "number",  "default": 4 },
+    "longueurMax":  { "type": "number",  "default": 34 },
+    "colonnes":     { "type": "number",  "default": 3 },
+    "anonymiser":   { "type": "boolean", "default": true },
+    "niveauTitre":  { "type": "number",  "default": 2 }
+  },
+  "style": "file:./style.css",
+  "render": "file:./render.php"
+}
