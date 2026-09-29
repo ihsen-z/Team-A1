@@ -4,7 +4,7 @@ Issu de l'analyse des sites existants (`imports/`). Ce fichier est la source
 de vérité de ce qui reste à écrire dans `packages/blocks/`.
 
 > État : evasions et famma analysés · `famma-core` intégré au socle (durcissement)
-> · **vagues 1 et 2 livrées** (8 blocs).
+> · **vagues 1 à 3 livrées** (10 blocs).
 
 ---
 
@@ -103,8 +103,8 @@ composants qui n'étaient distincts que par accident.
 | ✅ `factory/doc-sections` | `page-faq.php`, `page-cgv.php` | 2 |
 | ✅ `factory/taxonomy-tiles` | `universes.php` + tuiles | 2 |
 | ✅ `factory/reviews-wall` | `reviews.php` | 2 |
-| `factory/product-card` | `product-card.php`, `-compact.php`, `listing-item.php` | 3 |
-| `factory/product-grid` | `featured-products.php`, grille packs, sélection d'univers | 3 |
+| ✅ `factory/product-card` | `product-card.php`, `-compact.php`, `listing-item.php` | 3 |
+| ✅ `factory/product-grid` | `featured-products.php`, grille packs, sélection d'univers | 3 |
 
 **Vague 1** : aucune dépendance métier, gains immédiats.
 **Vague 2** : valeur forte, mais la source de données doit être refondue.

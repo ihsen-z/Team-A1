@@ -1,0 +1,82 @@
+/* Bloc factory/product-grid */
+.factory-grid {
+	padding-block: var(--wp--preset--spacing--30);
+	padding-inline: var(--wp--preset--spacing--20);
+}
+
+.factory-grid__entete {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	justify-content: space-between;
+	gap: 0.5rem 1rem;
+	max-width: var(--wp--style--global--wide-size, 1200px);
+	margin-inline: auto;
+	margin-block-end: var(--wp--preset--spacing--20);
+}
+
+.factory-grid__titre {
+	margin: 0;
+	font-size: var(--wp--preset--font-size--large);
+}
+
+.factory-grid__compteur {
+	margin: 0;
+	font-size: var(--wp--preset--font-size--small);
+	opacity: 0.75;
+	font-variant-numeric: tabular-nums;
+}
+
+/* --- Pastilles de sous-catégories -------------------------------------- */
+.factory-grid__filtres {
+	max-width: var(--wp--style--global--wide-size, 1200px);
+	margin-inline: auto;
+	margin-block-end: var(--wp--preset--spacing--20);
+}
+
+.factory-grid__pastilles {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.5rem;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.factory-grid__pastille {
+	display: inline-block;
+	padding: 0.35rem 0.85rem;
+	border: 1px solid var(--wp--preset--color--neutre-clair);
+	border-radius: 999px;
+	text-decoration: none;
+	font-size: var(--wp--preset--font-size--small);
+	color: inherit;
+}
+
+.factory-grid__pastille:hover,
+.factory-grid__pastille:focus-visible {
+	border-color: var(--wp--preset--color--primaire);
+	background: var(--wp--preset--color--neutre-clair);
+}
+
+.factory-grid__pastille:focus-visible {
+	outline: 2px solid var(--wp--preset--color--accent);
+	outline-offset: 2px;
+}
+
+/* --- Grille ------------------------------------------------------------ */
+.factory-grid__liste {
+	display: grid;
+	gap: var(--wp--preset--spacing--20);
+	max-width: var(--wp--style--global--wide-size, 1200px);
+	margin-inline: auto;
+	padding: 0;
+	list-style: none;
+	grid-template-columns: repeat(
+		auto-fill,
+		minmax(min(calc(100% / var(--factory-grid-cols, 4) - var(--wp--preset--spacing--20)), 14rem), 1fr)
+	);
+}
+
+.factory-grid__item { display: flex; }
+.factory-grid__item > * { flex: 1 1 auto; }

@@ -1,0 +1,27 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "factory/product-card",
+  "title": "Carte produit",
+  "category": "woocommerce",
+  "icon": "products",
+  "description": "Carte produit WooCommerce : image, badge, titre, note, prix. Trois variantes — complète, compacte, ou en ligne.",
+  "textdomain": "factory-core",
+  "usesContext": ["postId", "postType", "queryId"],
+  "supports": {
+    "html": false,
+    "anchor": false,
+    "spacing": { "padding": true, "margin": true }
+  },
+  "attributes": {
+    "produitId":     { "type": "number",  "default": 0 },
+    "variante":      { "type": "string",  "default": "complete", "enum": ["complete", "compacte", "ligne"] },
+    "afficheBadge":  { "type": "boolean", "default": true },
+    "afficheNote":   { "type": "boolean", "default": true },
+    "afficheBouton": { "type": "boolean", "default": false },
+    "niveauTitre":   { "type": "number",  "default": 3 },
+    "prioritaire":   { "type": "boolean", "default": false }
+  },
+  "style": "file:./style.css",
+  "render": "file:./render.php"
+}

@@ -1,0 +1,117 @@
+/* Bloc factory/product-card */
+.factory-card {
+	display: flex;
+	flex-direction: column;
+	gap: 0.4rem;
+	container-type: inline-size;
+}
+
+.factory-card__lien {
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+	text-decoration: none;
+	color: inherit;
+}
+
+.factory-card__media {
+	position: relative;
+	display: block;
+	border-radius: 10px;
+	overflow: hidden;
+	background: var(--wp--preset--color--neutre-clair);
+}
+
+.factory-card__img {
+	display: block;
+	width: 100%;
+	aspect-ratio: 1 / 1;
+	object-fit: cover;
+}
+
+.factory-card__img--vide { aspect-ratio: 1 / 1; }
+
+.factory-card__badge {
+	position: absolute;
+	inset-block-start: 0.5rem;
+	inset-inline-start: 0.5rem;
+	padding: 0.2rem 0.55rem;
+	border-radius: 999px;
+	font-size: var(--wp--preset--font-size--small);
+	font-weight: 600;
+	color: var(--wp--preset--color--fond);
+	background: var(--wp--preset--color--accent);
+}
+
+.factory-card__badge--rupture { background: var(--wp--preset--color--neutre); }
+
+.factory-card__titre {
+	margin: 0;
+	font-size: var(--wp--preset--font-size--medium);
+	text-wrap: pretty;
+}
+
+/* --- Note -------------------------------------------------------------- */
+.factory-card__note {
+	display: flex;
+	align-items: center;
+	gap: 0.35rem;
+	margin: 0;
+	font-size: var(--wp--preset--font-size--small);
+}
+
+.factory-card__etoiles {
+	display: block;
+	width: 5em;
+	height: 0.95em;
+	background:
+		linear-gradient(90deg,
+			var(--wp--preset--color--accent) var(--factory-rating, 0%),
+			var(--wp--preset--color--neutre) var(--factory-rating, 0%));
+	-webkit-mask: repeat-x left center / 1em 0.95em
+		url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.3 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8z"/></svg>');
+	mask: repeat-x left center / 1em 0.95em
+		url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.3 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8z"/></svg>');
+}
+
+.factory-card__nb-avis { opacity: 0.75; }
+
+.factory-card__prix {
+	margin: 0;
+	font-weight: 600;
+}
+
+.factory-card__prix del { opacity: 0.6; font-weight: 400; }
+.factory-card__prix ins { text-decoration: none; }
+
+.factory-card__bouton {
+	align-self: flex-start;
+	margin-block-start: 0.2rem;
+}
+
+.factory-card__lien:focus-visible {
+	outline: 2px solid var(--wp--preset--color--accent);
+	outline-offset: 3px;
+	border-radius: 10px;
+}
+
+/* --- Variante compacte ------------------------------------------------- */
+.factory-card--compacte .factory-card__titre {
+	font-size: var(--wp--preset--font-size--small);
+}
+
+/* --- Variante ligne ---------------------------------------------------- */
+.factory-card--ligne .factory-card__lien {
+	flex-direction: row;
+	align-items: center;
+	gap: 0.75rem;
+}
+
+.factory-card--ligne .factory-card__media {
+	flex: 0 0 5rem;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+	.factory-card__img { transition: transform 250ms ease; }
+	.factory-card__lien:hover .factory-card__img { transform: scale(1.04); }
+}

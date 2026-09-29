@@ -27,6 +27,8 @@ blocks_allowed:
   - factory/doc-sections
   - factory/reviews-wall
   - factory/taxonomy-tiles
+  - factory/product-card
+  - factory/product-grid
   - woocommerce/product-collection
   - woocommerce/product-price
   - woocommerce/add-to-cart-form
@@ -41,8 +43,8 @@ blocks_allowed:
   - core/spacer
 
 page_templates:
-  home:      [factory/hero, woocommerce/product-collection, factory/arguments-band, factory/cta-band]
-  boutique:  [core/heading, woocommerce/product-collection]
+  home:      [factory/hero, factory/product-grid, factory/arguments-band, factory/cta-band]
+  boutique:  [core/heading, factory/product-grid]
   produit:   [woocommerce/product-price, woocommerce/add-to-cart-form, core/details]
   panier:    []              # templates Woo natifs
   checkout:  []

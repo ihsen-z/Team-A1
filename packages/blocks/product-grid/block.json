@@ -1,0 +1,29 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "factory/product-grid",
+  "title": "Grille de produits",
+  "category": "woocommerce",
+  "icon": "grid-view",
+  "description": "Grille de produits WooCommerce filtrée par catégorie, avec compteur et pastilles de sous-catégories optionnelles.",
+  "textdomain": "factory-core",
+  "supports": {
+    "html": false,
+    "anchor": true,
+    "align": ["wide", "full"],
+    "spacing": { "padding": true, "margin": true }
+  },
+  "attributes": {
+    "titre":        { "type": "string",  "default": "" },
+    "categorie":    { "type": "string",  "default": "" },
+    "limite":       { "type": "number",  "default": 12 },
+    "tri":          { "type": "string",  "default": "menu_order", "enum": ["menu_order", "date", "price", "price-desc", "popularity", "rating"] },
+    "colonnes":     { "type": "number",  "default": 4 },
+    "filtres":      { "type": "boolean", "default": false },
+    "compteur":     { "type": "boolean", "default": true },
+    "variante":     { "type": "string",  "default": "complete", "enum": ["complete", "compacte"] },
+    "niveauTitre":  { "type": "number",  "default": 2 }
+  },
+  "style": "file:./style.css",
+  "render": "file:./render.php"
+}
