@@ -143,13 +143,26 @@ mkdir -p "$out/plugins-maison"
 maison=0
 
 if [[ -d "$content/mu-plugins" ]]; then
-  while IFS= read -r mu; do
-    copy_filtered "$(dirname "$mu")" "$out/plugins-maison/mu-plugins" 2>/dev/null || true
-    break
-  done < <(find "$content/mu-plugins" -maxdepth 1 -name '*.php' 2>/dev/null)
-  if [[ -d "$out/plugins-maison/mu-plugins" ]]; then
-    ok "mu-plugins ($(find "$out/plugins-maison/mu-plugins" -type f | wc -l) fichier(s))"
-    maison=$((maison + 1))
+  sources="$(find "$content/mu-plugins" -maxdepth 1 -name '*.php' 2>/dev/null | wc -l)"
+  if [[ "$sources" -eq 0 ]]; then
+    ok "mu-plugins : aucun fichier .php"
+  else
+    # Pas de 2>/dev/null ici : une copie qui échoue doit le dire. La version
+    # précédente masquait l'erreur et laissait croire à une absence de source.
+    copy_filtered "$content/mu-plugins" "$out/plugins-maison/mu-plugins"
+    copied="$(find "$out/plugins-maison/mu-plugins" -type f 2>/dev/null | wc -l)"
+    if [[ "$copied" -eq 0 ]]; then
+      warn "mu-plugins : $sources fichier(s) en source, 0 copié."
+      warn "  Source : $content/mu-plugins"
+      warn "  Cible  : $out/plugins-maison/mu-plugins"
+      warn "  Vérifie les droits de lecture, et qu'il ne s'agit pas d'un lien."
+    else
+      # L'écart attendu vient de l'exclusion des fichiers *env.php.
+      ok "mu-plugins : $copied copié(s) sur $sources"
+      [[ "$copied" -lt "$sources" ]] && \
+        ok "  ($((sources - copied)) écarté(s) — fichiers de configuration d'environnement)"
+      maison=$((maison + 1))
+    fi
   fi
 fi
 
