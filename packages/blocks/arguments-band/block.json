@@ -1,0 +1,31 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "factory/arguments-band",
+  "title": "Rangée d'arguments",
+  "category": "design",
+  "icon": "awards",
+  "description": "Rangée de réassurance : icône, titre et sous-titre par argument. Trois variantes — barre nue, posée sur une photo, ou en cartes.",
+  "textdomain": "factory-core",
+  "supports": {
+    "html": false,
+    "anchor": true,
+    "align": ["wide", "full"],
+    "spacing": { "padding": true, "margin": true },
+    "color": { "background": true, "text": true }
+  },
+  "attributes": {
+    "titre":    { "type": "string", "default": "" },
+    "items":    { "type": "array",  "default": [], "items": { "type": "object" } },
+    "colonnes": { "type": "number", "default": 0 },
+    "variante": { "type": "string", "default": "barre", "enum": ["barre", "photo", "cartes"] },
+    "imageId":  { "type": "number", "default": 0 },
+    "niveauTitre":       { "type": "number", "default": 2 },
+    "couleurTitre":      { "type": "string", "default": "" },
+    "couleurTexte":      { "type": "string", "default": "" },
+    "couleurIconeFond":  { "type": "string", "default": "" },
+    "couleurIcone":      { "type": "string", "default": "" }
+  },
+  "style": "file:./style.css",
+  "render": "file:./render.php"
+}

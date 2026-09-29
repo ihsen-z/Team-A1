@@ -1,0 +1,61 @@
+/* Bloc factory/promise-bar */
+.factory-promises {
+	padding-block: 0.5rem;
+	padding-inline: var(--wp--preset--spacing--20);
+	font-size: var(--wp--preset--font-size--small);
+	background: var(--wp--preset--color--primaire);
+	color: var(--wp--preset--color--fond);
+}
+
+.factory-promises__liste {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: center;
+	gap: 0.6rem 1.6rem;
+	max-width: var(--wp--style--global--wide-size, 1200px);
+	margin-inline: auto;
+	padding: 0;
+	list-style: none;
+}
+
+.factory-promises__item {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.45rem;
+}
+
+.factory-promises__item.is-accent { font-weight: 600; }
+
+.factory-promises__icone {
+	flex: 0 0 auto;
+	width: 1.25em;
+	height: 1.25em;
+}
+
+/* Les promesses au-delà du seuil disparaissent sur petit écran plutôt que de
+   faire passer la barre sur trois lignes. */
+.factory-promises__item--secondaire { display: none; }
+
+@media (min-width: 48em) {
+	.factory-promises__item--secondaire { display: inline-flex; }
+}
+
+/* Variante défilement : réservée aux listes longues, et neutralisée dès que la
+   personne a demandé moins d'animation. */
+@media (prefers-reduced-motion: no-preference) {
+	.factory-promises--defilement .factory-promises__liste {
+		flex-wrap: nowrap;
+		justify-content: flex-start;
+		overflow-x: auto;
+		scroll-snap-type: x proximity;
+		scrollbar-width: none;
+	}
+
+	.factory-promises--defilement .factory-promises__item {
+		scroll-snap-align: center;
+		white-space: nowrap;
+	}
+
+	.factory-promises--defilement .factory-promises__item--secondaire { display: inline-flex; }
+}

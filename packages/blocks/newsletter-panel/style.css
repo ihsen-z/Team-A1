@@ -1,0 +1,99 @@
+/* Bloc factory/newsletter-panel
+   Les --factory-news-* sont posées en style inline par le rendu quand une
+   couleur est choisie ; sinon le repli sur les jetons du thème s'applique. */
+.factory-news {
+	display: grid;
+	gap: 0;
+	align-items: stretch;
+	border-radius: 12px;
+	overflow: hidden;
+	grid-template-columns: 1fr;
+}
+
+@media (min-width: 48em) {
+	.factory-news { grid-template-columns: 1fr 1fr; }
+	.factory-news--image-droite .factory-news__media { order: 2; }
+}
+
+.factory-news__media { margin: 0; }
+
+.factory-news__img {
+	display: block;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+.factory-news__panel {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	gap: var(--wp--preset--spacing--20);
+	padding: var(--wp--preset--spacing--30) var(--wp--preset--spacing--20);
+	background: var(--factory-news-panneau, var(--wp--preset--color--primaire));
+	color: var(--factory-news-texte, var(--wp--preset--color--fond));
+}
+
+.factory-news__titre {
+	margin: 0;
+	font-size: var(--wp--preset--font-size--large);
+	color: var(--factory-news-titre, var(--factory-news-texte, var(--wp--preset--color--fond)));
+}
+
+.factory-news__texte {
+	margin: 0;
+	max-width: 42ch;
+}
+
+.factory-news__form {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.5rem;
+}
+
+.factory-news__champ {
+	flex: 1 1 14rem;
+	min-width: 0;
+	padding: 0.7rem 0.9rem;
+	border: 1px solid transparent;
+	border-radius: 8px;
+	/* Jamais sous 16px : Safari iOS zoome sur un champ à la police plus petite. */
+	font-size: 1rem;
+	color: var(--wp--preset--color--texte);
+	background: var(--wp--preset--color--fond);
+}
+
+.factory-news__champ:focus-visible {
+	outline: 2px solid var(--factory-news-bouton, var(--wp--preset--color--accent));
+	outline-offset: 2px;
+}
+
+.factory-news__bouton {
+	flex: 0 0 auto;
+	padding: 0.7rem 1.4rem;
+	border: 0;
+	border-radius: 8px;
+	font: inherit;
+	font-size: 1rem;
+	cursor: pointer;
+	color: var(--factory-news-bouton-texte, var(--wp--preset--color--fond));
+	background: var(--factory-news-bouton, var(--wp--preset--color--accent));
+}
+
+.factory-news__bouton:focus-visible {
+	outline: 2px solid var(--factory-news-texte, var(--wp--preset--color--fond));
+	outline-offset: 2px;
+}
+
+.factory-news__avertissement {
+	margin: 0;
+	padding: 0.7rem 0.9rem;
+	border-radius: 8px;
+	font-size: var(--wp--preset--font-size--small);
+	color: var(--wp--preset--color--texte);
+	background: var(--wp--preset--color--neutre-clair);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+	.factory-news__bouton { transition: background-color 150ms ease; }
+}

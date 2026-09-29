@@ -17,8 +17,10 @@ plugins:
 
 blocks_allowed:
   - factory/hero
-  - factory/services-grid
+  - factory/arguments-band
   - factory/cta-band
+  - factory/promise-bar
+  - factory/newsletter-panel
   - core/paragraph
   - core/heading
   - core/image
@@ -29,7 +31,7 @@ blocks_allowed:
   - core/spacer
 
 page_templates:
-  home:      [factory/hero, factory/services-grid, factory/cta-band]
+  home:      [factory/hero, factory/arguments-band, factory/cta-band]
   catalogue: [factory/hero, core/columns, factory/cta-band]
   story:     [factory/hero, core/group, factory/cta-band]
   pratique:  [factory/hero, core/columns]

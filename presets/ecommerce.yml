@@ -20,8 +20,10 @@ plugins:
 
 blocks_allowed:
   - factory/hero
-  - factory/services-grid
+  - factory/arguments-band
   - factory/cta-band
+  - factory/promise-bar
+  - factory/newsletter-panel
   - woocommerce/product-collection
   - woocommerce/product-price
   - woocommerce/add-to-cart-form
@@ -36,7 +38,7 @@ blocks_allowed:
   - core/spacer
 
 page_templates:
-  home:      [factory/hero, woocommerce/product-collection, factory/services-grid, factory/cta-band]
+  home:      [factory/hero, woocommerce/product-collection, factory/arguments-band, factory/cta-band]
   boutique:  [core/heading, woocommerce/product-collection]
   produit:   [woocommerce/product-price, woocommerce/add-to-cart-form, core/details]
   panier:    []              # templates Woo natifs

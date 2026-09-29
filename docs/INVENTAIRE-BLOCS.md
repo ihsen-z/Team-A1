@@ -3,7 +3,8 @@
 Issu de l'analyse des sites existants (`imports/`). Ce fichier est la source
 de vérité de ce qui reste à écrire dans `packages/blocks/`.
 
-> État : evasions et famma analysés · `famma-core` récupéré et intégré au socle (durcissement).
+> État : evasions et famma analysés · `famma-core` intégré au socle (durcissement)
+> · **vague 1 livrée** (5 blocs).
 
 ---
 
@@ -94,10 +95,11 @@ composants qui n'étaient distincts que par accident.
 
 | Bloc | Absorbe (evasions) | Vague |
 |---|---|---|
-| `factory/hero` *(étendre l'existant)* | `hero.php`, `page-banner.php`, bannière packs, hero d'univers | 1 |
-| `factory/cta-band` *(étendre l'existant)* | `banner.php`, `product-cta.php`, éditorial d'univers | 1 |
-| `factory/arguments-band` *(généralise services-grid)* | `benefits.php`, `why.php`, réassurance produit | 1 |
-| `factory/newsletter-panel` | `community.php` | 1 |
+| ✅ `factory/hero` *(étendu)* | `hero.php`, `page-banner.php`, bannière packs, hero d'univers | 1 |
+| ✅ `factory/cta-band` *(étendu)* | `banner.php`, `product-cta.php`, éditorial d'univers | 1 |
+| ✅ `factory/arguments-band` *(absorbe services-grid)* | `benefits.php`, `why.php`, réassurance produit | 1 |
+| ✅ `factory/newsletter-panel` | `community.php` | 1 |
+| ✅ `factory/promise-bar` | `topbar.php` + `header-parts.php` | 1 |
 | `factory/doc-sections` | `page-faq.php`, `page-cgv.php` | 2 |
 | `factory/taxonomy-tiles` | `universes.php` + tuiles | 2 |
 | `factory/reviews-wall` | `reviews.php` | 2 |

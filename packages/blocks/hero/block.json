@@ -5,7 +5,7 @@
   "title": "Hero",
   "category": "design",
   "icon": "cover-image",
-  "description": "Bandeau d'ouverture : titre, accroche, boutons, image de fond optionnelle.",
+  "description": "Bandeau d'ouverture : titre en deux parties, accroche, un ou deux boutons, image de fond avec direction artistique mobile.",
   "textdomain": "factory-core",
   "supports": {
     "html": false,
@@ -15,13 +15,19 @@
     "color": { "background": true, "text": true }
   },
   "attributes": {
-    "titre":      { "type": "string", "default": "" },
-    "accroche":   { "type": "string", "default": "" },
-    "ctaTexte":   { "type": "string", "default": "" },
-    "ctaUrl":     { "type": "string", "default": "" },
-    "imageId":    { "type": "number", "default": 0 },
-    "niveau":     { "type": "number", "default": 1 },
-    "hauteur":    { "type": "string", "default": "moyenne", "enum": ["compacte", "moyenne", "pleine"] }
+    "titre":         { "type": "string",  "default": "" },
+    "titreEmphase":  { "type": "string",  "default": "" },
+    "accroche":      { "type": "string",  "default": "" },
+    "ctaTexte":      { "type": "string",  "default": "" },
+    "ctaUrl":        { "type": "string",  "default": "" },
+    "ctaSecTexte":   { "type": "string",  "default": "" },
+    "ctaSecUrl":     { "type": "string",  "default": "" },
+    "imageId":       { "type": "number",  "default": 0 },
+    "imageMobileId": { "type": "number",  "default": 0 },
+    "niveau":        { "type": "number",  "default": 1 },
+    "hauteur":       { "type": "string",  "default": "moyenne", "enum": ["compacte", "moyenne", "pleine"] },
+    "prioritaire":   { "type": "boolean", "default": false },
+    "opaciteVoile":  { "type": "number",  "default": 45 }
   },
   "style": "file:./style.css",
   "render": "file:./render.php"

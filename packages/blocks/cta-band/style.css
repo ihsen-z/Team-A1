@@ -1,5 +1,6 @@
 /* Bloc factory/cta-band */
 .factory-cta {
+	position: relative;
 	display: flex;
 	flex-wrap: wrap;
 	align-items: center;
@@ -7,25 +8,88 @@
 	gap: var(--wp--preset--spacing--20);
 	padding: var(--wp--preset--spacing--30) var(--wp--preset--spacing--20);
 	border-radius: 10px;
+	overflow: hidden;
+	isolation: isolate;
 	background: var(--wp--preset--color--primaire);
-	color: var(--wp--preset--color--fond);
+	color: var(--factory-cta-texte, var(--wp--preset--color--fond));
 }
 
 .factory-cta--accent { background: var(--wp--preset--color--accent); }
+
 .factory-cta--sobre {
 	background: var(--wp--preset--color--neutre-clair);
-	color: var(--wp--preset--color--texte);
+	color: var(--factory-cta-texte, var(--wp--preset--color--texte));
+}
+
+.factory-cta__texte {
+	display: flex;
+	flex-direction: column;
+	gap: 0.35rem;
+	max-width: 48ch;
+}
+
+.factory-cta__titre {
+	margin: 0;
+	font-size: var(--wp--preset--font-size--large);
+	color: var(--factory-cta-titre, inherit);
+	text-wrap: balance;
 }
 
 .factory-cta__message {
 	margin: 0;
-	font-size: var(--wp--preset--font-size--large);
-	max-width: 44ch;
+	text-wrap: pretty;
 }
 
-.factory-cta__bouton { flex-shrink: 0; }
+.factory-cta__bouton {
+	flex-shrink: 0;
+	color: var(--factory-cta-bouton-texte, var(--wp--preset--color--fond));
+	background: var(--factory-cta-bouton, var(--wp--preset--color--accent));
+}
 
 .factory-cta--sobre .factory-cta__bouton {
-	background: var(--wp--preset--color--primaire);
-	color: var(--wp--preset--color--fond);
+	color: var(--factory-cta-bouton-texte, var(--wp--preset--color--fond));
+	background: var(--factory-cta-bouton, var(--wp--preset--color--primaire));
+}
+
+.factory-cta__bouton:focus-visible {
+	outline: 2px solid currentColor;
+	outline-offset: 3px;
+}
+
+/* --- Variante photo ---------------------------------------------------- */
+.factory-cta--photo {
+	background-image: var(--factory-cta-image);
+	background-size: cover;
+	background-position: center;
+	color: var(--factory-cta-texte, #fff);
+	min-height: 16rem;
+}
+
+/* Le dégradé garde le texte lisible du côté où il se trouve, sans assombrir
+   la photo entière comme le ferait un voile uniforme. */
+.factory-cta--photo.factory-cta--degrade-lateral::before,
+.factory-cta--photo.factory-cta--degrade-vertical::before {
+	content: "";
+	position: absolute;
+	inset: 0;
+	z-index: -1;
+}
+
+.factory-cta--photo.factory-cta--degrade-lateral::before {
+	background: linear-gradient(90deg, rgba(0, 0, 0, 0.72) 0%, rgba(0, 0, 0, 0.15) 70%, transparent 100%);
+}
+
+.factory-cta--photo.factory-cta--degrade-vertical::before {
+	background: linear-gradient(180deg, rgba(0, 0, 0, 0.15) 0%, rgba(0, 0, 0, 0.72) 100%);
+}
+
+/* En mobile le texte passe sous la photo : le dégradé latéral n'a plus de sens. */
+@media (max-width: 47.99em) {
+	.factory-cta--photo.factory-cta--degrade-lateral::before {
+		background: linear-gradient(180deg, rgba(0, 0, 0, 0.15) 0%, rgba(0, 0, 0, 0.72) 100%);
+	}
+}
+
+@media (prefers-reduced-motion: no-preference) {
+	.factory-cta__bouton { transition: background-color 150ms ease; }
 }

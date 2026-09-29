@@ -1,0 +1,89 @@
+/* Bloc factory/arguments-band
+   --factory-args-cols porte le nombre de colonnes : une rangée de deux et une
+   rangée de quatre partagent la même règle. */
+.factory-args {
+	padding-block: var(--wp--preset--spacing--30);
+	padding-inline: var(--wp--preset--spacing--20);
+	color: var(--factory-args-texte, var(--wp--preset--color--texte));
+}
+
+.factory-args__titre {
+	max-width: var(--wp--style--global--wide-size, 1200px);
+	margin: 0 auto var(--wp--preset--spacing--20);
+	font-size: var(--wp--preset--font-size--large);
+	text-align: center;
+	color: var(--factory-args-titre, inherit);
+}
+
+.factory-args__liste {
+	display: grid;
+	gap: var(--wp--preset--spacing--20);
+	max-width: var(--wp--style--global--wide-size, 1200px);
+	margin-inline: auto;
+	padding: 0;
+	list-style: none;
+	/* Une colonne sur mobile, puis jusqu'à --factory-args-cols, sans media query. */
+	grid-template-columns: repeat(
+		auto-fit,
+		minmax(min(calc(100% / var(--factory-args-cols, 3) - var(--wp--preset--spacing--20)), 100%), 1fr)
+	);
+}
+
+.factory-args__item {
+	display: flex;
+	align-items: flex-start;
+	gap: 0.75rem;
+}
+
+.factory-args__icone {
+	display: grid;
+	flex: 0 0 auto;
+	place-items: center;
+	width: 2.5rem;
+	height: 2.5rem;
+	border-radius: 50%;
+	color: var(--factory-args-icone, currentColor);
+	background: var(--factory-args-icone-fond, transparent);
+}
+
+.factory-args__icone img { display: block; }
+
+.factory-args__texte {
+	display: flex;
+	flex-direction: column;
+	gap: 0.15rem;
+}
+
+.factory-args__item-titre { font-weight: 600; }
+
+.factory-args__item-sous {
+	font-size: var(--wp--preset--font-size--small);
+	opacity: 0.85;
+}
+
+/* --- Variante photo --------------------------------------------------- */
+.factory-args--photo {
+	position: relative;
+	background-image: var(--factory-args-image);
+	background-size: cover;
+	background-position: center;
+	padding-block: var(--wp--preset--spacing--40);
+}
+
+/* Voile en rgba plutôt qu'une teinte fixe : tient sur n'importe quelle photo. */
+.factory-args--photo::before {
+	content: "";
+	position: absolute;
+	inset: 0;
+	background: rgba(0, 0, 0, 0.45);
+}
+
+.factory-args--photo > * { position: relative; }
+.factory-args--photo { color: var(--factory-args-texte, #fff); }
+
+/* --- Variante cartes -------------------------------------------------- */
+.factory-args--cartes .factory-args__item {
+	padding: var(--wp--preset--spacing--20);
+	border-radius: 10px;
+	background: var(--wp--preset--color--neutre-clair);
+}

@@ -1,0 +1,33 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "factory/newsletter-panel",
+  "title": "Panneau newsletter",
+  "category": "design",
+  "icon": "email",
+  "description": "Panneau d'inscription : image d'un côté, titre, texte et champ e-mail de l'autre. Le formulaire poste chez le fournisseur d'e-mailing — aucune adresse n'est stockée par le site.",
+  "textdomain": "factory-core",
+  "supports": {
+    "html": false,
+    "anchor": true,
+    "align": ["wide", "full"],
+    "spacing": { "padding": true, "margin": true }
+  },
+  "attributes": {
+    "titre":            { "type": "string",  "default": "" },
+    "texte":            { "type": "string",  "default": "" },
+    "boutonTexte":      { "type": "string",  "default": "" },
+    "champPlaceholder": { "type": "string",  "default": "" },
+    "formulaireUrl":    { "type": "string",  "default": "" },
+    "champNom":         { "type": "string",  "default": "EMAIL" },
+    "imageId":          { "type": "number",  "default": 0 },
+    "positionImage":    { "type": "string",  "default": "gauche", "enum": ["gauche", "droite"] },
+    "couleurPanneau":     { "type": "string", "default": "" },
+    "couleurTitre":       { "type": "string", "default": "" },
+    "couleurTexte":       { "type": "string", "default": "" },
+    "couleurBouton":      { "type": "string", "default": "" },
+    "couleurBoutonTexte": { "type": "string", "default": "" }
+  },
+  "style": "file:./style.css",
+  "render": "file:./render.php"
+}

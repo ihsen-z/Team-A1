@@ -5,7 +5,7 @@
   "title": "Bandeau d'appel à l'action",
   "category": "design",
   "icon": "megaphone",
-  "description": "Bandeau de conversion en fin de page : message court et un seul bouton.",
+  "description": "Bandeau de conversion : titre, message court et un seul bouton, avec photo de fond optionnelle et dégradé latéral ou vertical.",
   "textdomain": "factory-core",
   "supports": {
     "html": false,
@@ -15,10 +15,18 @@
     "color": { "background": true, "text": true }
   },
   "attributes": {
+    "titre":    { "type": "string", "default": "" },
     "message":  { "type": "string", "default": "" },
     "ctaTexte": { "type": "string", "default": "" },
     "ctaUrl":   { "type": "string", "default": "" },
-    "variante": { "type": "string", "default": "primaire", "enum": ["primaire", "accent", "sobre"] }
+    "imageId":  { "type": "number", "default": 0 },
+    "variante": { "type": "string", "default": "primaire", "enum": ["primaire", "accent", "sobre", "photo"] },
+    "degrade":  { "type": "string", "default": "lateral", "enum": ["lateral", "vertical", "aucun"] },
+    "niveauTitre":        { "type": "number", "default": 2 },
+    "couleurTitre":       { "type": "string", "default": "" },
+    "couleurTexte":       { "type": "string", "default": "" },
+    "couleurBouton":      { "type": "string", "default": "" },
+    "couleurBoutonTexte": { "type": "string", "default": "" }
   },
   "style": "file:./style.css",
   "render": "file:./render.php"

@@ -1,0 +1,25 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "factory/promise-bar",
+  "title": "Barre de promesses",
+  "category": "design",
+  "icon": "megaphone",
+  "description": "Bandeau fin de promesses commerciales : livraison, paiement, garantie. Présent en haut de page ou en tête de boutique.",
+  "textdomain": "factory-core",
+  "supports": {
+    "html": false,
+    "anchor": true,
+    "align": ["full"],
+    "spacing": { "padding": true },
+    "color": { "background": true, "text": true }
+  },
+  "attributes": {
+    "items":            { "type": "array",   "default": [], "items": { "type": "object" } },
+    "accentuerPremier": { "type": "boolean", "default": false },
+    "masquerMobileAuDela": { "type": "number", "default": 1 },
+    "defilement":       { "type": "boolean", "default": false }
+  },
+  "style": "file:./style.css",
+  "render": "file:./render.php"
+}
